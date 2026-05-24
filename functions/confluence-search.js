@@ -12,7 +12,7 @@ export async function onRequest(context) {
     const auth = btoa(`${email}:${token}`);
 
     const cql = encodeURIComponent(
-      `text ~ "${query}" AND type = page ORDER BY score DESC`
+      `text ~ "${query}" AND type = page ORDER BY lastModified DESC`
     );
 
     const response = await fetch(
@@ -26,13 +26,12 @@ export async function onRequest(context) {
 
     const data = await response.json();
 
-    // Filter out noise spaces on the way out
+    // Filter out noise spaces and incident pages after results come back
     const excludedSpaceKeys = ['ProInfDes', 'Platform', 'TCD'];
     const results = (data.results || [])
       .filter(r => {
         const spaceKey = r.space?.key || '';
         const title = r.title || '';
-        // Exclude known noise spaces and incident pages
         if (excludedSpaceKeys.includes(spaceKey)) return false;
         if (/^INC-\d+/.test(title)) return false;
         return true;
