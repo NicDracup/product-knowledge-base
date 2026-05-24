@@ -11,11 +11,8 @@ export async function onRequest(context) {
     const token = context.env.CONFLUENCE_TOKEN;
     const auth = btoa(`${email}:${token}`);
 
-    // Scope to product-relevant spaces only, exclude incident/platform/compliance noise
-    const excludedSpaces = ['ProInfDes', 'Platform', 'TCD', 'INC'];
-    const spaceExclusion = excludedSpaces.map(s => `space.key != "${s}"`).join(' AND ');
     const cql = encodeURIComponent(
-      `text ~ "${query}" AND type = page AND ${spaceExclusion} ORDER BY score DESC`
+      `text ~ "${query}" AND type = page ORDER BY score DESC`
     );
 
     const response = await fetch(
@@ -28,15 +25,26 @@ export async function onRequest(context) {
     }
 
     const data = await response.json();
-    const results = (data.results || []).map(r => ({
-      title: r.title,
-      excerpt: r.excerpt || '',
-      url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
-      space: r.resultGlobalContainer?.title || '',
-      spaceKey: r.space?.key || ''
-    }));
 
-    // Sources array — Contentful can be added here later as a second source
+    // Filter out noise spaces on the way out
+    const excludedSpaceKeys = ['ProInfDes', 'Platform', 'TCD'];
+    const results = (data.results || [])
+      .filter(r => {
+        const spaceKey = r.space?.key || '';
+        const title = r.title || '';
+        // Exclude known noise spaces and incident pages
+        if (excludedSpaceKeys.includes(spaceKey)) return false;
+        if (/^INC-\d+/.test(title)) return false;
+        return true;
+      })
+      .map(r => ({
+        title: r.title,
+        excerpt: r.excerpt || '',
+        url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
+        space: r.resultGlobalContainer?.title || '',
+        spaceKey: r.space?.key || ''
+      }));
+
     return new Response(JSON.stringify({ results }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
   } catch (err) {
