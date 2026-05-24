@@ -345,7 +345,7 @@ function hideAll() {
 
 async function fetchCF(pageId) {
   if (cfCache[pageId]) return cfCache[pageId];
-  const res = await fetch(`/functions/confluence?id=${pageId}`);
+  const res = await fetch(`/confluence?id=${pageId}`);
   if (!res.ok) throw new Error('Fetch failed ' + res.status);
   const data = await res.json();
   const html = data.body?.view?.value || data.body?.storage?.value || '';
@@ -532,7 +532,7 @@ function removeTyping() { const t = document.getElementById('typing'); if (t) t.
 
 async function searchConfluence(query) {
   try {
-    const res = await fetch(`/functions/confluence-search?q=${encodeURIComponent(query)}`);
+    const res = await fetch(`/confluence-search?q=${encodeURIComponent(query)}`);
     if (!res.ok) return [];
     const data = await res.json();
     return data.results || [];
@@ -584,7 +584,7 @@ Context:
 ${allContext || 'No context found for this query.'}`;
 
   try {
-    const res = await fetch('/functions/claude', {
+    const res = await fetch('/claude', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system, messages: chatHistory.slice(-6) })
