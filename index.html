@@ -560,8 +560,30 @@ async function chatSend() {
   let cfContext = '';
   const cfSources = [];
   if (cfResults.length) {
-    cfContext = 'CONFLUENCE SEARCH RESULTS:\n' + cfResults.map(r =>
-      `Page: ${r.title} (${r.space})\nExcerpt: ${r.excerpt}\nURL: ${r.url}`
+    // Fetch full content of the top result for richer context
+    const topResult = cfResults[0];
+    let topPageContent = '';
+    try {
+      const pageIdMatch = topResult.url.match(/pages\/([0-9]+)/);
+      if (pageIdMatch) {
+        const pageId = pageIdMatch[1];
+        if (cfCache[pageId]) {
+          topPageContent = cfCache[pageId].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 3000);
+        } else {
+          const pageRes = await fetch(`/confluence?id=${pageId}`);
+          if (pageRes.ok) {
+            const pageData = await pageRes.json();
+            const rawHtml = pageData.body?.view?.value || pageData.body?.storage?.value || '';
+            topPageContent = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 3000);
+            cfCache[pageId] = rawHtml;
+          }
+        }
+      }
+    } catch(e) { /* silent fail — fall back to excerpts */ }
+
+    cfContext = 'CONFLUENCE SEARCH RESULTS:\n' + cfResults.map((r, i) =>
+      `Page: ${r.title} (${r.space})\nExcerpt: ${r.excerpt}\nURL: ${r.url}` +
+      (i === 0 && topPageContent ? `\nFull Content: ${topPageContent}` : '')
     ).join('\n\n');
     cfResults.forEach(r => cfSources.push(`Confluence: ${r.title}`));
   }
