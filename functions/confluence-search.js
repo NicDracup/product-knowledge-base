@@ -16,7 +16,7 @@ export async function onRequest(context) {
     );
 
     const response = await fetch(
-      `https://ballysgroup.atlassian.net/wiki/rest/api/search?cql=${cql}&limit=10`,
+      `https://ballysgroup.atlassian.net/wiki/rest/api/search?cql=${cql}&limit=15`,
       { headers: { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' } }
     );
 
@@ -26,16 +26,14 @@ export async function onRequest(context) {
 
     const data = await response.json();
 
-    // Filter out noise spaces and incident pages after results come back
-    const excludedSpaceKeys = ['ProInfDes', 'Platform', 'TCD'];
+    // Only keep product-relevant spaces
+    const allowedSpaceKeys = ['bingo', 'MUL', 'GOPS', 'ENGAGE', 'PO'];
     const results = (data.results || [])
       .filter(r => {
-        const spaceKey = r.space?.key || '';
-        const title = r.title || '';
-        if (excludedSpaceKeys.includes(spaceKey)) return false;
-        if (/^INC-\d+/.test(title)) return false;
-        return true;
+        const spaceKey = (r.space?.key || '').toLowerCase();
+        return allowedSpaceKeys.map(k => k.toLowerCase()).includes(spaceKey);
       })
+      .slice(0, 10)
       .map(r => ({
         title: r.title,
         excerpt: r.excerpt || '',
@@ -44,6 +42,7 @@ export async function onRequest(context) {
         spaceKey: r.space?.key || ''
       }));
 
+    // Sources array — Contentful can be added here later as a second source
     return new Response(JSON.stringify({ results }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
   } catch (err) {
