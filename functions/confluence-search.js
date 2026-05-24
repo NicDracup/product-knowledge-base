@@ -10,7 +10,13 @@ export async function onRequest(context) {
     const email = context.env.CONFLUENCE_EMAIL;
     const token = context.env.CONFLUENCE_TOKEN;
     const auth = btoa(`${email}:${token}`);
-    const cql = encodeURIComponent(`text ~ "${query}" AND type = page ORDER BY lastModified DESC`);
+
+    // Scope to product-relevant spaces only, exclude incident/platform/compliance noise
+    const excludedSpaces = ['ProInfDes', 'Platform', 'TCD', 'INC'];
+    const spaceExclusion = excludedSpaces.map(s => `space.key != "${s}"`).join(' AND ');
+    const cql = encodeURIComponent(
+      `text ~ "${query}" AND type = page AND ${spaceExclusion} ORDER BY score DESC`
+    );
 
     const response = await fetch(
       `https://ballysgroup.atlassian.net/wiki/rest/api/search?cql=${cql}&limit=10`,
@@ -26,9 +32,11 @@ export async function onRequest(context) {
       title: r.title,
       excerpt: r.excerpt || '',
       url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
-      space: r.resultGlobalContainer?.title || ''
+      space: r.resultGlobalContainer?.title || '',
+      spaceKey: r.space?.key || ''
     }));
 
+    // Sources array — Contentful can be added here later as a second source
     return new Response(JSON.stringify({ results }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
   } catch (err) {
