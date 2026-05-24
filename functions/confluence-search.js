@@ -10,7 +10,9 @@ export async function onRequest(context) {
     const email = context.env.CONFLUENCE_EMAIL;
     const token = context.env.CONFLUENCE_TOKEN;
     const auth = btoa(`${email}:${token}`);
-    const cql = encodeURIComponent(`text ~ "${query}" AND type = page ORDER BY lastModified DESC`);
+
+    // No ORDER BY — let Confluence rank by relevance
+    const cql = encodeURIComponent(`text ~ "${query}" AND type = page`);
 
     const response = await fetch(
       `https://ballysgroup.atlassian.net/wiki/rest/api/search?cql=${cql}&limit=10`,
@@ -22,13 +24,26 @@ export async function onRequest(context) {
     }
 
     const data = await response.json();
-    const results = (data.results || []).map(r => ({
-      title: r.title,
-      excerpt: r.excerpt || '',
-      url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
-      space: r.resultGlobalContainer?.title || '',
-      spaceKey: r.space?.key || ''
-    }));
+
+    // Filter out noise, keep product-relevant results
+    const noiseSpaces = ['proinfdes'];
+    const noiseTitles = [/^INC-\d+/i, /^(Re|Fw):/i, /^DO NOT USE/i, /Q&A Test Run/i];
+
+    const results = (data.results || [])
+      .filter(r => {
+        const spaceKey = (r.space?.key || '').toLowerCase();
+        const title = r.title || '';
+        if (noiseSpaces.includes(spaceKey)) return false;
+        if (noiseTitles.some(re => re.test(title))) return false;
+        return true;
+      })
+      .map(r => ({
+        title: r.title,
+        excerpt: r.excerpt || '',
+        url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
+        space: r.resultGlobalContainer?.title || '',
+        spaceKey: r.space?.key || ''
+      }));
 
     return new Response(JSON.stringify({ results }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
 
