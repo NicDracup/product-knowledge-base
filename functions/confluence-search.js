@@ -13,7 +13,7 @@ export async function onRequest(context) {
     const cql = encodeURIComponent(`text ~ "${query}" AND type = page ORDER BY lastModified DESC`);
 
     const response = await fetch(
-      `https://ballysgroup.atlassian.net/wiki/rest/api/search?cql=${cql}&limit=3`,
+      `https://ballysgroup.atlassian.net/wiki/rest/api/search?cql=${cql}&limit=10`,
       { headers: { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' } }
     );
 
