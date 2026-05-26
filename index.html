@@ -267,14 +267,14 @@ async function buildTree() {
   });
 }
 
-function createTreeNode(page, depth) {
+function createTreeNode(page, depth, inheritColor) {
   const wrapper = document.createElement('div');
   wrapper.className = 'tree-node';
 
   const row = document.createElement('div');
   row.className = 'tree-node-row';
   row.id = 'node-' + page.id;
-  row.style.paddingLeft = (depth * 14 + 16) + 'px';
+  row.style.paddingLeft = (depth * 10 + 16) + 'px';
 
   const btn = document.createElement('button');
   btn.className = 'tree-node-btn';
@@ -283,9 +283,8 @@ function createTreeNode(page, depth) {
     'arcade': '#f59e0b', 'jackpot mechanics': '#a78bfa', 'jackpots': '#a78bfa',
     'multiplayer': '#34d399'
   };
-  const dotColor = dotColors[page.title.toLowerCase()] || '#888888';
+  const dotColor = inheritColor || dotColors[page.title.toLowerCase()] || '#888888';
   btn.innerHTML = `<div class="tree-node-dot" style="background:${dotColor}"></div><span class="tree-node-label">${page.title}</span>`;
-  btn.onclick = () => loadPage(page);
 
   const toggle = document.createElement('button');
   toggle.className = 'tree-node-toggle';
@@ -298,15 +297,13 @@ function createTreeNode(page, depth) {
   childContainer.id = 'children-' + page.id;
   childContainer.style.display = 'none';
 
-  toggle.onclick = async (e) => {
-    e.stopPropagation();
+  async function toggleOpen() {
     const isOpen = childContainer.style.display !== 'none';
     if (isOpen) {
       childContainer.style.display = 'none';
       toggle.classList.remove('open');
     } else {
       if (childContainer.dataset.loaded) {
-        // Already loaded — just show
         if (childContainer.children.length) {
           childContainer.style.display = 'block';
           toggle.classList.add('open');
@@ -320,7 +317,7 @@ function createTreeNode(page, depth) {
         childContainer.innerHTML = '';
         if (kids.length) {
           toggle.style.opacity = '1';
-          kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1)));
+          kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor)));
         } else {
           toggle.style.opacity = '0.3';
           toggle.classList.remove('open');
@@ -328,14 +325,27 @@ function createTreeNode(page, depth) {
         }
       }
     }
+  }
+
+  // Clicking anywhere on the row loads the page AND toggles children
+  row.onclick = async () => {
+    loadPage(page);
+    if (toggle.style.opacity !== '0.3') await toggleOpen();
   };
 
-  // Pre-check children visibility on load for depth 0
+  toggle.onclick = async (e) => {
+    e.stopPropagation();
+    await toggleOpen();
+  };
+
+  btn.onclick = (e) => e.stopPropagation(); // handled by row
+
+  // Pre-load children for depth 0
   if (depth === 0) {
     fetchChildren(page.id).then(kids => {
       if (kids.length) {
         toggle.style.opacity = '1';
-        kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1)));
+        kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor)));
         childContainer.dataset.loaded = '1';
       }
     });
@@ -506,10 +516,10 @@ async function runSearch() {
           const pageId = pageIdMatch ? pageIdMatch[1] : null;
           const cleanExcerpt = (r.excerpt || '').replace(/[\u0000-\u001F]/g, ' ').trim();
           const pageObj = JSON.stringify({ id: pageId, title: r.title, url: r.url }).replace(/"/g, '&quot;');
-          return `<button class="search-tile" onclick="loadPage(${pageObj})">
+          return `<button class="search-tile" style="display:flex;flex-direction:column;height:220px" onclick="loadPage(${pageObj})">
             <div class="search-tile-name">${r.title}</div>
-            <div class="search-tile-excerpt">${cleanExcerpt || 'No preview available'}</div>
-            <div class="search-tile-footer">
+            <div class="search-tile-excerpt" style="flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical">${cleanExcerpt || 'No preview available'}</div>
+            <div class="search-tile-footer" style="margin-top:auto;flex-shrink:0">
               <div class="search-tile-source">
                 <span class="source-badge badge-confluence">Confluence</span>
                 <span class="search-tile-space">${r.space}</span>
