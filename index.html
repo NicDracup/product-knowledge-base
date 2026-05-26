@@ -24,10 +24,12 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .logo-text { font-size: 13px; font-weight: 500; }
 .logo-text span { color: var(--text2); font-weight: 400; }
 .proto-badge { padding: 2px 9px; background: rgba(200,16,46,0.12); border: 1px solid rgba(200,16,46,0.25); border-radius: 20px; font-size: 10px; color: #e05070; font-weight: 500; }
-.header-search { margin-left: auto; display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 6px 12px; cursor: text; min-width: 220px; }
+.header-search { margin-left: auto; display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 6px 12px; min-width: 260px; transition: border-color 0.12s; }
+.header-search:focus-within { border-color: var(--border2); }
 .header-search svg { width: 13px; height: 13px; stroke: var(--text3); fill: none; stroke-width: 2; flex-shrink: 0; }
-.header-search span { font-size: 12px; color: var(--text3); }
-.header-search kbd { margin-left: auto; font-size: 10px; padding: 1px 5px; background: var(--surface3); border: 1px solid var(--border); border-radius: 3px; color: var(--text3); font-family: var(--font); }
+.search-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 12px; min-width: 0; }
+.search-input::placeholder { color: var(--text3); }
+.header-search kbd { font-size: 10px; padding: 1px 5px; background: var(--surface3); border: 1px solid var(--border); border-radius: 3px; color: var(--text3); font-family: var(--font); flex-shrink: 0; }
 
 /* LAYOUT */
 .layout { display: flex; flex: 1; overflow: hidden; }
@@ -46,8 +48,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .nav-chevron { margin-left: auto; width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; transition: transform 0.15s; flex-shrink: 0; }
 .nav-chevron.open { transform: rotate(90deg); }
 .nav-children { overflow: hidden; }
-.nav-child { display: flex; align-items: center; gap: 8px; padding: 5px 16px 5px 30px; cursor: pointer; color: var(--text3); font-size: 11px; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); transition: all 0.12s; border-left: 2px solid transparent; }
-.nav-child:hover { background: var(--surface2); color: var(--text2); }
+.nav-child { display: flex; align-items: center; gap: 8px; padding: 5px 16px 5px 30px; cursor: pointer; color: var(--text2); font-size: 12px; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); transition: all 0.12s; border-left: 2px solid transparent; }
+.nav-child:hover { background: var(--surface2); color: var(--text); }
 .nav-child.active { color: var(--text); border-left-color: var(--red); background: var(--surface2); }
 .nav-child-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; opacity: 0.5; }
 .sidebar-divider { height: 1px; background: var(--border); margin: 12px 0; }
@@ -115,6 +117,26 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .team-card .name { font-size: 12px; font-weight: 500; color: var(--text); }
 .team-card .role { font-size: 10px; color: var(--text3); margin-top: 2px; }
 
+/* SEARCH RESULTS */
+.search-results-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.search-results-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+.search-results-count { font-size: 12px; color: var(--text3); padding: 2px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; }
+.search-results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.search-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all 0.12s; text-align: left; width: 100%; font-family: var(--font); }
+.search-tile:hover { border-color: var(--border2); background: var(--surface2); }
+.search-tile-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+.search-tile-excerpt { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.search-tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border); }
+.search-tile-source { display: flex; align-items: center; gap: 6px; }
+.source-badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 3px; }
+.badge-confluence { background: rgba(0,82,204,0.15); color: #5b8dee; }
+.badge-contentful { background: rgba(249,196,0,0.15); color: #f9c400; }
+.search-tile-space { font-size: 10px; color: var(--text3); }
+.search-tile-arrow { font-size: 13px; color: var(--text3); }
+.search-tile:hover .search-tile-arrow { color: var(--text2); }
+.search-empty { padding: 40px 0; text-align: center; color: var(--text3); font-size: 14px; }
+.search-loading { display: flex; align-items: center; gap: 10px; color: var(--text3); font-size: 14px; padding: 32px 0; }
+
 /* TILES BAR — pinned bottom */
 .tiles-bar { flex-shrink: 0; border-top: 1px solid var(--border); background: var(--surface); }
 .tiles-bar-header { padding: 8px 16px 6px; display: flex; align-items: center; gap: 8px; }
@@ -128,55 +150,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .tile-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
 .tile-desc { font-size: 11px; color: var(--text2); line-height: 1.4; margin-bottom: 8px; }
 .tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 6px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text3); }
-
-/* CHAT */
-.chat-trigger { position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--red); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(200,16,46,0.35); transition: all 0.18s; z-index: 300; }
-.chat-trigger:hover { background: var(--red-dark); transform: scale(1.05); }
-.chat-trigger svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 1.8; }
-.chat-notif { position: absolute; top: 0; right: 0; width: 15px; height: 15px; border-radius: 50%; background: #22c55e; border: 2px solid var(--bg); font-size: 8px; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-.chat-popup { position: fixed; bottom: 80px; right: 20px; width: 370px; height: 520px; background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; display: flex; flex-direction: column; z-index: 300; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.5); transform: scale(0.95) translateY(10px); opacity: 0; pointer-events: none; transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.chat-popup.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
-.chat-head { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface2); }
-.chat-head-left { display: flex; align-items: center; gap: 9px; }
-.chat-av { width: 30px; height: 30px; border-radius: 7px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; }
-.chat-title { font-size: 13px; font-weight: 500; }
-.chat-sub { font-size: 10px; color: var(--text3); }
-.chat-x { background: transparent; border: none; cursor: pointer; color: var(--text3); font-size: 16px; padding: 4px; font-family: var(--font); transition: color 0.12s; }
-.chat-x:hover { color: var(--text); }
-.chat-msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
-.chat-msgs::-webkit-scrollbar { width: 3px; }
-.chat-msgs::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.msg { display: flex; gap: 7px; animation: fadeUp 0.18s ease; }
-.msg.user { flex-direction: row-reverse; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-.msg-av { width: 24px; height: 24px; border-radius: 5px; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-end; }
-.msg-av.bot { background: var(--red); color: white; }
-.msg-av.user { background: var(--surface3); color: var(--text2); border: 1px solid var(--border); }
-.msg-bubble { max-width: 272px; padding: 8px 11px; border-radius: 9px; font-size: 12px; line-height: 1.6; }
-.msg.bot .msg-bubble { background: var(--surface2); border: 1px solid var(--border); border-bottom-left-radius: 3px; color: var(--text); }
-.msg.user .msg-bubble { background: var(--red); color: white; border-bottom-right-radius: 3px; }
-.msg-bubble p { margin-bottom: 5px; }
-.msg-bubble p:last-child { margin-bottom: 0; }
-.msg-bubble strong { font-weight: 600; }
-.chat-typing { display: flex; gap: 3px; align-items: center; padding: 2px 0; }
-.chat-typing span { width: 4px; height: 4px; background: var(--text3); border-radius: 50%; animation: bounce 1.2s infinite; }
-.chat-typing span:nth-child(2) { animation-delay: 0.2s; }
-.chat-typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-3px); } }
-.chat-sources { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; padding-top: 5px; border-top: 1px solid var(--border); }
-.chat-src { font-size: 9px; color: var(--text3); padding: 2px 5px; background: var(--surface3); border-radius: 3px; }
-.chat-sugg { padding: 7px 10px; border-top: 1px solid var(--border); display: flex; gap: 5px; flex-wrap: wrap; }
-.sugg-btn { padding: 3px 9px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; font-size: 10px; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.12s; white-space: nowrap; }
-.sugg-btn:hover { border-color: var(--border2); color: var(--text); }
-.chat-input-area { padding: 9px 10px; border-top: 1px solid var(--border); }
-.chat-input-wrap { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 6px 9px; transition: border-color 0.12s; }
-.chat-input-wrap:focus-within { border-color: var(--red); }
-.chat-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 12px; }
-.chat-input::placeholder { color: var(--text3); }
-.chat-send { width: 24px; height: 24px; background: var(--red); border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.12s; }
-.chat-send:hover { background: var(--red-dark); }
-.chat-send:disabled { background: var(--surface3); cursor: not-allowed; }
-.chat-send svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2; }
 </style>
 </head>
 <body>
@@ -189,8 +162,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
   <div class="proto-badge">Prototype</div>
   <div class="header-search">
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <span>Search...</span>
-    <kbd>⌘K</kbd>
+    <input id="searchInput" class="search-input" placeholder="Search Confluence..." onkeydown="if(event.key==='Enter')runSearch()" />
+    <kbd>↵</kbd>
   </div>
 </header>
 
@@ -205,72 +178,54 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
       <div class="sidebar-divider"></div>
       <div class="sidebar-label">Verticals</div>
       <button class="nav-item" id="nav-bingo" onclick="toggleVertical('bingo', this)">
-        <div class="nav-dot" style="background:#E05070"></div>
-        Bingo
+        <div class="nav-dot" style="background:#E05070"></div>Bingo
         <svg class="nav-chevron" id="chev-bingo" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <div class="nav-children" id="children-bingo"></div>
-
       <button class="nav-item" id="nav-slots" onclick="toggleVertical('slots', this)">
-        <div class="nav-dot" style="background:#5b8dee"></div>
-        Slots
+        <div class="nav-dot" style="background:#5b8dee"></div>Slots
         <svg class="nav-chevron" id="chev-slots" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <div class="nav-children" id="children-slots"></div>
-
       <button class="nav-item" id="nav-live" onclick="toggleVertical('live', this)">
-        <div class="nav-dot" style="background:#22c55e"></div>
-        Live Casino
+        <div class="nav-dot" style="background:#22c55e"></div>Live Casino
         <svg class="nav-chevron" id="chev-live" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <div class="nav-children" id="children-live"></div>
-
       <button class="nav-item" id="nav-arcade" onclick="toggleVertical('arcade', this)">
-        <div class="nav-dot" style="background:#f59e0b"></div>
-        Arcade
+        <div class="nav-dot" style="background:#f59e0b"></div>Arcade
         <svg class="nav-chevron" id="chev-arcade" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <div class="nav-children" id="children-arcade"></div>
-
       <button class="nav-item" id="nav-jackpots" onclick="toggleVertical('jackpots', this)">
-        <div class="nav-dot" style="background:#a78bfa"></div>
-        Jackpots
+        <div class="nav-dot" style="background:#a78bfa"></div>Jackpots
         <svg class="nav-chevron" id="chev-jackpots" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <div class="nav-children" id="children-jackpots"></div>
-
       <button class="nav-item" id="nav-multiplayer" onclick="toggleVertical('multiplayer', this)">
-        <div class="nav-dot" style="background:#34d399"></div>
-        Multiplayer
+        <div class="nav-dot" style="background:#34d399"></div>Multiplayer
         <svg class="nav-chevron" id="chev-multiplayer" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
       <div class="nav-children" id="children-multiplayer"></div>
-
       <div class="sidebar-divider"></div>
       <div class="sidebar-label">Quick Links</div>
       <button class="nav-item" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        KB Confluence Page
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>KB Confluence Page
       </button>
       <button class="nav-item" onclick="window.open('https://neon-mousse-b10a92.netlify.app/')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        Game IQ
+        <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Game IQ
       </button>
       <button class="nav-item" onclick="window.open('https://supporthub.cloud.ballys.com/helpcenter/pt/')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        People Playbook
+        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>People Playbook
       </button>
       <button class="nav-item" onclick="window.open('https://app.contentful.com')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Contentful
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Contentful
       </button>
     </div>
   </nav>
 
   <main class="main" id="mainArea">
     <div class="content-area" id="contentArea">
-
-      <!-- OVERVIEW -->
       <div id="overviewView">
         <div class="breadcrumb">
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
@@ -289,7 +244,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
           <button class="cf-open-btn" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">Open in Confluence ↗</button>
         </div>
         <div class="overview-body">
-          <p>Plain English guides on our games, product types, and mechanics — written for anyone in the business, whether you're a new starter or an experienced team member needing a quick reference.</p>
+          <p>Plain English guides on our games, product types, and mechanics — written for anyone in the business.</p>
           <h2>What's covered</h2>
           <ul>
             <li>Slots, Live Casino, Arcade, Jackpots, Bingo, and Multiplayer verticals</li>
@@ -297,7 +252,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
             <li>Product type explainers in plain English</li>
           </ul>
           <h2>How it works</h2>
-          <p>Content is owned by vertical leads across the product team. Documentation is pulled live from <a href="https://confluence.cloud.ballys.com" target="_blank">Confluence</a>. Browse by vertical or ask the AI assistant a question.</p>
+          <p>Content is pulled live from <a href="https://confluence.cloud.ballys.com" target="_blank">Confluence</a>. Browse by vertical or use the search bar to find any page across Confluence.</p>
           <h2>Team</h2>
           <div class="team-grid">
             <div class="team-card"><div class="name">Dez Pazmany</div><div class="role">Head of Product Operations</div></div>
@@ -310,13 +265,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
           </div>
         </div>
       </div>
-
-      <!-- VERTICAL / PAGE VIEW -->
       <div id="pageView" style="display:none"></div>
-
     </div>
-
-    <!-- TILES BAR -->
     <div class="tiles-bar" id="tilesBar" style="display:none">
       <div class="tiles-bar-header">
         <span class="tiles-bar-label">Related pages</span>
@@ -325,41 +275,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
       <div class="tiles-row" id="tilesRow"></div>
     </div>
   </main>
-</div>
-
-<!-- CHAT -->
-<button class="chat-trigger" onclick="toggleChat()">
-  <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-  <div class="chat-notif">AI</div>
-</button>
-<div class="chat-popup" id="chatPopup">
-  <div class="chat-head">
-    <div class="chat-head-left">
-      <div class="chat-av">PK</div>
-      <div><div class="chat-title">Product IQ</div><div class="chat-sub">Ask anything about our games</div></div>
-    </div>
-    <button class="chat-x" onclick="toggleChat()">✕</button>
-  </div>
-  <div class="chat-msgs" id="chatMsgs">
-    <div class="msg bot">
-      <div class="msg-av bot">PK</div>
-      <div class="msg-bubble"><p>Hi! Ask me about any of our games or product types — I'll answer based on what's in our knowledge base.</p></div>
-    </div>
-  </div>
-  <div class="chat-sugg" id="chatSugg">
-    <button class="sugg-btn" onclick="chatAsk('What is a Megaways slot?')">Megaways?</button>
-    <button class="sugg-btn" onclick="chatAsk('How does Jackpot Blast work?')">Jackpot Blast?</button>
-    <button class="sugg-btn" onclick="chatAsk('What is Slotmasters?')">Slotmasters?</button>
-    <button class="sugg-btn" onclick="chatAsk('What is 99 Royale?')">99 Royale?</button>
-  </div>
-  <div class="chat-input-area">
-    <div class="chat-input-wrap">
-      <input class="chat-input" id="chatInput" placeholder="Ask about any game or mechanic..." onkeydown="if(event.key==='Enter')chatSend()">
-      <button class="chat-send" id="chatSendBtn" onclick="chatSend()">
-        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -372,43 +287,17 @@ const VERTICALS = {
   multiplayer: { label: 'Multiplayer', color: '#34d399', cfId: '129695823', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129695823/Multiplayer' }
 };
 
-// Children loaded dynamically from Confluence
-const childrenCache = {};
-
-const KB = {
-  megaways: 'Megaways is a slot mechanic by Big Time Gaming. Instead of fixed paylines, the number of symbols on each reel changes every spin — up to 117,649 ways to win. Most Megaways slots have cascading reels too.',
-  hold_win: 'Hold & Win triggers when a set number of special symbols land. Those symbols lock while the reels respin. 3 respins reset every time a new symbol lands.',
-  scatter: 'A scatter pays based on how many appear anywhere on the reels — no paylines needed. Landing 3+ usually triggers free spins or a bonus.',
-  wild: 'A wild substitutes for most other symbols to complete winning combinations. Variants: expanding, sticky, walking wilds.',
-  rtp: 'RTP = Return to Player. The theoretical % a game pays back over millions of spins. 96% means £96 back per £100 wagered on average.',
-  volatility: 'Volatility describes payout patterns. High = infrequent but big wins. Low = frequent but smaller wins.',
-  jackpot_blast: "Jackpot Blast is Bally's own jackpot network. A portion of every bet feeds 4 prize pools: Mini, Midi, Major, Mega. Triggered randomly — any player at any bet size is eligible.",
-  slotmasters: "Slotmasters is Bally's multiplayer slot tournament product. Players enter (free or paid) and compete on the same base game simultaneously. The leaderboard at the end determines prizes.",
-  ninety_nine_royale: "99 Royale is a Bally's battle royale casino game. 99 players enter at once and compete using slot mechanics. Players are progressively eliminated. Last player standing wins the prize pool.",
-  adaptive_lobbies: 'Adaptive lobbies dynamically reorder the game lobby for each player based on their behaviour. Machine learning determines what each player sees — a personalised lobby rather than one standard view.',
-  bingo: '90-ball bingo is the standard UK bingo format. Cards have 9 columns and 3 rows with 15 numbers. Three prize tiers: One Line, Two Lines, Full House.',
-  cascading: 'Cascading reels (also called Avalanche or Tumbling) remove winning symbols and drop new ones from above — allowing multiple wins from a single spin.',
-  fishin_frenzy: "Fishin' Frenzy is a Blueprint Gaming slot featuring a fishing theme with the Hold & Win bonus. Fish symbols trigger respins with multipliers. One of the most consistently played UK slots on our platform.",
-  bonanza: "Bonanza Megaways by Big Time Gaming is the original Megaways slot. Features cascading reels, up to 117,649 ways to win, and an unlimited free spins multiplier. Available on JPJ, DBB, VGN and MCA.",
-  lightning_roulette: "XXXtreme Lightning Roulette by Evolution is a live roulette variant with multipliers up to 2000x on lucky numbers before each spin. Chain Lightning can add extra multiplied numbers. Available on JPJ, VGN and MCA."
-};
-
 let currentVertical = null;
 let currentPageCfId = null;
-let chatOpen = false;
-let chatLoading = false;
-let chatHistory = [];
 let cfCache = {};
+let childrenCache = {};
 let expandedVerticals = {};
+let searchLoading = false;
 
 function setActiveNav(key) {
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  if (key) {
-    const el = document.getElementById('nav-' + key);
-    if (el) el.classList.add('active');
-  } else {
-    document.getElementById('overviewBtn').classList.add('active');
-  }
+  if (key) { const el = document.getElementById('nav-' + key); if (el) el.classList.add('active'); }
+  else { document.getElementById('overviewBtn').classList.add('active'); }
 }
 
 function setActiveChild(key, cfId) {
@@ -417,26 +306,22 @@ function setActiveChild(key, cfId) {
   if (el) el.classList.add('active');
 }
 
-function showTilesBar(related, color) {
+function showTilesBar(children, color) {
   const bar = document.getElementById('tilesBar');
   const row = document.getElementById('tilesRow');
   const count = document.getElementById('tilesCount');
-  if (!related || !related.length) { bar.style.display = 'none'; return; }
+  if (!children || !children.length) { bar.style.display = 'none'; return; }
   bar.style.display = 'block';
-  count.textContent = related.length;
-  row.innerHTML = related.map(r => `
-    <button class="tile" style="--accent:${color}" onclick="showRelatedPage('${r.cfId}','${r.name}','${r.cfUrl}')">
-      <div class="tile-name">${r.name}</div>
-      <div class="tile-desc">${r.desc}</div>
-      <div class="tile-footer">
-        <span>Confluence</span><span>→</span>
-      </div>
+  count.textContent = children.length;
+  row.innerHTML = children.map(c => `
+    <button class="tile" style="--accent:${color}" onclick="showRelatedPage('${c.id}','${c.title.replace(/'/g,"\\'")}','${c.url}')">
+      <div class="tile-name">${c.title}</div>
+      <div class="tile-desc"></div>
+      <div class="tile-footer"><span>Confluence</span><span>→</span></div>
     </button>`).join('');
 }
 
-function hideTilesBar() {
-  document.getElementById('tilesBar').style.display = 'none';
-}
+function hideTilesBar() { document.getElementById('tilesBar').style.display = 'none'; }
 
 async function fetchCF(pageId) {
   if (cfCache[pageId]) return cfCache[pageId];
@@ -446,14 +331,11 @@ async function fetchCF(pageId) {
   const html = data.body?.view?.value || data.body?.storage?.value || '';
   const cleaned = html
     .replace(/<ac:structured-macro[\s\S]*?<\/ac:structured-macro>/gi, '')
-    .replace(/<ac:[^>]*\/?>/gi, '')
-    .replace(/<ri:[^>]*\/?>/gi, '')
-    .replace(/style="[^"]*"/gi, '')
-    .replace(/class="[^"]*"/gi, '')
+    .replace(/<ac:[^>]*\/?>/gi, '').replace(/<ri:[^>]*\/?>/gi, '')
+    .replace(/style="[^"]*"/gi, '').replace(/class="[^"]*"/gi, '')
     .replace(/local-id="[^"]*"/gi, '')
     .replace(/<span>/gi, '').replace(/<\/span>/gi, '')
-    .replace(/<p>\s*<\/p>/gi, '')
-    .trim();
+    .replace(/<p>\s*<\/p>/gi, '').trim();
   cfCache[pageId] = cleaned;
   return cleaned;
 }
@@ -461,8 +343,7 @@ async function fetchCF(pageId) {
 function showOverview(el) {
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  currentVertical = null;
-  currentPageCfId = null;
+  currentVertical = null; currentPageCfId = null;
   document.getElementById('overviewView').style.display = 'block';
   document.getElementById('pageView').style.display = 'none';
   hideTilesBar();
@@ -470,8 +351,7 @@ function showOverview(el) {
 }
 
 function toggleVertical(key, el) {
-  const wasExpanded = expandedVerticals[key];
-  if (!wasExpanded) {
+  if (!expandedVerticals[key]) {
     expandedVerticals[key] = true;
     document.getElementById('chev-' + key).classList.add('open');
     buildChildren(key);
@@ -482,10 +362,7 @@ function toggleVertical(key, el) {
 async function buildChildren(key) {
   const v = VERTICALS[key];
   const container = document.getElementById('children-' + key);
-  if (childrenCache[key]) {
-    renderChildren(key, childrenCache[key]);
-    return;
-  }
+  if (childrenCache[key]) { renderChildren(key, childrenCache[key]); return; }
   container.innerHTML = '<div style="padding:4px 16px 4px 30px;font-size:11px;color:var(--text3)">Loading...</div>';
   try {
     const res = await fetch(`/confluence?id=${v.cfId}&children=true`);
@@ -501,17 +378,15 @@ function renderChildren(key, children) {
   const container = document.getElementById('children-' + key);
   if (!children.length) { container.innerHTML = ''; return; }
   container.innerHTML = children.map(c => `
-    <button class="nav-child" data-cfid="${c.id}" onclick="showRelatedPage('${c.id}','${c.title}','${c.url}','${key}')">
-      <div class="nav-child-dot" style="background:${v.color}"></div>
-      ${c.title}
+    <button class="nav-child" data-cfid="${c.id}" onclick="showRelatedPage('${c.id}','${c.title.replace(/'/g,"\\'")}','${c.url}','${key}')">
+      <div class="nav-child-dot" style="background:${v.color}"></div>${c.title}
     </button>`).join('');
 }
 
 async function showVertical(key, el) {
   setActiveNav(key);
   document.querySelectorAll('.nav-child').forEach(c => c.classList.remove('active'));
-  currentVertical = key;
-  currentPageCfId = VERTICALS[key].cfId;
+  currentVertical = key; currentPageCfId = VERTICALS[key].cfId;
   const v = VERTICALS[key];
   document.getElementById('overviewView').style.display = 'none';
   const pv = document.getElementById('pageView');
@@ -526,28 +401,21 @@ async function showVertical(key, el) {
       <span style="color:${v.color}">${v.label}</span>
     </div>
     <div class="page-title" style="color:${v.color}">${v.label}</div>
-    <div class="page-meta">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Confluence · ${v.label} space
-    </div>
+    <div class="page-meta"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence · ${v.label} space</div>
     <div class="cf-banner">
-      <div class="cf-banner-left">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Live from Confluence — always up to date
-      </div>
+      <div class="cf-banner-left"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live from Confluence — always up to date</div>
       <button class="cf-open-btn" onclick="window.open('${v.cfUrl}','_blank')">Open in Confluence ↗</button>
     </div>
     <div id="vcontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>`;
 
-  // Tiles bar populated once children load
   if (childrenCache[key]) {
-    showTilesBar(childrenCache[key].map(c => ({name:c.title, desc:'', cfId:c.id, cfUrl:c.url})), v.color);
+    showTilesBar(childrenCache[key], v.color);
   } else {
     hideTilesBar();
     fetch(`/confluence?id=${v.cfId}&children=true`).then(r=>r.json()).then(d=>{
       childrenCache[key] = d.results||[];
       renderChildren(key, childrenCache[key]);
-      showTilesBar(childrenCache[key].map(c=>({name:c.title,desc:'',cfId:c.id,cfUrl:c.url})), v.color);
+      showTilesBar(childrenCache[key], v.color);
     }).catch(()=>{});
   }
 
@@ -568,7 +436,6 @@ async function showRelatedPage(cfId, name, cfUrl, verticalKey) {
   const key = verticalKey || currentVertical;
   const v = key ? VERTICALS[key] : null;
   currentPageCfId = cfId;
-
   if (key) {
     setActiveNav(key);
     setActiveChild(key, cfId);
@@ -579,33 +446,25 @@ async function showRelatedPage(cfId, name, cfUrl, verticalKey) {
       setTimeout(() => setActiveChild(key, cfId), 50);
     }
   }
-
   document.getElementById('overviewView').style.display = 'none';
   const pv = document.getElementById('pageView');
   pv.style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
 
   const cachedChildren = key ? (childrenCache[key] || []) : [];
-  showTilesBar(cachedChildren.filter(c => c.id !== cfId).map(c=>({name:c.title,desc:'',cfId:c.id,cfUrl:c.url})), v ? v.color : '#C8102E');
+  showTilesBar(cachedChildren.filter(c => c.id !== cfId), v ? v.color : '#C8102E');
 
   pv.innerHTML = `
     <div class="breadcrumb">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
       <span onclick="showOverview(document.getElementById('overviewBtn'))">Overview</span>
-      ${v ? `<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg><span onclick="showVertical('${key}', document.getElementById('nav-${key}'))" style="color:${v.color};cursor:pointer">${v.label}</span>` : ''}
-      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-      ${name}
+      ${v ? `<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg><span onclick="showVertical('${key}',document.getElementById('nav-${key}'))" style="color:${v.color};cursor:pointer">${v.label}</span>` : ''}
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>${name}
     </div>
     <div class="page-title">${name}</div>
-    <div class="page-meta">
-      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-      Confluence
-    </div>
+    <div class="page-meta"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence</div>
     <div class="cf-banner">
-      <div class="cf-banner-left">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Live from Confluence — always up to date
-      </div>
+      <div class="cf-banner-left"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live from Confluence — always up to date</div>
       <button class="cf-open-btn" onclick="window.open('${cfUrl}','_blank')">Open in Confluence ↗</button>
     </div>
     <div id="rcontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>`;
@@ -623,192 +482,70 @@ async function showRelatedPage(cfId, name, cfUrl, verticalKey) {
   }
 }
 
-// ── CHAT ──────────────────────────────────────────────────────────────────────
-function toggleChat() {
-  chatOpen = !chatOpen;
-  document.getElementById('chatPopup').classList.toggle('open', chatOpen);
-  if (chatOpen) document.getElementById('chatInput').focus();
-}
-
-function chatAsk(q) {
-  document.getElementById('chatInput').value = q;
-  document.getElementById('chatSugg').style.display = 'none';
-  chatSend();
-}
-
-function buildContext(query) {
-  const q = query.toLowerCase();
-  const ctx = [], sources = [];
-  const kbMap = {
-    'megaway': 'megaways', 'hold': 'hold_win', 'scatter': 'scatter', 'wild': 'wild',
-    'rtp': 'rtp', 'return to player': 'rtp', 'volatil': 'volatility',
-    'jackpot blast': 'jackpot_blast', 'slotmaster': 'slotmasters',
-    '99 royale': 'ninety_nine_royale', 'adaptive': 'adaptive_lobbies',
-    'lobby': 'adaptive_lobbies',
-    'bingo': 'bingo', 'ball type': 'bingo', 'ball format': 'bingo',
-    '90 ball': 'bingo', '80 ball': 'bingo', '75 ball': 'bingo', '52 ball': 'bingo',
-    'snap bingo': 'bingo', 'how does bingo': 'bingo', 'bingo format': 'bingo',
-    'cascad': 'cascading',
-    'fishin': 'fishin_frenzy', 'bonanza': 'bonanza', 'lightning roulette': 'lightning_roulette',
-    'xxxtre': 'lightning_roulette'
-  };
-  Object.entries(kbMap).forEach(([key, kbKey]) => {
-    if (q.includes(key) && KB[kbKey]) {
-      ctx.push(`KNOWLEDGE: ${KB[kbKey]}`);
-      sources.push('Product Knowledge Base');
-    }
-  });
-  if (currentVertical && cfCache[VERTICALS[currentVertical].cfId]) {
-    const text = cfCache[VERTICALS[currentVertical].cfId].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 1500);
-    ctx.push(`CONFLUENCE CONTENT (${VERTICALS[currentVertical].label}): ${text}`);
-    sources.push(`Confluence: ${VERTICALS[currentVertical].label}`);
-  }
-  return { context: ctx.join('\n'), sources: [...new Set(sources)] };
-}
-
-function addMsg(role, html, sources) {
-  const el = document.createElement('div');
-  el.className = 'msg ' + role;
-  const initials = role === 'user' ? 'ND' : 'PK';
-  let srcHtml = '';
-  if (sources && sources.length && role === 'bot') {
-    srcHtml = `<div class="chat-sources">${sources.map(s => `<span class="chat-src">${s}</span>`).join('')}</div>`;
-  }
-  el.innerHTML = `<div class="msg-av ${role}">${initials}</div><div class="msg-bubble">${html}${srcHtml}</div>`;
-  document.getElementById('chatMsgs').appendChild(el);
-  document.getElementById('chatMsgs').scrollTop = 99999;
-}
-
-function addTyping() {
-  const el = document.createElement('div');
-  el.className = 'msg bot'; el.id = 'typing';
-  el.innerHTML = `<div class="msg-av bot">PK</div><div class="msg-bubble"><div class="chat-typing"><span></span><span></span><span></span></div></div>`;
-  document.getElementById('chatMsgs').appendChild(el);
-  document.getElementById('chatMsgs').scrollTop = 99999;
-}
-
-function removeTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
-
-async function searchConfluence(query) {
-  try {
-    const res = await fetch(`/confluence-search?q=${encodeURIComponent(query)}`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.results || [];
-  } catch(e) { return []; }
-}
-
-async function chatSend() {
-  const input = document.getElementById('chatInput');
+// ── SEARCH ────────────────────────────────────────────────────────────────────
+async function runSearch() {
+  const input = document.getElementById('searchInput');
   const q = input.value.trim();
-  if (!q || chatLoading) return;
-  input.value = '';
-  chatLoading = true;
-  document.getElementById('chatSendBtn').disabled = true;
-  chatHistory.push({ role: 'user', content: q });
-  addMsg('user', q);
-  addTyping();
+  if (!q || searchLoading) return;
+  searchLoading = true;
 
-  const { context: localContext, sources: localSources } = buildContext(q);
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-child').forEach(c => c.classList.remove('active'));
+  currentVertical = null; currentPageCfId = null;
+  hideTilesBar();
 
-  const cfResults = await searchConfluence(q);
-  let cfContext = '';
-  const cfSources = [];
-  if (cfResults.length) {
-    // Score results by title relevance to the query keywords
-    const queryWords = q.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-    const scoreResult = (r) => {
-      const title = (r.title || '').toLowerCase();
-      const space = (r.space || '').toLowerCase();
-      let score = 0;
-      queryWords.forEach(w => { if (title.includes(w)) score += 3; });
-      if (space.includes('bingo') || space.includes('multiplayer') || space.includes('engage')) score += 2;
-      if (space.includes('gops') || space.includes('game ops')) score += 1;
-      // Penalise noise pages
-      if (/^do not use/i.test(r.title)) score -= 10;
-      if (/roadmap/i.test(r.title)) score -= 5;
-      if (/retro/i.test(r.title)) score -= 5;
-      if (/newsround/i.test(r.title)) score -= 5;
-      if (/test run/i.test(r.title)) score -= 5;
-      return score;
-    };
-    const sorted = [...cfResults].sort((a, b) => scoreResult(b) - scoreResult(a));
+  document.getElementById('overviewView').style.display = 'none';
+  const pv = document.getElementById('pageView');
+  pv.style.display = 'block';
+  document.getElementById('contentArea').scrollTop = 0;
 
-    // Fetch full content of top 3 results in parallel
-    const topResults = sorted.slice(0, 3);
-    const pageContents = await Promise.all(topResults.map(async (r) => {
-      try {
-        const pageIdMatch = r.url.match(/pages\/([0-9]+)/);
-        if (!pageIdMatch) return { title: r.title, content: '' };
-        const pageId = pageIdMatch[1];
-        let rawHtml = '';
-        if (cfCache[pageId]) {
-          rawHtml = cfCache[pageId];
-        } else {
-          const pageRes = await fetch(`/confluence?id=${pageId}`);
-          if (pageRes.ok) {
-            const pageData = await pageRes.json();
-            rawHtml = pageData.body?.view?.value || pageData.body?.storage?.value || '';
-            cfCache[pageId] = rawHtml;
-          }
-        }
-        const text = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 2000);
-        return { title: r.title, content: text };
-      } catch(e) { return { title: r.title, content: '' }; }
-    }));
-
-    const fullContents = pageContents.filter(p => p.content.length > 50);
-
-    cfContext = 'CONFLUENCE SEARCH RESULTS:\n' + cfResults.map(r =>
-      `Page: ${r.title} (${r.space})\nExcerpt: ${r.excerpt}\nURL: ${r.url}`
-    ).join('\n\n');
-
-    if (fullContents.length) {
-      cfContext += '\n\nFULL PAGE CONTENT:\n' + fullContents.map(p =>
-        `--- ${p.title} ---\n${p.content}`
-      ).join('\n\n');
-    }
-
-    cfResults.forEach(r => cfSources.push(`Confluence: ${r.title}`));
-  }
-
-  const allContext = [localContext, cfContext].filter(Boolean).join('\n\n');
-  const allSources = [...new Set([...localSources, ...cfSources])];
-
-  const system = `You are Product IQ, the knowledge base assistant for Bally's iGaming product team.
-
-Your job is to answer questions about Bally's own products, games, and mechanics using the context below — which comes from our internal knowledge base and Confluence documentation.
-
-RULES:
-- Answer based on the context provided. Prioritise Confluence results for specific game/product questions.
-- If the answer is not in the context, say: "I don't have that information in the knowledge base yet — try browsing the relevant vertical or searching Confluence directly."
-- Never invent game names, mechanics, or features not in the context.
-- Keep answers concise and in plain English.
-- Do not reference competitor products or external platforms.
-
-Context:
-${allContext || 'No context found for this query.'}`;
+  pv.innerHTML = `
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search results
+    </div>
+    <div class="search-loading"><div class="spinner"></div>Searching Confluence...</div>`;
 
   try {
-    const res = await fetch('/claude', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, system, messages: chatHistory.slice(-6) })
-    });
-    const data = await res.json();
-    const reply = data.content?.find(b => b.type === 'text')?.text || 'Sorry, something went wrong.';
-    removeTyping();
-    const html = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>').replace(/^/, '<p>').replace(/$/, '</p>');
-    chatHistory.push({ role: 'assistant', content: reply });
-    addMsg('bot', html, allSources);
+    const res = await fetch(`/confluence-search?q=${encodeURIComponent(q)}`);
+    const data = res.ok ? await res.json() : { results: [] };
+    const results = data.results || [];
+
+    pv.innerHTML = `
+      <div class="breadcrumb">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search results
+      </div>
+      <div class="search-results-header">
+        <div class="search-results-title">Results for "${q}"</div>
+        <div class="search-results-count">${results.length} found</div>
+      </div>
+      ${results.length ? `
+      <div class="search-results-grid">
+        ${results.map(r => {
+          const pageIdMatch = r.url.match(/pages\/([0-9]+)/);
+          const pageId = pageIdMatch ? pageIdMatch[1] : null;
+          const cleanExcerpt = (r.excerpt || '').replace(/[\u0000-\u001F]/g, ' ').trim();
+          const safeTitle = r.title.replace(/'/g, "\\'");
+          const safeUrl = r.url;
+          return `<button class="search-tile" onclick="showRelatedPage('${pageId}','${safeTitle}','${safeUrl}')">
+            <div class="search-tile-name">${r.title}</div>
+            <div class="search-tile-excerpt">${cleanExcerpt || 'No preview available'}</div>
+            <div class="search-tile-footer">
+              <div class="search-tile-source">
+                <span class="source-badge badge-confluence">Confluence</span>
+                <span class="search-tile-space">${r.space}</span>
+              </div>
+              <span class="search-tile-arrow">→</span>
+            </div>
+          </button>`;
+        }).join('')}
+      </div>` : `<div class="search-empty">No results found for "${q}"<br><br>Try different keywords or browse a vertical from the sidebar.</div>`}`;
   } catch(e) {
-    removeTyping();
-    addMsg('bot', '<p>Could not reach the API.</p>', []);
+    pv.innerHTML = `<div class="content-error">Search failed. Please try again.</div>`;
   }
 
-  chatLoading = false;
-  document.getElementById('chatSendBtn').disabled = false;
-  document.getElementById('chatInput').focus();
+  searchLoading = false;
 }
 </script>
 </body>
