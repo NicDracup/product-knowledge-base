@@ -112,7 +112,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .search-results-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .search-results-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 .search-results-count { font-size: 12px; color: var(--text3); padding: 2px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; }
-.search-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.search-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 220px; gap: 12px; }
 .search-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; cursor: pointer; transition: all 0.12s; text-align: left; width: 100%; font-family: var(--font); display: flex; flex-direction: column; height: 220px; }
 .search-tile:hover { border-color: var(--border2); background: var(--surface2); }
 .search-tile-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
@@ -317,6 +317,7 @@ function createTreeNode(page, depth, inheritColor) {
         childContainer.innerHTML = '';
         if (kids.length) {
           toggle.style.opacity = '1';
+          toggle.dataset.hasChildren = '1';
           kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor)));
         } else {
           toggle.style.opacity = '0.3';
@@ -330,7 +331,7 @@ function createTreeNode(page, depth, inheritColor) {
   // Clicking anywhere on the row loads the page AND toggles children
   row.onclick = async () => {
     loadPage(page);
-    if (toggle.style.opacity !== '0.3') await toggleOpen();
+    if (toggle.dataset.hasChildren === '1') await toggleOpen();
   };
 
   toggle.onclick = async (e) => {
@@ -345,6 +346,7 @@ function createTreeNode(page, depth, inheritColor) {
     fetchChildren(page.id).then(kids => {
       if (kids.length) {
         toggle.style.opacity = '1';
+        toggle.dataset.hasChildren = '1';
         kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor)));
         childContainer.dataset.loaded = '1';
       }
