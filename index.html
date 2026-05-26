@@ -113,11 +113,11 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .search-results-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 .search-results-count { font-size: 12px; color: var(--text3); padding: 2px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; }
 .search-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.search-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; cursor: pointer; transition: all 0.12s; text-align: left; width: 100%; font-family: var(--font); }
+.search-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; cursor: pointer; transition: all 0.12s; text-align: left; width: 100%; font-family: var(--font); display: flex; flex-direction: column; height: 220px; }
 .search-tile:hover { border-color: var(--border2); background: var(--surface2); }
 .search-tile-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
-.search-tile-excerpt { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
-.search-tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border); }
+.search-tile-excerpt { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+.search-tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border); flex-shrink: 0; margin-top: auto; }
 .search-tile-source { display: flex; align-items: center; gap: 6px; }
 .source-badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 3px; }
 .badge-confluence { background: rgba(0,82,204,0.15); color: #5b8dee; }
@@ -278,7 +278,13 @@ function createTreeNode(page, depth) {
 
   const btn = document.createElement('button');
   btn.className = 'tree-node-btn';
-  btn.innerHTML = `<div class="tree-node-dot"></div><span class="tree-node-label">${page.title}</span>`;
+  const dotColors = {
+    'bingo': '#E05070', 'slots': '#5b8dee', 'live casino': '#22c55e',
+    'arcade': '#f59e0b', 'jackpot mechanics': '#a78bfa', 'jackpots': '#a78bfa',
+    'multiplayer': '#34d399'
+  };
+  const dotColor = dotColors[page.title.toLowerCase()] || '#888888';
+  btn.innerHTML = `<div class="tree-node-dot" style="background:${dotColor}"></div><span class="tree-node-label">${page.title}</span>`;
   btn.onclick = () => loadPage(page);
 
   const toggle = document.createElement('button');
@@ -299,10 +305,16 @@ function createTreeNode(page, depth) {
       childContainer.style.display = 'none';
       toggle.classList.remove('open');
     } else {
-      childContainer.style.display = 'block';
-      toggle.classList.add('open');
-      if (!childContainer.dataset.loaded) {
+      if (childContainer.dataset.loaded) {
+        // Already loaded — just show
+        if (childContainer.children.length) {
+          childContainer.style.display = 'block';
+          toggle.classList.add('open');
+        }
+      } else {
         childContainer.innerHTML = '<div class="sidebar-loading" style="padding:4px 0 4px 8px">Loading...</div>';
+        childContainer.style.display = 'block';
+        toggle.classList.add('open');
         const kids = await fetchChildren(page.id);
         childContainer.dataset.loaded = '1';
         childContainer.innerHTML = '';
