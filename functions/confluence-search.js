@@ -13,20 +13,20 @@ export async function onRequest(context) {
     const headers = { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' };
     const base = 'https://ballysgroup.atlassian.net/wiki/rest/api/search';
 
-    // Split query into meaningful keywords (3+ chars, no common words)
+    // Split query into meaningful keywords (3+ chars, no stop words)
     const stopWords = new Set(['the','and','are','for','is','in','it','of','to','what','how','does','do','a','an','be','was','with','that','this','have','has','from','on','at','by','or','but','not','can','all','there','which','when','where','who','will','about','get']);
     const keywords = [...new Set(
-      query.toLowerCase()
-        .split(/\s+/)
-        .filter(w => w.length >= 3 && !stopWords.has(w))
+      query.toLowerCase().split(/\s+/).filter(w => w.length >= 3 && !stopWords.has(w))
     )];
 
-    // Always search the full phrase too
-    const searches = [query, ...keywords].filter((v, i, a) => a.indexOf(v) === i);
+    // Full phrase search first, then individual keywords
+    const phraseResults = await fetch(`${base}?cql=${encodeURIComponent(`text ~ "${query}" AND type = page`)}&limit=5`, { headers })
+      .then(r => r.ok ? r.json() : { results: [] })
+      .then(d => d.results || [])
+      .catch(() => []);
 
-    // Run all searches in parallel
-    const results = await Promise.all(
-      searches.map(term =>
+    const keywordResults = await Promise.all(
+      keywords.map(term =>
         fetch(`${base}?cql=${encodeURIComponent(`text ~ "${term}" AND type = page`)}&limit=5`, { headers })
           .then(r => r.ok ? r.json() : { results: [] })
           .then(d => d.results || [])
@@ -34,9 +34,9 @@ export async function onRequest(context) {
       )
     );
 
-    // Merge, deduplicate by page ID, return top 10
+    // Phrase results first, then keyword results — deduplicate by page ID
     const seen = new Set();
-    const merged = results.flat().filter(r => {
+    const merged = [...phraseResults, ...keywordResults.flat()].filter(r => {
       const id = r.content?.id;
       if (!id || seen.has(id)) return false;
       seen.add(id);
@@ -49,7 +49,6 @@ export async function onRequest(context) {
       spaceKey: r.content?._expandable?.container?.replace('/rest/api/space/', '') || ''
     }));
 
-    // Contentful can be added here later as a second source
     return new Response(JSON.stringify({ results: merged }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
