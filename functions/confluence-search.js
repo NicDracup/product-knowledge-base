@@ -10,43 +10,47 @@ export async function onRequest(context) {
     const email = context.env.CONFLUENCE_EMAIL;
     const token = context.env.CONFLUENCE_TOKEN;
     const auth = btoa(`${email}:${token}`);
-
     const headers = { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' };
     const base = 'https://ballysgroup.atlassian.net/wiki/rest/api/search';
 
-    const productCql = encodeURIComponent(`text ~ "${query}" AND type = page AND space.key in ("bingo","MUL","GOPS","ENGAGE","PO")`);
-    const fallbackCql = encodeURIComponent(`text ~ "${query}" AND type = page AND space.key not in ("bingo","MUL","GOPS","ENGAGE","PO","TCD","IE","ProInfDes")`);
+    // Split query into meaningful keywords (3+ chars, no common words)
+    const stopWords = new Set(['the','and','are','for','is','in','it','of','to','what','how','does','do','a','an','be','was','with','that','this','have','has','from','on','at','by','or','but','not','can','all','there','which','when','where','who','will','about','get']);
+    const keywords = [...new Set(
+      query.toLowerCase()
+        .split(/\s+/)
+        .filter(w => w.length >= 3 && !stopWords.has(w))
+    )];
 
-    const [productRes, fallbackRes] = await Promise.all([
-      fetch(`${base}?cql=${productCql}&limit=5`, { headers }),
-      fetch(`${base}?cql=${fallbackCql}&limit=5`, { headers })
-    ]);
+    // Always search the full phrase too
+    const searches = [query, ...keywords].filter((v, i, a) => a.indexOf(v) === i);
 
-    const productData = productRes.ok ? await productRes.json() : { results: [] };
-    const fallbackData = fallbackRes.ok ? await fallbackRes.json() : { results: [] };
+    // Run all searches in parallel
+    const results = await Promise.all(
+      searches.map(term =>
+        fetch(`${base}?cql=${encodeURIComponent(`text ~ "${term}" AND type = page`)}&limit=5`, { headers })
+          .then(r => r.ok ? r.json() : { results: [] })
+          .then(d => d.results || [])
+          .catch(() => [])
+      )
+    );
 
-    const combined = [
-      ...(productData.results || []),
-      ...(fallbackData.results || [])
-    ];
-
+    // Merge, deduplicate by page ID, return top 10
     const seen = new Set();
-    const results = combined
-      .filter(r => {
-        if (seen.has(r.content?.id)) return false;
-        seen.add(r.content?.id);
-        return true;
-      })
-      .slice(0, 10)
-      .map(r => ({
-        title: r.title,
-        excerpt: r.excerpt || '',
-        url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
-        space: r.resultGlobalContainer?.title || '',
-        spaceKey: r.content?._expandable?.container?.replace('/rest/api/space/', '') || ''
-      }));
+    const merged = results.flat().filter(r => {
+      const id = r.content?.id;
+      if (!id || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }).slice(0, 10).map(r => ({
+      title: r.title,
+      excerpt: r.excerpt || '',
+      url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
+      space: r.resultGlobalContainer?.title || '',
+      spaceKey: r.content?._expandable?.container?.replace('/rest/api/space/', '') || ''
+    }));
 
-    return new Response(JSON.stringify({ results }), {
+    // Contentful can be added here later as a second source
+    return new Response(JSON.stringify({ results: merged }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
 
