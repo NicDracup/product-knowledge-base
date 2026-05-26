@@ -372,30 +372,8 @@ const VERTICALS = {
   multiplayer: { label: 'Multiplayer', color: '#34d399', cfId: '129695823', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129695823/Multiplayer' }
 };
 
-const RELATED = {
-  bingo: [
-    { name: 'About Bingo', desc: 'Overview of the bingo product — how it works and what makes it unique.', cfId: '84934665', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/84934665/About+Bingo' },
-    { name: 'Bingo Games Library', desc: 'Full catalogue of all bingo games across ventures including room schedules and configurations.', cfId: '84805464', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/MUL/pages/84805464/Bingo+Games+library' },
-    { name: 'Bingo Product Onboarding', desc: 'Onboarding guide covering room types, game mechanics, jackpot structures and venture configurations.', cfId: '84806185', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/MUL/pages/84806185/Bingo+Product+Onboarding' }
-  ],
-  slots: [
-    { name: 'Blueprint', desc: 'Full game list for Blueprint Gaming — legal lines, game codes and approval status.', cfId: '80155583', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/GOPS/pages/80155583/Blueprint' },
-    { name: 'Pragmatic Play', desc: 'Full game list for Pragmatic Play — game codes, legal lines and approval status.', cfId: '80155649', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/GOPS/pages/80155649/Pragmatic+Play' }
-  ],
-  live: [
-    { name: 'Evolution', desc: 'Full game list for Evolution — game codes, legal lines and logged in/out status.', cfId: '80155579', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/GOPS/pages/80155579/Evolution' },
-    { name: 'Evolution Suppliers Quick Reference', desc: 'Frontline reference for every Evolution supplier — OP IDs, escalation contacts, account managers.', cfId: '91816635', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/GOPS/pages/91816635/Evolution+Suppliers+Frontline+Quick+Reference' }
-  ],
-  arcade: [
-    { name: 'Gaming Realms (Slingo)', desc: 'Full game list for Gaming Realms Slingo — game codes, legal lines and approval status.', cfId: '80155603', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/GOPS/pages/80155603/Gaming+Realms+Slingo' }
-  ],
-  jackpots: [
-    { name: 'Jackpot Blast Compliance Pack', desc: 'Compliance documentation for Jackpot Blast — rules, prize tiers and venture configurations.', cfId: '106400972', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/ENGAGE/pages/106400972/Jackpot+Blast+Compliance+Pack' }
-  ],
-  multiplayer: [
-    { name: 'Hungry Bear', desc: 'Multiplayer product documentation for Hungry Bear.', cfId: '110340722', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/IE/pages/110340722/Hungry+Bear' }
-  ]
-};
+// Children loaded dynamically from Confluence
+const childrenCache = {};
 
 const KB = {
   megaways: 'Megaways is a slot mechanic by Big Time Gaming. Instead of fixed paylines, the number of symbols on each reel changes every spin — up to 117,649 ways to win. Most Megaways slots have cascading reels too.',
@@ -501,15 +479,31 @@ function toggleVertical(key, el) {
   showVertical(key, el);
 }
 
-function buildChildren(key) {
-  const related = RELATED[key] || [];
+async function buildChildren(key) {
   const v = VERTICALS[key];
   const container = document.getElementById('children-' + key);
-  if (!related.length) { container.innerHTML = ''; return; }
-  container.innerHTML = related.map(r => `
-    <button class="nav-child" data-cfid="${r.cfId}" onclick="showRelatedPage('${r.cfId}','${r.name}','${r.cfUrl}','${key}')">
+  if (childrenCache[key]) {
+    renderChildren(key, childrenCache[key]);
+    return;
+  }
+  container.innerHTML = '<div style="padding:4px 16px 4px 30px;font-size:11px;color:var(--text3)">Loading...</div>';
+  try {
+    const res = await fetch(`/confluence?id=${v.cfId}&children=true`);
+    if (!res.ok) { container.innerHTML = ''; return; }
+    const data = await res.json();
+    childrenCache[key] = data.results || [];
+    renderChildren(key, childrenCache[key]);
+  } catch(e) { container.innerHTML = ''; }
+}
+
+function renderChildren(key, children) {
+  const v = VERTICALS[key];
+  const container = document.getElementById('children-' + key);
+  if (!children.length) { container.innerHTML = ''; return; }
+  container.innerHTML = children.map(c => `
+    <button class="nav-child" data-cfid="${c.id}" onclick="showRelatedPage('${c.id}','${c.title}','${c.url}','${key}')">
       <div class="nav-child-dot" style="background:${v.color}"></div>
-      ${r.name}
+      ${c.title}
     </button>`).join('');
 }
 
@@ -519,8 +513,6 @@ async function showVertical(key, el) {
   currentVertical = key;
   currentPageCfId = VERTICALS[key].cfId;
   const v = VERTICALS[key];
-  const related = RELATED[key] || [];
-
   document.getElementById('overviewView').style.display = 'none';
   const pv = document.getElementById('pageView');
   pv.style.display = 'block';
@@ -547,7 +539,17 @@ async function showVertical(key, el) {
     </div>
     <div id="vcontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>`;
 
-  showTilesBar(related, v.color);
+  // Tiles bar populated once children load
+  if (childrenCache[key]) {
+    showTilesBar(childrenCache[key].map(c => ({name:c.title, desc:'', cfId:c.id, cfUrl:c.url})), v.color);
+  } else {
+    hideTilesBar();
+    fetch(`/confluence?id=${v.cfId}&children=true`).then(r=>r.json()).then(d=>{
+      childrenCache[key] = d.results||[];
+      renderChildren(key, childrenCache[key]);
+      showTilesBar(childrenCache[key].map(c=>({name:c.title,desc:'',cfId:c.id,cfUrl:c.url})), v.color);
+    }).catch(()=>{});
+  }
 
   try {
     const html = await fetchCF(v.cfId);
@@ -583,8 +585,8 @@ async function showRelatedPage(cfId, name, cfUrl, verticalKey) {
   pv.style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
 
-  const related = key ? (RELATED[key] || []) : [];
-  showTilesBar(related.filter(r => r.cfId !== cfId), v ? v.color : '#C8102E');
+  const cachedChildren = key ? (childrenCache[key] || []) : [];
+  showTilesBar(cachedChildren.filter(c => c.id !== cfId).map(c=>({name:c.title,desc:'',cfId:c.id,cfUrl:c.url})), v ? v.color : '#C8102E');
 
   pv.innerHTML = `
     <div class="breadcrumb">
