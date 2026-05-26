@@ -137,6 +137,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: 220px;
   gap: 12px;
+  width: 100%;
 }
 .search-tile {
   background: var(--surface);
@@ -263,7 +264,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
           </div>
         </div>
       </div>
-      <div id="pageView" style="display:none"></div>
+      <div id="pageView" style="display:none;width:100%"></div>
     </div>
     <div class="tiles-bar" id="tilesBar" style="display:none">
       <div class="tiles-bar-header">
@@ -529,6 +530,7 @@ async function runSearch() {
   document.getElementById('overviewView').style.display = 'none';
   const pv = document.getElementById('pageView');
   pv.style.display = 'block';
+  pv.style.width = '100%';
   document.getElementById('contentArea').scrollTop = 0;
 
   pv.innerHTML = `
