@@ -11,43 +11,49 @@ export async function onRequest(context) {
     const token = context.env.CONFLUENCE_TOKEN;
     const auth = btoa(`${email}:${token}`);
 
-    // No ORDER BY — let Confluence rank by relevance
-    const cql = encodeURIComponent(`text ~ "${query}" AND type = page`);
+    const headers = { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' };
+    const base = 'https://ballysgroup.atlassian.net/wiki/rest/api/search';
 
-    const response = await fetch(
-      `https://ballysgroup.atlassian.net/wiki/rest/api/search?cql=${cql}&limit=10`,
-      { headers: { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' } }
-    );
+    const productCql = encodeURIComponent(`text ~ "${query}" AND type = page AND space.key in ("bingo","MUL","GOPS","ENGAGE","PO")`);
+    const fallbackCql = encodeURIComponent(`text ~ "${query}" AND type = page AND space.key not in ("bingo","MUL","GOPS","ENGAGE","PO","TCD","IE","ProInfDes")`);
 
-    if (!response.ok) {
-      return new Response(JSON.stringify({ error: `Search returned ${response.status}` }), { status: response.status, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
-    }
+    const [productRes, fallbackRes] = await Promise.all([
+      fetch(`${base}?cql=${productCql}&limit=5`, { headers }),
+      fetch(`${base}?cql=${fallbackCql}&limit=5`, { headers })
+    ]);
 
-    const data = await response.json();
+    const productData = productRes.ok ? await productRes.json() : { results: [] };
+    const fallbackData = fallbackRes.ok ? await fallbackRes.json() : { results: [] };
 
-    // Filter out noise, keep product-relevant results
-    const noiseSpaces = ['proinfdes'];
-    const noiseTitles = [/^INC-\d+/i, /^(Re|Fw):/i, /^DO NOT USE/i, /Q&A Test Run/i];
+    const combined = [
+      ...(productData.results || []),
+      ...(fallbackData.results || [])
+    ];
 
-    const results = (data.results || [])
+    const seen = new Set();
+    const results = combined
       .filter(r => {
-        const spaceKey = (r.space?.key || '').toLowerCase();
-        const title = r.title || '';
-        if (noiseSpaces.includes(spaceKey)) return false;
-        if (noiseTitles.some(re => re.test(title))) return false;
+        if (seen.has(r.content?.id)) return false;
+        seen.add(r.content?.id);
         return true;
       })
+      .slice(0, 10)
       .map(r => ({
         title: r.title,
         excerpt: r.excerpt || '',
         url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
         space: r.resultGlobalContainer?.title || '',
-        spaceKey: r.space?.key || ''
+        spaceKey: r.content?._expandable?.container?.replace('/rest/api/space/', '') || ''
       }));
 
-    return new Response(JSON.stringify({ results }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    return new Response(JSON.stringify({ results }), {
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
