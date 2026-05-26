@@ -46,7 +46,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .nav-chevron { margin-left: auto; width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; transition: transform 0.15s; flex-shrink: 0; }
 .nav-chevron.open { transform: rotate(90deg); }
 .nav-children { overflow: hidden; }
-.nav-child { display: flex; align-items: center; gap: 8px; padding: 5px 16px 5px 30px; cursor: pointer; color: var(--text2); font-size: 12px; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); transition: all 0.12s; border-left: 2px solid transparent; }.nav-child:hover { background: var(--surface2); color: var(--text2); }
+.nav-child { display: flex; align-items: center; gap: 8px; padding: 5px 16px 5px 30px; cursor: pointer; color: var(--text3); font-size: 11px; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); transition: all 0.12s; border-left: 2px solid transparent; }
+.nav-child:hover { background: var(--surface2); color: var(--text2); }
 .nav-child.active { color: var(--text); border-left-color: var(--red); background: var(--surface2); }
 .nav-child-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; opacity: 0.5; }
 .sidebar-divider { height: 1px; background: var(--border); margin: 12px 0; }
@@ -643,7 +644,11 @@ function buildContext(query) {
     'rtp': 'rtp', 'return to player': 'rtp', 'volatil': 'volatility',
     'jackpot blast': 'jackpot_blast', 'slotmaster': 'slotmasters',
     '99 royale': 'ninety_nine_royale', 'adaptive': 'adaptive_lobbies',
-    'lobby': 'adaptive_lobbies', 'bingo': 'bingo', 'cascad': 'cascading',
+    'lobby': 'adaptive_lobbies',
+    'bingo': 'bingo', 'ball type': 'bingo', 'ball format': 'bingo',
+    '90 ball': 'bingo', '80 ball': 'bingo', '75 ball': 'bingo', '52 ball': 'bingo',
+    'snap bingo': 'bingo', 'how does bingo': 'bingo', 'bingo format': 'bingo',
+    'cascad': 'cascading',
     'fishin': 'fishin_frenzy', 'bonanza': 'bonanza', 'lightning roulette': 'lightning_roulette',
     'xxxtre': 'lightning_roulette'
   };
@@ -710,38 +715,60 @@ async function chatSend() {
   let cfContext = '';
   const cfSources = [];
   if (cfResults.length) {
-    const spacePriority = (space) => {
-      const s = (space || '').toLowerCase();
-      if (s.includes('bingo') || s.includes('igaming') || s.includes('multiplayer') || s.includes('engage')) return 0;
-      if (s.includes('gops') || s.includes('game ops')) return 1;
-      if (s.includes('platform') || s.includes('proinfdes')) return 99;
-      return 2;
+    // Score results by title relevance to the query keywords
+    const queryWords = q.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    const scoreResult = (r) => {
+      const title = (r.title || '').toLowerCase();
+      const space = (r.space || '').toLowerCase();
+      let score = 0;
+      queryWords.forEach(w => { if (title.includes(w)) score += 3; });
+      if (space.includes('bingo') || space.includes('multiplayer') || space.includes('engage')) score += 2;
+      if (space.includes('gops') || space.includes('game ops')) score += 1;
+      // Penalise noise pages
+      if (/^do not use/i.test(r.title)) score -= 10;
+      if (/roadmap/i.test(r.title)) score -= 5;
+      if (/retro/i.test(r.title)) score -= 5;
+      if (/newsround/i.test(r.title)) score -= 5;
+      if (/test run/i.test(r.title)) score -= 5;
+      return score;
     };
-    const sorted = [...cfResults].sort((a, b) => spacePriority(a.space) - spacePriority(b.space));
-    const topResult = sorted[0];
-    let topPageContent = '';
-    try {
-      const pageIdMatch = topResult.url.match(/pages\/([0-9]+)/);
-      if (pageIdMatch) {
+    const sorted = [...cfResults].sort((a, b) => scoreResult(b) - scoreResult(a));
+
+    // Fetch full content of top 3 results in parallel
+    const topResults = sorted.slice(0, 3);
+    const pageContents = await Promise.all(topResults.map(async (r) => {
+      try {
+        const pageIdMatch = r.url.match(/pages\/([0-9]+)/);
+        if (!pageIdMatch) return { title: r.title, content: '' };
         const pageId = pageIdMatch[1];
+        let rawHtml = '';
         if (cfCache[pageId]) {
-          topPageContent = cfCache[pageId].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 3000);
+          rawHtml = cfCache[pageId];
         } else {
           const pageRes = await fetch(`/confluence?id=${pageId}`);
           if (pageRes.ok) {
             const pageData = await pageRes.json();
-            const rawHtml = pageData.body?.view?.value || pageData.body?.storage?.value || '';
-            topPageContent = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 3000);
+            rawHtml = pageData.body?.view?.value || pageData.body?.storage?.value || '';
             cfCache[pageId] = rawHtml;
           }
         }
-      }
-    } catch(e) {}
+        const text = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 2000);
+        return { title: r.title, content: text };
+      } catch(e) { return { title: r.title, content: '' }; }
+    }));
+
+    const fullContents = pageContents.filter(p => p.content.length > 50);
 
     cfContext = 'CONFLUENCE SEARCH RESULTS:\n' + cfResults.map(r =>
       `Page: ${r.title} (${r.space})\nExcerpt: ${r.excerpt}\nURL: ${r.url}`
-    ).join('\n\n') +
-    (topPageContent ? `\n\nFULL PAGE CONTENT (${topResult.title}):\n${topPageContent}` : '');
+    ).join('\n\n');
+
+    if (fullContents.length) {
+      cfContext += '\n\nFULL PAGE CONTENT:\n' + fullContents.map(p =>
+        `--- ${p.title} ---\n${p.content}`
+      ).join('\n\n');
+    }
+
     cfResults.forEach(r => cfSources.push(`Confluence: ${r.title}`));
   }
 
