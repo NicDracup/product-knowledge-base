@@ -14,65 +14,75 @@
   --text: #F0F0F0; --text2: #A0A0A0; --text3: #555555;
   --font: 'DM Sans', system-ui, sans-serif;
 }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-header { display: flex; align-items: center; justify-content: space-between; padding: 0 32px; height: 56px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 100; }
-.logo { display: flex; align-items: center; gap: 12px; }
-.logo-mark { width: 28px; height: 28px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px; color: white; }
-.logo-text { font-size: 14px; font-weight: 500; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); display: flex; flex-direction: column; }
+
+/* TOPBAR */
+header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height: 52px; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; z-index: 100; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark { width: 26px; height: 26px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; color: white; }
+.logo-text { font-size: 13px; font-weight: 500; }
 .logo-text span { color: var(--text2); font-weight: 400; }
-.proto-badge { padding: 3px 10px; background: rgba(200,16,46,0.15); border: 1px solid rgba(200,16,46,0.3); border-radius: 20px; font-size: 11px; color: #e05070; font-weight: 500; }
-.layout { display: flex; min-height: calc(100vh - 56px); }
-.sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; }
-.sidebar-label { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); padding: 0 20px; margin-bottom: 8px; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; cursor: pointer; color: var(--text2); font-size: 13px; transition: all 0.15s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); border-left: 2px solid transparent; }
+.proto-badge { padding: 2px 9px; background: rgba(200,16,46,0.12); border: 1px solid rgba(200,16,46,0.25); border-radius: 20px; font-size: 10px; color: #e05070; font-weight: 500; }
+.header-search { margin-left: auto; display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 6px 12px; cursor: text; min-width: 220px; }
+.header-search svg { width: 13px; height: 13px; stroke: var(--text3); fill: none; stroke-width: 2; flex-shrink: 0; }
+.header-search span { font-size: 12px; color: var(--text3); }
+.header-search kbd { margin-left: auto; font-size: 10px; padding: 1px 5px; background: var(--surface3); border: 1px solid var(--border); border-radius: 3px; color: var(--text3); font-family: var(--font); }
+
+/* LAYOUT */
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.sidebar-inner { flex: 1; overflow-y: auto; padding: 16px 0; }
+.sidebar-inner::-webkit-scrollbar { width: 3px; }
+.sidebar-inner::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.sidebar-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); padding: 0 16px; margin: 10px 0 4px; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 7px 16px; cursor: pointer; color: var(--text2); font-size: 12px; transition: all 0.12s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); border-left: 2px solid transparent; }
 .nav-item:hover { background: var(--surface2); color: var(--text); }
 .nav-item.active { background: var(--surface2); color: var(--text); border-left-color: var(--red); }
 .nav-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .nav-icon { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
-.sidebar-divider { height: 1px; background: var(--border); margin: 16px 0; }
-.main { flex: 1; overflow-y: auto; }
- 
-/* OVERVIEW */
-.overview-view { padding: 32px; max-width: 800px; }
-.overview-view h1 { font-size: 24px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.4px; }
-.overview-view .subtitle { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
-.overview-body { font-size: 14px; line-height: 1.8; color: var(--text2); }
-.overview-body h2 { font-size: 15px; font-weight: 600; color: var(--text); margin: 24px 0 10px; }
-.overview-body p { margin-bottom: 12px; }
-.overview-body ul { margin: 0 0 12px 20px; }
-.overview-body li { margin-bottom: 4px; }
-.overview-body a { color: #5b8dee; text-decoration: none; }
-.overview-body a:hover { text-decoration: underline; }
-.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 12px; }
-.team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
-.team-card .name { font-size: 13px; font-weight: 500; color: var(--text); }
-.team-card .role { font-size: 11px; color: var(--text3); margin-top: 2px; }
- 
-/* VERTICAL VIEW */
-.vertical-view { padding: 32px; }
-.vertical-header { margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
-.vertical-header h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; }
-.v-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
- 
-/* CONTENT PAGE (vertical or related) */
-.content-page { padding: 32px; max-width: 900px; }
-.back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 13px; font-family: var(--font); cursor: pointer; margin-bottom: 24px; transition: all 0.15s; }
-.back-btn:hover { border-color: var(--border2); color: var(--text); }
-.back-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
-.content-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; }
- 
+.nav-chevron { margin-left: auto; width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; transition: transform 0.15s; flex-shrink: 0; }
+.nav-chevron.open { transform: rotate(90deg); }
+.nav-children { overflow: hidden; }
+.nav-child { display: flex; align-items: center; gap: 8px; padding: 5px 16px 5px 30px; cursor: pointer; color: var(--text3); font-size: 11px; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); transition: all 0.12s; border-left: 2px solid transparent; }
+.nav-child:hover { background: var(--surface2); color: var(--text2); }
+.nav-child.active { color: var(--text); border-left-color: var(--red); background: var(--surface2); }
+.nav-child-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; opacity: 0.5; }
+.sidebar-divider { height: 1px; background: var(--border); margin: 12px 0; }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* CONTENT AREA */
+.content-area { flex: 1; overflow-y: auto; padding: 28px 32px; }
+.content-area::-webkit-scrollbar { width: 4px; }
+.content-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* BREADCRUMB */
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); margin-bottom: 14px; }
+.breadcrumb svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; }
+.breadcrumb span { cursor: pointer; }
+.breadcrumb span:hover { color: var(--text2); }
+
+/* PAGE TITLE */
+.page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 5px; }
+.page-meta { font-size: 11px; color: var(--text3); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.page-meta svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; }
+
 /* CF BANNER */
-.cf-banner { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: rgba(0,82,204,0.08); border: 1px solid rgba(0,82,204,0.2); border-radius: 6px; margin-bottom: 20px; }
-.cf-banner-left { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5b8dee; }
-.cf-banner-left svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
-.cf-open-btn { font-size: 11px; color: #5b8dee; background: transparent; border: 1px solid rgba(0,82,204,0.3); border-radius: 4px; padding: 3px 10px; cursor: pointer; font-family: var(--font); transition: all 0.15s; white-space: nowrap; }
+.cf-banner { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: rgba(0,82,204,0.07); border: 1px solid rgba(0,82,204,0.18); border-radius: 6px; margin-bottom: 18px; }
+.cf-banner-left { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #5b8dee; }
+.cf-banner-left svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+.cf-open-btn { font-size: 11px; color: #5b8dee; background: transparent; border: 1px solid rgba(0,82,204,0.25); border-radius: 4px; padding: 3px 9px; cursor: pointer; font-family: var(--font); margin-left: auto; transition: all 0.12s; white-space: nowrap; }
 .cf-open-btn:hover { background: rgba(0,82,204,0.1); }
- 
+
 /* CF CONTENT */
 .cf-content { color: var(--text); line-height: 1.8; font-size: 14px; }
 .cf-content h1, .cf-content h2, .cf-content h3 { color: var(--text); margin: 20px 0 10px; font-weight: 600; }
 .cf-content h1:first-child, .cf-content h2:first-child, .cf-content h3:first-child { margin-top: 0; }
-.cf-content h2 { font-size: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.cf-content h2 { font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
 .cf-content h3 { font-size: 14px; }
 .cf-content p { margin-bottom: 12px; }
 .cf-content ul, .cf-content ol { margin: 0 0 12px 20px; }
@@ -81,163 +91,242 @@ header { display: flex; align-items: center; justify-content: space-between; pad
 .cf-content a:hover { text-decoration: underline; }
 .cf-content strong { font-weight: 600; }
 .cf-content table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px; overflow-x: auto; display: block; }
-.cf-content th { background: var(--surface2); padding: 8px 12px; border: 1px solid var(--border); text-align: left; font-weight: 600; font-size: 12px; color: var(--text2); white-space: nowrap; }
+.cf-content th { background: var(--surface2); padding: 8px 12px; border: 1px solid var(--border); text-align: left; font-weight: 600; font-size: 12px; color: var(--text2); }
 .cf-content td { padding: 8px 12px; border: 1px solid var(--border); vertical-align: top; }
 .cf-content tr:hover td { background: var(--surface2); }
 .cf-content hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .cf-content img { max-width: 100%; border-radius: 6px; margin: 4px 0; }
- 
+
 /* LOADING / ERROR */
-.content-loading { display: flex; align-items: center; gap: 10px; color: var(--text3); font-size: 14px; padding: 32px 0; }
-.spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+.content-loading { display: flex; align-items: center; gap: 10px; color: var(--text3); font-size: 14px; padding: 24px 0; }
+.spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.content-error { padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 14px; line-height: 1.6; }
- 
-/* SECTION LABEL */
-.section-label { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
- 
-/* TILES */
-.tiles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
-.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; cursor: pointer; transition: all 0.15s; position: relative; overflow: hidden; text-align: left; width: 100%; font-family: var(--font); }
-.tile::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent, var(--red)); opacity: 0; transition: opacity 0.15s; }
-.tile:hover { border-color: var(--border2); background: var(--surface2); }
-.tile:hover::before { opacity: 1; }
-.tile-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
-.tile-desc { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 10px; }
-.tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border); }
-.tile-source { font-size: 11px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
-.tile-source svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; }
-.tile-arrow { font-size: 13px; color: var(--text3); }
-.tile:hover .tile-arrow { color: var(--text2); }
- 
+.content-error { padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 13px; line-height: 1.6; }
+
+/* OVERVIEW */
+.overview-body { font-size: 14px; line-height: 1.8; color: var(--text2); }
+.overview-body h2 { font-size: 14px; font-weight: 600; color: var(--text); margin: 22px 0 8px; }
+.overview-body p { margin-bottom: 10px; }
+.overview-body ul { margin: 0 0 10px 20px; }
+.overview-body li { margin-bottom: 4px; }
+.overview-body a { color: #5b8dee; text-decoration: none; }
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
+.team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.team-card .name { font-size: 12px; font-weight: 500; color: var(--text); }
+.team-card .role { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* TILES BAR — pinned bottom */
+.tiles-bar { flex-shrink: 0; border-top: 1px solid var(--border); background: var(--surface); }
+.tiles-bar-header { padding: 8px 16px 6px; display: flex; align-items: center; gap: 8px; }
+.tiles-bar-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); }
+.tiles-bar-count { font-size: 10px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 1px 7px; }
+.tiles-row { display: flex; gap: 8px; padding: 0 16px 12px; overflow-x: auto; }
+.tiles-row::-webkit-scrollbar { height: 3px; }
+.tiles-row::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.tile { flex-shrink: 0; width: 200px; background: var(--surface2); border: 1px solid var(--border); border-top: 2px solid var(--accent, var(--red)); border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: all 0.12s; text-align: left; font-family: var(--font); }
+.tile:hover { border-color: var(--border2); border-top-color: var(--accent, var(--red)); background: var(--surface3); }
+.tile-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.tile-desc { font-size: 11px; color: var(--text2); line-height: 1.4; margin-bottom: 8px; }
+.tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 6px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text3); }
+
 /* CHAT */
-.chat-trigger { position: fixed; bottom: 24px; right: 24px; width: 52px; height: 52px; border-radius: 50%; background: var(--red); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(200,16,46,0.4); transition: all 0.2s; z-index: 300; }
+.chat-trigger { position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%; background: var(--red); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(200,16,46,0.35); transition: all 0.18s; z-index: 300; }
 .chat-trigger:hover { background: var(--red-dark); transform: scale(1.05); }
-.chat-trigger svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 1.8; }
-.chat-notif { position: absolute; top: 0; right: 0; width: 16px; height: 16px; border-radius: 50%; background: #22c55e; border: 2px solid var(--bg); font-size: 9px; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-.chat-popup { position: fixed; bottom: 88px; right: 24px; width: 380px; height: 540px; background: var(--surface); border: 1px solid var(--border2); border-radius: 16px; display: flex; flex-direction: column; z-index: 300; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.5); transform: scale(0.95) translateY(10px); opacity: 0; pointer-events: none; transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.chat-trigger svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 1.8; }
+.chat-notif { position: absolute; top: 0; right: 0; width: 15px; height: 15px; border-radius: 50%; background: #22c55e; border: 2px solid var(--bg); font-size: 8px; color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+.chat-popup { position: fixed; bottom: 80px; right: 20px; width: 370px; height: 520px; background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; display: flex; flex-direction: column; z-index: 300; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.5); transform: scale(0.95) translateY(10px); opacity: 0; pointer-events: none; transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .chat-popup.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
-.chat-head { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface2); }
-.chat-head-left { display: flex; align-items: center; gap: 10px; }
-.chat-av { width: 32px; height: 32px; border-radius: 8px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: white; }
+.chat-head { padding: 12px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface2); }
+.chat-head-left { display: flex; align-items: center; gap: 9px; }
+.chat-av { width: 30px; height: 30px; border-radius: 7px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: white; }
 .chat-title { font-size: 13px; font-weight: 500; }
-.chat-sub { font-size: 11px; color: var(--text3); }
-.chat-x { background: transparent; border: none; cursor: pointer; color: var(--text3); font-size: 18px; padding: 4px; font-family: var(--font); transition: color 0.15s; }
+.chat-sub { font-size: 10px; color: var(--text3); }
+.chat-x { background: transparent; border: none; cursor: pointer; color: var(--text3); font-size: 16px; padding: 4px; font-family: var(--font); transition: color 0.12s; }
 .chat-x:hover { color: var(--text); }
-.chat-msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+.chat-msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth; }
 .chat-msgs::-webkit-scrollbar { width: 3px; }
 .chat-msgs::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.msg { display: flex; gap: 8px; animation: fadeUp 0.2s ease; }
+.msg { display: flex; gap: 7px; animation: fadeUp 0.18s ease; }
 .msg.user { flex-direction: row-reverse; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-.msg-av { width: 26px; height: 26px; border-radius: 6px; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-end; }
+.msg-av { width: 24px; height: 24px; border-radius: 5px; font-size: 9px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: flex-end; }
 .msg-av.bot { background: var(--red); color: white; }
 .msg-av.user { background: var(--surface3); color: var(--text2); border: 1px solid var(--border); }
-.msg-bubble { max-width: 280px; padding: 8px 12px; border-radius: 10px; font-size: 13px; line-height: 1.6; }
+.msg-bubble { max-width: 272px; padding: 8px 11px; border-radius: 9px; font-size: 12px; line-height: 1.6; }
 .msg.bot .msg-bubble { background: var(--surface2); border: 1px solid var(--border); border-bottom-left-radius: 3px; color: var(--text); }
 .msg.user .msg-bubble { background: var(--red); color: white; border-bottom-right-radius: 3px; }
-.msg-bubble p { margin-bottom: 6px; }
+.msg-bubble p { margin-bottom: 5px; }
 .msg-bubble p:last-child { margin-bottom: 0; }
 .msg-bubble strong { font-weight: 600; }
 .chat-typing { display: flex; gap: 3px; align-items: center; padding: 2px 0; }
-.chat-typing span { width: 5px; height: 5px; background: var(--text3); border-radius: 50%; animation: bounce 1.2s infinite; }
+.chat-typing span { width: 4px; height: 4px; background: var(--text3); border-radius: 50%; animation: bounce 1.2s infinite; }
 .chat-typing span:nth-child(2) { animation-delay: 0.2s; }
 .chat-typing span:nth-child(3) { animation-delay: 0.4s; }
 @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-3px); } }
-.chat-sources { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
-.chat-src { font-size: 10px; color: var(--text3); padding: 2px 6px; background: var(--surface3); border-radius: 3px; }
-.chat-sugg { padding: 8px 12px; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; }
-.sugg-btn { padding: 4px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.15s; white-space: nowrap; }
+.chat-sources { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; padding-top: 5px; border-top: 1px solid var(--border); }
+.chat-src { font-size: 9px; color: var(--text3); padding: 2px 5px; background: var(--surface3); border-radius: 3px; }
+.chat-sugg { padding: 7px 10px; border-top: 1px solid var(--border); display: flex; gap: 5px; flex-wrap: wrap; }
+.sugg-btn { padding: 3px 9px; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; font-size: 10px; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all 0.12s; white-space: nowrap; }
 .sugg-btn:hover { border-color: var(--border2); color: var(--text); }
-.chat-input-area { padding: 10px 12px; border-top: 1px solid var(--border); }
-.chat-input-wrap { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; transition: border-color 0.15s; }
+.chat-input-area { padding: 9px 10px; border-top: 1px solid var(--border); }
+.chat-input-wrap { display: flex; align-items: center; gap: 7px; background: var(--surface2); border: 1px solid var(--border); border-radius: 7px; padding: 6px 9px; transition: border-color 0.12s; }
 .chat-input-wrap:focus-within { border-color: var(--red); }
-.chat-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 13px; }
+.chat-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 12px; }
 .chat-input::placeholder { color: var(--text3); }
-.chat-send { width: 26px; height: 26px; background: var(--red); border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; }
+.chat-send { width: 24px; height: 24px; background: var(--red); border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.12s; }
 .chat-send:hover { background: var(--red-dark); }
 .chat-send:disabled { background: var(--surface3); cursor: not-allowed; }
-.chat-send svg { width: 13px; height: 13px; stroke: white; fill: none; stroke-width: 2; }
+.chat-send svg { width: 12px; height: 12px; stroke: white; fill: none; stroke-width: 2; }
 </style>
 </head>
 <body>
- 
+
 <header>
   <div class="logo">
     <div class="logo-mark">PK</div>
     <div class="logo-text">Product Knowledge Base <span>/ Bally's</span></div>
   </div>
   <div class="proto-badge">Prototype</div>
+  <div class="header-search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <span>Search...</span>
+    <kbd>⌘K</kbd>
+  </div>
 </header>
- 
+
 <div class="layout">
   <nav class="sidebar">
-    <div class="sidebar-label">Navigation</div>
-    <button class="nav-item active" id="overviewBtn" onclick="showOverview(this)">
-      <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Overview
-    </button>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-label">Verticals</div>
-    <button class="nav-item" onclick="showVertical('bingo', this)"><div class="nav-dot" style="background:#E05070"></div>Bingo</button>
-    <button class="nav-item" onclick="showVertical('slots', this)"><div class="nav-dot" style="background:#5b8dee"></div>Slots</button>
-    <button class="nav-item" onclick="showVertical('live', this)"><div class="nav-dot" style="background:#22c55e"></div>Live Casino</button>
-    <button class="nav-item" onclick="showVertical('arcade', this)"><div class="nav-dot" style="background:#f59e0b"></div>Arcade</button>
-    <button class="nav-item" onclick="showVertical('jackpots', this)"><div class="nav-dot" style="background:#a78bfa"></div>Jackpots</button>
-    <button class="nav-item" onclick="showVertical('multiplayer', this)"><div class="nav-dot" style="background:#34d399"></div>Multiplayer</button>
-    <div class="sidebar-divider"></div>
-    <div class="sidebar-label">Quick Links</div>
-    <button class="nav-item" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')"><svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>KB Confluence Page</button>
-    <button class="nav-item" onclick="window.open('https://neon-mousse-b10a92.netlify.app/')"><svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Game IQ</button>
-    <button class="nav-item" onclick="window.open('https://supporthub.cloud.ballys.com/helpcenter/pt/')"><svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>People Playbook</button>
-    <button class="nav-item" onclick="window.open('https://app.contentful.com')"><svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Contentful</button>
-  </nav>
- 
-  <main class="main" id="mainArea">
- 
-    <!-- OVERVIEW -->
-    <div class="overview-view" id="overviewView">
-      <h1>Product Knowledge Base</h1>
-      <p class="subtitle">A central reference for Bally's iGaming product team covering our full game portfolio across all verticals.</p>
-      <div class="cf-banner">
-        <div class="cf-banner-left">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Confluence page — always up to date
-        </div>
-        <button class="cf-open-btn" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">Open in Confluence ↗</button>
-      </div>
-      <div class="overview-body">
-        <p>This space brings together plain English guides on our games, product types, and mechanics — written for anyone in the business, whether you're a new starter trying to understand the difference between a Megaways slot and a crash game, or an experienced team member who needs a quick reference on how Jackpot Blast works.</p>
-        <h2>What's covered</h2>
-        <ul>
-          <li>Slots, Live Casino, Arcade, Jackpots, Bingo, and Multiplayer verticals</li>
-          <li>Per-game overviews, key mechanics, and venture availability</li>
-          <li>Product type explainers in plain English</li>
-        </ul>
-        <h2>How it works</h2>
-        <p>Content is owned and maintained by vertical leads across the product team. Game data is pulled from <a href="https://app.contentful.com" target="_blank">Contentful</a> and documentation from <a href="https://confluence.cloud.ballys.com" target="_blank">Confluence</a>. Anyone can browse by vertical or ask the AI assistant a question and get an instant answer.</p>
-        <h2>Team</h2>
-        <div class="team-grid">
-          <div class="team-card"><div class="name">Dez Pazmany</div><div class="role">Head of Product Operations</div></div>
-          <div class="team-card"><div class="name">Dale Myers</div><div class="role">Senior Bingo Product Executive</div></div>
-          <div class="team-card"><div class="name">Shannon Gavin</div><div class="role">Casino Product Manager</div></div>
-          <div class="team-card"><div class="name">Craig Walker</div><div class="role">Casino Product Executive</div></div>
-          <div class="team-card"><div class="name">Freddie Watford</div><div class="role">Casino Product Executive</div></div>
-          <div class="team-card"><div class="name">Will Pritchard</div><div class="role">Casino Product Executive</div></div>
-          <div class="team-card"><div class="name">Nic Dracup</div><div class="role">Multiplayer Operations Executive</div></div>
-        </div>
-      </div>
+    <div class="sidebar-inner">
+      <div class="sidebar-label">Navigation</div>
+      <button class="nav-item active" id="overviewBtn" onclick="showOverview(this)">
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </button>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">Verticals</div>
+      <button class="nav-item" id="nav-bingo" onclick="toggleVertical('bingo', this)">
+        <div class="nav-dot" style="background:#E05070"></div>
+        Bingo
+        <svg class="nav-chevron" id="chev-bingo" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="nav-children" id="children-bingo"></div>
+
+      <button class="nav-item" id="nav-slots" onclick="toggleVertical('slots', this)">
+        <div class="nav-dot" style="background:#5b8dee"></div>
+        Slots
+        <svg class="nav-chevron" id="chev-slots" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="nav-children" id="children-slots"></div>
+
+      <button class="nav-item" id="nav-live" onclick="toggleVertical('live', this)">
+        <div class="nav-dot" style="background:#22c55e"></div>
+        Live Casino
+        <svg class="nav-chevron" id="chev-live" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="nav-children" id="children-live"></div>
+
+      <button class="nav-item" id="nav-arcade" onclick="toggleVertical('arcade', this)">
+        <div class="nav-dot" style="background:#f59e0b"></div>
+        Arcade
+        <svg class="nav-chevron" id="chev-arcade" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="nav-children" id="children-arcade"></div>
+
+      <button class="nav-item" id="nav-jackpots" onclick="toggleVertical('jackpots', this)">
+        <div class="nav-dot" style="background:#a78bfa"></div>
+        Jackpots
+        <svg class="nav-chevron" id="chev-jackpots" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="nav-children" id="children-jackpots"></div>
+
+      <button class="nav-item" id="nav-multiplayer" onclick="toggleVertical('multiplayer', this)">
+        <div class="nav-dot" style="background:#34d399"></div>
+        Multiplayer
+        <svg class="nav-chevron" id="chev-multiplayer" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="nav-children" id="children-multiplayer"></div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-label">Quick Links</div>
+      <button class="nav-item" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        KB Confluence Page
+      </button>
+      <button class="nav-item" onclick="window.open('https://neon-mousse-b10a92.netlify.app/')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Game IQ
+      </button>
+      <button class="nav-item" onclick="window.open('https://supporthub.cloud.ballys.com/helpcenter/pt/')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        People Playbook
+      </button>
+      <button class="nav-item" onclick="window.open('https://app.contentful.com')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Contentful
+      </button>
     </div>
- 
-    <!-- VERTICAL VIEW -->
-    <div id="verticalView" style="display:none"></div>
- 
-    <!-- CONTENT PAGE (related tile) -->
-    <div id="contentPage" style="display:none" class="content-page"></div>
- 
+  </nav>
+
+  <main class="main" id="mainArea">
+    <div class="content-area" id="contentArea">
+
+      <!-- OVERVIEW -->
+      <div id="overviewView">
+        <div class="breadcrumb">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Overview
+        </div>
+        <div class="page-title">Product Knowledge Base</div>
+        <div class="page-meta">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Central reference for Bally's iGaming product team
+        </div>
+        <div class="cf-banner">
+          <div class="cf-banner-left">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Confluence page — always up to date
+          </div>
+          <button class="cf-open-btn" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">Open in Confluence ↗</button>
+        </div>
+        <div class="overview-body">
+          <p>Plain English guides on our games, product types, and mechanics — written for anyone in the business, whether you're a new starter or an experienced team member needing a quick reference.</p>
+          <h2>What's covered</h2>
+          <ul>
+            <li>Slots, Live Casino, Arcade, Jackpots, Bingo, and Multiplayer verticals</li>
+            <li>Per-game overviews, key mechanics, and venture availability</li>
+            <li>Product type explainers in plain English</li>
+          </ul>
+          <h2>How it works</h2>
+          <p>Content is owned by vertical leads across the product team. Documentation is pulled live from <a href="https://confluence.cloud.ballys.com" target="_blank">Confluence</a>. Browse by vertical or ask the AI assistant a question.</p>
+          <h2>Team</h2>
+          <div class="team-grid">
+            <div class="team-card"><div class="name">Dez Pazmany</div><div class="role">Head of Product Operations</div></div>
+            <div class="team-card"><div class="name">Dale Myers</div><div class="role">Senior Bingo Product Executive</div></div>
+            <div class="team-card"><div class="name">Shannon Gavin</div><div class="role">Casino Product Manager</div></div>
+            <div class="team-card"><div class="name">Craig Walker</div><div class="role">Casino Product Executive</div></div>
+            <div class="team-card"><div class="name">Freddie Watford</div><div class="role">Casino Product Executive</div></div>
+            <div class="team-card"><div class="name">Will Pritchard</div><div class="role">Casino Product Executive</div></div>
+            <div class="team-card"><div class="name">Nic Dracup</div><div class="role">Multiplayer Operations Executive</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERTICAL / PAGE VIEW -->
+      <div id="pageView" style="display:none"></div>
+
+    </div>
+
+    <!-- TILES BAR -->
+    <div class="tiles-bar" id="tilesBar" style="display:none">
+      <div class="tiles-bar-header">
+        <span class="tiles-bar-label">Related pages</span>
+        <span class="tiles-bar-count" id="tilesCount">0</span>
+      </div>
+      <div class="tiles-row" id="tilesRow"></div>
+    </div>
   </main>
 </div>
- 
+
 <!-- CHAT -->
 <button class="chat-trigger" onclick="toggleChat()">
   <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -272,7 +361,7 @@ header { display: flex; align-items: center; justify-content: space-between; pad
     </div>
   </div>
 </div>
- 
+
 <script>
 const VERTICALS = {
   bingo:       { label: 'Bingo',       color: '#E05070', cfId: '129597556', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129597556/Bingo' },
@@ -282,7 +371,7 @@ const VERTICALS = {
   jackpots:    { label: 'Jackpots',    color: '#a78bfa', cfId: '129630362', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630362/Jackpot+Mechanics' },
   multiplayer: { label: 'Multiplayer', color: '#34d399', cfId: '129695823', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129695823/Multiplayer' }
 };
- 
+
 const RELATED = {
   bingo: [
     { name: 'About Bingo', desc: 'Overview of the bingo product — how it works and what makes it unique.', cfId: '84934665', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/84934665/About+Bingo' },
@@ -307,7 +396,7 @@ const RELATED = {
     { name: 'Hungry Bear', desc: 'Multiplayer product documentation for Hungry Bear.', cfId: '110340722', cfUrl: 'https://confluence.cloud.ballys.com/wiki/spaces/IE/pages/110340722/Hungry+Bear' }
   ]
 };
- 
+
 const KB = {
   megaways: 'Megaways is a slot mechanic by Big Time Gaming. Instead of fixed paylines, the number of symbols on each reel changes every spin — up to 117,649 ways to win. Most Megaways slots have cascading reels too.',
   hold_win: 'Hold & Win triggers when a set number of special symbols land. Those symbols lock while the reels respin. 3 respins reset every time a new symbol lands.',
@@ -317,7 +406,7 @@ const KB = {
   volatility: 'Volatility describes payout patterns. High = infrequent but big wins. Low = frequent but smaller wins.',
   jackpot_blast: "Jackpot Blast is Bally's own jackpot network. A portion of every bet feeds 4 prize pools: Mini, Midi, Major, Mega. Triggered randomly — any player at any bet size is eligible.",
   slotmasters: "Slotmasters is Bally's multiplayer slot tournament product. Players enter (free or paid) and compete on the same base game simultaneously. The leaderboard at the end determines prizes.",
-  ninety_nine_royale: '99 Royale is a Bally\'s battle royale casino game. 99 players enter at once and compete using slot mechanics. Players are progressively eliminated. Last player standing wins the prize pool.',
+  ninety_nine_royale: "99 Royale is a Bally's battle royale casino game. 99 players enter at once and compete using slot mechanics. Players are progressively eliminated. Last player standing wins the prize pool.",
   adaptive_lobbies: 'Adaptive lobbies dynamically reorder the game lobby for each player based on their behaviour. Machine learning determines what each player sees — a personalised lobby rather than one standard view.',
   bingo: '90-ball bingo is the standard UK bingo format. Cards have 9 columns and 3 rows with 15 numbers. Three prize tiers: One Line, Two Lines, Full House.',
   cascading: 'Cascading reels (also called Avalanche or Tumbling) remove winning symbols and drop new ones from above — allowing multiple wins from a single spin.',
@@ -325,24 +414,52 @@ const KB = {
   bonanza: "Bonanza Megaways by Big Time Gaming is the original Megaways slot. Features cascading reels, up to 117,649 ways to win, and an unlimited free spins multiplier. Available on JPJ, DBB, VGN and MCA.",
   lightning_roulette: "XXXtreme Lightning Roulette by Evolution is a live roulette variant with multipliers up to 2000x on lucky numbers before each spin. Chain Lightning can add extra multiplied numbers. Available on JPJ, VGN and MCA."
 };
- 
+
 let currentVertical = null;
+let currentPageCfId = null;
 let chatOpen = false;
 let chatLoading = false;
 let chatHistory = [];
 let cfCache = {};
- 
-function setActiveNav(el) {
+let expandedVerticals = {};
+
+function setActiveNav(key) {
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
+  if (key) {
+    const el = document.getElementById('nav-' + key);
+    if (el) el.classList.add('active');
+  } else {
+    document.getElementById('overviewBtn').classList.add('active');
+  }
 }
- 
-function hideAll() {
-  document.getElementById('overviewView').style.display = 'none';
-  document.getElementById('verticalView').style.display = 'none';
-  document.getElementById('contentPage').style.display = 'none';
+
+function setActiveChild(key, cfId) {
+  document.querySelectorAll('.nav-child').forEach(c => c.classList.remove('active'));
+  const el = document.querySelector(`.nav-child[data-cfid="${cfId}"]`);
+  if (el) el.classList.add('active');
 }
- 
+
+function showTilesBar(related, color) {
+  const bar = document.getElementById('tilesBar');
+  const row = document.getElementById('tilesRow');
+  const count = document.getElementById('tilesCount');
+  if (!related || !related.length) { bar.style.display = 'none'; return; }
+  bar.style.display = 'block';
+  count.textContent = related.length;
+  row.innerHTML = related.map(r => `
+    <button class="tile" style="--accent:${color}" onclick="showRelatedPage('${r.cfId}','${r.name}','${r.cfUrl}')">
+      <div class="tile-name">${r.name}</div>
+      <div class="tile-desc">${r.desc}</div>
+      <div class="tile-footer">
+        <span>Confluence</span><span>→</span>
+      </div>
+    </button>`).join('');
+}
+
+function hideTilesBar() {
+  document.getElementById('tilesBar').style.display = 'none';
+}
+
 async function fetchCF(pageId) {
   if (cfCache[pageId]) return cfCache[pageId];
   const res = await fetch(`/confluence?id=${pageId}`);
@@ -362,59 +479,76 @@ async function fetchCF(pageId) {
   cfCache[pageId] = cleaned;
   return cleaned;
 }
- 
+
 function showOverview(el) {
-  setActiveNav(el);
-  hideAll();
-  document.getElementById('overviewView').style.display = 'block';
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
   currentVertical = null;
-  document.getElementById('mainArea').scrollTop = 0;
+  currentPageCfId = null;
+  document.getElementById('overviewView').style.display = 'block';
+  document.getElementById('pageView').style.display = 'none';
+  hideTilesBar();
+  document.getElementById('contentArea').scrollTop = 0;
 }
- 
+
+function toggleVertical(key, el) {
+  const wasExpanded = expandedVerticals[key];
+  if (!wasExpanded) {
+    expandedVerticals[key] = true;
+    document.getElementById('chev-' + key).classList.add('open');
+    buildChildren(key);
+  }
+  showVertical(key, el);
+}
+
+function buildChildren(key) {
+  const related = RELATED[key] || [];
+  const v = VERTICALS[key];
+  const container = document.getElementById('children-' + key);
+  if (!related.length) { container.innerHTML = ''; return; }
+  container.innerHTML = related.map(r => `
+    <button class="nav-child" data-cfid="${r.cfId}" onclick="showRelatedPage('${r.cfId}','${r.name}','${r.cfUrl}','${key}')">
+      <div class="nav-child-dot" style="background:${v.color}"></div>
+      ${r.name}
+    </button>`).join('');
+}
+
 async function showVertical(key, el) {
-  setActiveNav(el);
+  setActiveNav(key);
+  document.querySelectorAll('.nav-child').forEach(c => c.classList.remove('active'));
   currentVertical = key;
+  currentPageCfId = VERTICALS[key].cfId;
   const v = VERTICALS[key];
   const related = RELATED[key] || [];
-  hideAll();
-  const vv = document.getElementById('verticalView');
-  vv.style.display = 'block';
-  document.getElementById('mainArea').scrollTop = 0;
- 
-  const relatedHtml = related.length ? `
-    <div class="section-label">Related</div>
-    <div class="tiles-grid">
-      ${related.map(r => `
-        <button class="tile" style="--accent:${v.color}" onclick="showRelated('${r.cfId}','${r.name}','${r.cfUrl}','${key}')">
-          <div class="tile-name">${r.name}</div>
-          <div class="tile-desc">${r.desc}</div>
-          <div class="tile-footer">
-            <div class="tile-source">
-              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Confluence
-            </div>
-            <div class="tile-arrow">→</div>
-          </div>
-        </button>`).join('')}
-    </div>` : '';
- 
-  vv.innerHTML = `
-    <div style="padding:32px; ">
-      <div class="vertical-header">
-        <div class="v-dot" style="background:${v.color}"></div>
-        <h1 style="color:${v.color}">${v.label}</h1>
+
+  document.getElementById('overviewView').style.display = 'none';
+  const pv = document.getElementById('pageView');
+  pv.style.display = 'block';
+  document.getElementById('contentArea').scrollTop = 0;
+
+  pv.innerHTML = `
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span onclick="showOverview(document.getElementById('overviewBtn'))">Overview</span>
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      <span style="color:${v.color}">${v.label}</span>
+    </div>
+    <div class="page-title" style="color:${v.color}">${v.label}</div>
+    <div class="page-meta">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Confluence · ${v.label} space
+    </div>
+    <div class="cf-banner">
+      <div class="cf-banner-left">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Live from Confluence — always up to date
       </div>
-      <div class="cf-banner">
-        <div class="cf-banner-left">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Live from Confluence — always up to date
-        </div>
-        <button class="cf-open-btn" onclick="window.open('${v.cfUrl}','_blank')">Open in Confluence ↗</button>
-      </div>
-      <div id="vcontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>
-      ${relatedHtml}
-    </div>`;
- 
+      <button class="cf-open-btn" onclick="window.open('${v.cfUrl}','_blank')">Open in Confluence ↗</button>
+    </div>
+    <div id="vcontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>`;
+
+  showTilesBar(related, v.color);
+
   try {
     const html = await fetchCF(v.cfId);
     const el2 = document.getElementById('vcontent');
@@ -427,20 +561,44 @@ async function showVertical(key, el) {
     document.getElementById('vcontent').innerHTML = `<div class="content-error">Could not load from Confluence.<br><a href="${v.cfUrl}" target="_blank" style="color:#5b8dee">Open in Confluence ↗</a></div>`;
   }
 }
- 
-async function showRelated(cfId, name, cfUrl, verticalKey) {
-  const v = VERTICALS[verticalKey];
-  hideAll();
-  const cp = document.getElementById('contentPage');
-  cp.style.display = 'block';
-  document.getElementById('mainArea').scrollTop = 0;
- 
-  cp.innerHTML = `
-    <button class="back-btn" onclick="showVertical('${verticalKey}', document.querySelector('.nav-item.active'))">
-      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-      Back to ${v.label}
-    </button>
-    <div class="content-title">${name}</div>
+
+async function showRelatedPage(cfId, name, cfUrl, verticalKey) {
+  const key = verticalKey || currentVertical;
+  const v = key ? VERTICALS[key] : null;
+  currentPageCfId = cfId;
+
+  if (key) {
+    setActiveNav(key);
+    setActiveChild(key, cfId);
+    if (!expandedVerticals[key]) {
+      expandedVerticals[key] = true;
+      document.getElementById('chev-' + key).classList.add('open');
+      buildChildren(key);
+      setTimeout(() => setActiveChild(key, cfId), 50);
+    }
+  }
+
+  document.getElementById('overviewView').style.display = 'none';
+  const pv = document.getElementById('pageView');
+  pv.style.display = 'block';
+  document.getElementById('contentArea').scrollTop = 0;
+
+  const related = key ? (RELATED[key] || []) : [];
+  showTilesBar(related.filter(r => r.cfId !== cfId), v ? v.color : '#C8102E');
+
+  pv.innerHTML = `
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span onclick="showOverview(document.getElementById('overviewBtn'))">Overview</span>
+      ${v ? `<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg><span onclick="showVertical('${key}', document.getElementById('nav-${key}'))" style="color:${v.color};cursor:pointer">${v.label}</span>` : ''}
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      ${name}
+    </div>
+    <div class="page-title">${name}</div>
+    <div class="page-meta">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Confluence
+    </div>
     <div class="cf-banner">
       <div class="cf-banner-left">
         <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -449,7 +607,7 @@ async function showRelated(cfId, name, cfUrl, verticalKey) {
       <button class="cf-open-btn" onclick="window.open('${cfUrl}','_blank')">Open in Confluence ↗</button>
     </div>
     <div id="rcontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>`;
- 
+
   try {
     const html = await fetchCF(cfId);
     const el = document.getElementById('rcontent');
@@ -462,24 +620,23 @@ async function showRelated(cfId, name, cfUrl, verticalKey) {
     document.getElementById('rcontent').innerHTML = `<div class="content-error">Could not load from Confluence.<br><a href="${cfUrl}" target="_blank" style="color:#5b8dee">Open in Confluence ↗</a></div>`;
   }
 }
- 
+
 // ── CHAT ──────────────────────────────────────────────────────────────────────
 function toggleChat() {
   chatOpen = !chatOpen;
   document.getElementById('chatPopup').classList.toggle('open', chatOpen);
   if (chatOpen) document.getElementById('chatInput').focus();
 }
- 
+
 function chatAsk(q) {
   document.getElementById('chatInput').value = q;
   document.getElementById('chatSugg').style.display = 'none';
   chatSend();
 }
- 
+
 function buildContext(query) {
   const q = query.toLowerCase();
   const ctx = [], sources = [];
- 
   const kbMap = {
     'megaway': 'megaways', 'hold': 'hold_win', 'scatter': 'scatter', 'wild': 'wild',
     'rtp': 'rtp', 'return to player': 'rtp', 'volatil': 'volatility',
@@ -489,24 +646,20 @@ function buildContext(query) {
     'fishin': 'fishin_frenzy', 'bonanza': 'bonanza', 'lightning roulette': 'lightning_roulette',
     'xxxtre': 'lightning_roulette'
   };
- 
   Object.entries(kbMap).forEach(([key, kbKey]) => {
     if (q.includes(key) && KB[kbKey]) {
       ctx.push(`KNOWLEDGE: ${KB[kbKey]}`);
       sources.push('Product Knowledge Base');
     }
   });
- 
-  // Add cached vertical content if on a vertical page
   if (currentVertical && cfCache[VERTICALS[currentVertical].cfId]) {
     const text = cfCache[VERTICALS[currentVertical].cfId].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').substring(0, 1500);
     ctx.push(`CONFLUENCE CONTENT (${VERTICALS[currentVertical].label}): ${text}`);
     sources.push(`Confluence: ${VERTICALS[currentVertical].label}`);
   }
- 
   return { context: ctx.join('\n'), sources: [...new Set(sources)] };
 }
- 
+
 function addMsg(role, html, sources) {
   const el = document.createElement('div');
   el.className = 'msg ' + role;
@@ -519,7 +672,7 @@ function addMsg(role, html, sources) {
   document.getElementById('chatMsgs').appendChild(el);
   document.getElementById('chatMsgs').scrollTop = 99999;
 }
- 
+
 function addTyping() {
   const el = document.createElement('div');
   el.className = 'msg bot'; el.id = 'typing';
@@ -527,20 +680,18 @@ function addTyping() {
   document.getElementById('chatMsgs').appendChild(el);
   document.getElementById('chatMsgs').scrollTop = 99999;
 }
- 
+
 function removeTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
- 
+
 async function searchConfluence(query) {
   try {
     const res = await fetch(`/confluence-search?q=${encodeURIComponent(query)}`);
     if (!res.ok) return [];
     const data = await res.json();
     return data.results || [];
-  } catch(e) {
-    return [];
-  }
+  } catch(e) { return []; }
 }
- 
+
 async function chatSend() {
   const input = document.getElementById('chatInput');
   const q = input.value.trim();
@@ -551,21 +702,18 @@ async function chatSend() {
   chatHistory.push({ role: 'user', content: q });
   addMsg('user', q);
   addTyping();
- 
-  // Build local KB context
+
   const { context: localContext, sources: localSources } = buildContext(q);
- 
-  // Search Confluence
+
   const cfResults = await searchConfluence(q);
   let cfContext = '';
   const cfSources = [];
   if (cfResults.length) {
-    // Pick the best result by space priority — product spaces first, incident/compliance last
     const spacePriority = (space) => {
       const s = (space || '').toLowerCase();
       if (s.includes('bingo') || s.includes('igaming') || s.includes('multiplayer') || s.includes('engage')) return 0;
       if (s.includes('gops') || s.includes('game ops')) return 1;
-      if (s.includes('platform') || s.includes('inc-') || s.includes('proinfdes')) return 99;
+      if (s.includes('platform') || s.includes('proinfdes')) return 99;
       return 2;
     };
     const sorted = [...cfResults].sort((a, b) => spacePriority(a.space) - spacePriority(b.space));
@@ -587,32 +735,32 @@ async function chatSend() {
           }
         }
       }
-    } catch(e) { /* silent fail — fall back to excerpts */ }
- 
+    } catch(e) {}
+
     cfContext = 'CONFLUENCE SEARCH RESULTS:\n' + cfResults.map(r =>
       `Page: ${r.title} (${r.space})\nExcerpt: ${r.excerpt}\nURL: ${r.url}`
     ).join('\n\n') +
     (topPageContent ? `\n\nFULL PAGE CONTENT (${topResult.title}):\n${topPageContent}` : '');
     cfResults.forEach(r => cfSources.push(`Confluence: ${r.title}`));
   }
- 
+
   const allContext = [localContext, cfContext].filter(Boolean).join('\n\n');
   const allSources = [...new Set([...localSources, ...cfSources])];
- 
+
   const system = `You are Product IQ, the knowledge base assistant for Bally's iGaming product team.
- 
+
 Your job is to answer questions about Bally's own products, games, and mechanics using the context below — which comes from our internal knowledge base and Confluence documentation.
- 
+
 RULES:
 - Answer based on the context provided. Prioritise Confluence results for specific game/product questions.
 - If the answer is not in the context, say: "I don't have that information in the knowledge base yet — try browsing the relevant vertical or searching Confluence directly."
 - Never invent game names, mechanics, or features not in the context.
 - Keep answers concise and in plain English.
 - Do not reference competitor products or external platforms.
- 
+
 Context:
 ${allContext || 'No context found for this query.'}`;
- 
+
   try {
     const res = await fetch('/claude', {
       method: 'POST',
@@ -629,10 +777,11 @@ ${allContext || 'No context found for this query.'}`;
     removeTyping();
     addMsg('bot', '<p>Could not reach the API.</p>', []);
   }
- 
+
   chatLoading = false;
   document.getElementById('chatSendBtn').disabled = false;
   document.getElementById('chatInput').focus();
 }
 </script>
 </body>
+</html>
