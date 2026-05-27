@@ -469,33 +469,42 @@ function isRestrictedPage(pageId) {
   return false;
 }
 
+let pendingRestrictedPage = null;
+
 function showPasswordGate(page) {
+  pendingRestrictedPage = page;
   setActiveNode(page.id);
   document.getElementById('overviewView').style.display = 'none';
   const pv = document.getElementById('pageView');
   pv.style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
 
-  pv.innerHTML = `
-    <div class="pw-gate">
-      <div class="pw-gate-icon">&#128274;</div>
-      <div class="pw-gate-title">Restricted Section</div>
-      <div class="pw-gate-sub">This section requires a password to access.</div>
-      <input class="pw-gate-input" id="pwInput" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword(this, ${JSON.stringify(page).replace(/"/g,'&quot;')})" />
-      <button class="pw-gate-btn" onclick="checkPassword(document.getElementById('pwInput'), ${JSON.stringify(page).replace(/"/g,'&quot;')})">Unlock</button>
-      <div class="pw-gate-error" id="pwError">Incorrect password. Please try again.</div>
-    </div>`;
+  pv.innerHTML = '<div class="pw-gate">' +
+    '<div class="pw-gate-icon">&#128274;</div>' +
+    '<div class="pw-gate-title">Restricted Section</div>' +
+    '<div class="pw-gate-sub">This section requires a password to access.</div>' +
+    '<input class="pw-gate-input" id="pwInput" type="password" placeholder="Enter password" />' +
+    '<button class="pw-gate-btn" id="pwBtn">Unlock</button>' +
+    '<div class="pw-gate-error" id="pwError">Incorrect password. Please try again.</div>' +
+    '</div>';
 
   setTimeout(() => {
     const input = document.getElementById('pwInput');
-    if (input) input.focus();
+    const btn = document.getElementById('pwBtn');
+    if (input) {
+      input.focus();
+      input.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); });
+    }
+    if (btn) btn.addEventListener('click', checkPassword);
   }, 50);
 }
 
-function checkPassword(input, page) {
+function checkPassword() {
+  const input = document.getElementById('pwInput');
+  if (!input) return;
   if (input.value === SUPPLIERS_PASSWORD) {
     suppliersUnlocked = true;
-    loadPage(page);
+    if (pendingRestrictedPage) loadPage(pendingRestrictedPage);
   } else {
     const err = document.getElementById('pwError');
     if (err) err.style.display = 'block';
