@@ -621,9 +621,9 @@ async function runSearch() {
     const data = res.ok ? await res.json() : { results: [] };
     const results = data.results || [];
 
-    // Split into KB results and rest — Confluence's own ranking preserved
-    const kbResults = results.filter(r => r.space === 'IE' || r.space === 'iGaming');
-    const otherResults = results.filter(r => r.space !== 'IE' && r.space !== 'iGaming');
+    // Split into KB results and rest — check URL for IE space key
+    const kbResults = results.filter(r => r.url && /\/spaces\/(IE|ie)\//i.test(r.url));
+    const otherResults = results.filter(r => !r.url || !/\/spaces\/(IE|ie)\//i.test(r.url));
 
     function makeTile(r, badgeClass, badgeLabel) {
       const pageIdMatch = r.url.match(/pages\/([0-9]+)/);
