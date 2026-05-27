@@ -192,6 +192,15 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .tile:hover { border-color: var(--border2); background: var(--surface3); }
 .tile-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
 .tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 6px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text3); margin-top: 8px; }
+.pw-gate { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
+.pw-gate-icon { font-size: 32px; margin-bottom: 16px; }
+.pw-gate-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.pw-gate-sub { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
+.pw-gate-input { background: var(--surface2); border: 1px solid var(--border2); border-radius: 7px; padding: 10px 14px; color: var(--text); font-family: var(--font); font-size: 13px; width: 260px; outline: none; text-align: center; letter-spacing: 2px; }
+.pw-gate-input:focus { border-color: var(--red); }
+.pw-gate-btn { margin-top: 12px; padding: 9px 28px; background: var(--red); border: none; border-radius: 7px; color: white; font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.12s; }
+.pw-gate-btn:hover { background: var(--red-dark); }
+.pw-gate-error { font-size: 12px; color: #e05070; margin-top: 10px; display: none; }
 </style>
 </head>
 <body>
@@ -273,11 +282,14 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 <script>
 const OVERVIEW_PAGE_ID = '129630288';
 const OVERVIEW_URL = 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base';
+const SUPPLIERS_PAGE_ID = '132186474';
+const SUPPLIERS_PASSWORD = 'Restricted';
 
 let cfCache = {};
 let childrenCache = {};
 let activeNodeId = null;
 let searchLoading = false;
+let suppliersUnlocked = false;
 
 // ── TREE ──────────────────────────────────────────────────────────────────────
 async function fetchChildren(pageId) {
@@ -444,7 +456,59 @@ async function showOverview() {
   oc.dataset.loaded = '1';
 }
 
+function isRestrictedPage(pageId) {
+  // Check if this page is the Suppliers page or a child of it
+  if (pageId === SUPPLIERS_PAGE_ID) return true;
+  const suppliersKids = childrenCache[SUPPLIERS_PAGE_ID] || [];
+  if (suppliersKids.some(p => p.id === pageId)) return true;
+  // Check grandchildren
+  for (const kid of suppliersKids) {
+    const grandkids = childrenCache[kid.id] || [];
+    if (grandkids.some(p => p.id === pageId)) return true;
+  }
+  return false;
+}
+
+function showPasswordGate(page) {
+  setActiveNode(page.id);
+  document.getElementById('overviewView').style.display = 'none';
+  const pv = document.getElementById('pageView');
+  pv.style.display = 'block';
+  document.getElementById('contentArea').scrollTop = 0;
+
+  pv.innerHTML = `
+    <div class="pw-gate">
+      <div class="pw-gate-icon">&#128274;</div>
+      <div class="pw-gate-title">Restricted Section</div>
+      <div class="pw-gate-sub">This section requires a password to access.</div>
+      <input class="pw-gate-input" id="pwInput" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword(this, ${JSON.stringify(page).replace(/"/g,'&quot;')})" />
+      <button class="pw-gate-btn" onclick="checkPassword(document.getElementById('pwInput'), ${JSON.stringify(page).replace(/"/g,'&quot;')})">Unlock</button>
+      <div class="pw-gate-error" id="pwError">Incorrect password. Please try again.</div>
+    </div>`;
+
+  setTimeout(() => {
+    const input = document.getElementById('pwInput');
+    if (input) input.focus();
+  }, 50);
+}
+
+function checkPassword(input, page) {
+  if (input.value === SUPPLIERS_PASSWORD) {
+    suppliersUnlocked = true;
+    loadPage(page);
+  } else {
+    const err = document.getElementById('pwError');
+    if (err) err.style.display = 'block';
+    input.value = '';
+    input.focus();
+  }
+}
+
 async function loadPage(page) {
+  if (isRestrictedPage(page.id) && !suppliersUnlocked) {
+    showPasswordGate(page);
+    return;
+  }
   setActiveNode(page.id);
   document.getElementById('overviewView').style.display = 'none';
   const pv = document.getElementById('pageView');
