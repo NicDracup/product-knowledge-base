@@ -175,6 +175,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .search-tile-source { display: flex; align-items: center; gap: 6px; }
 .source-badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 3px; }
 .badge-confluence { background: rgba(0,82,204,0.15); color: #5b8dee; }
+.badge-kb { background: rgba(200,16,46,0.15); color: #e05070; }
+.search-section-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
 .search-tile-space { font-size: 10px; color: var(--text3); }
 .search-tile-arrow { font-size: 13px; color: var(--text3); }
 .search-tile:hover .search-tile-arrow { color: var(--text2); }
@@ -308,16 +310,24 @@ async function buildTree() {
   const children = await fetchChildren(OVERVIEW_PAGE_ID);
   if (!children.length) { root.innerHTML = '<div class="sidebar-loading">No pages found</div>'; return; }
   root.innerHTML = '';
+  paletteIndex = 0;
   children.forEach(page => root.appendChild(createTreeNode(page, 0)));
 }
 
+const PALETTE = [
+  '#00C853', '#E63946', '#2196F3', '#FF9800',
+  '#9C27B0', '#FF4081', '#00BFA5', '#FFD600'
+];
+let paletteIndex = 0;
+
 function createTreeNode(page, depth, inheritColor) {
-  const dotColors = {
-    'bingo': '#E05070', 'slots': '#5b8dee', 'live casino': '#22c55e',
-    'arcade': '#f59e0b', 'jackpot mechanics': '#a78bfa', 'jackpots': '#a78bfa',
-    'multiplayer': '#34d399'
-  };
-  const dotColor = inheritColor || dotColors[page.title.toLowerCase()] || '#888888';
+  let dotColor;
+  if (inheritColor) {
+    dotColor = inheritColor;
+  } else {
+    dotColor = PALETTE[paletteIndex % PALETTE.length];
+    paletteIndex++;
+  }
 
   const wrapper = document.createElement('div');
   wrapper.className = 'tree-node';
@@ -611,44 +621,48 @@ async function runSearch() {
     const data = res.ok ? await res.json() : { results: [] };
     const results = data.results || [];
 
-    const ql = q.toLowerCase().split(/\s+/);
-    results.sort((a, b) => {
-      const aScore = ql.filter(w => a.title.toLowerCase().includes(w)).length;
-      const bScore = ql.filter(w => b.title.toLowerCase().includes(w)).length;
-      return bScore - aScore;
-    });
+    // Split into KB results and rest — Confluence's own ranking preserved
+    const kbResults = results.filter(r => r.space === 'IE' || r.space === 'iGaming');
+    const otherResults = results.filter(r => r.space !== 'IE' && r.space !== 'iGaming');
 
-    const tilesHtml = results.map(r => {
+    function makeTile(r, badgeClass, badgeLabel) {
       const pageIdMatch = r.url.match(/pages\/([0-9]+)/);
       const pageId = pageIdMatch ? pageIdMatch[1] : null;
       const cleanExcerpt = (r.excerpt || '').replace(/[\u0000-\u001F]/g, ' ').trim();
       const pageObj = JSON.stringify({ id: pageId, title: r.title, url: r.url }).replace(/"/g, '&quot;');
-      return `<button class="search-tile" onclick="loadPage(${pageObj})">
-        <div class="search-tile-name">${r.title}</div>
-        <div class="search-tile-excerpt">${cleanExcerpt || 'No preview available'}</div>
-        <div class="search-tile-footer">
-          <div class="search-tile-source">
-            <span class="source-badge badge-confluence">Confluence</span>
-            <span class="search-tile-space">${r.space}</span>
-          </div>
-          <span class="search-tile-arrow">&#8594;</span>
-        </div>
-      </button>`;
-    }).join('');
+      return '<button class="search-tile" onclick="loadPage(' + pageObj + ')">' +
+        '<div class="search-tile-name">' + r.title + '</div>' +
+        '<div class="search-tile-excerpt">' + (cleanExcerpt || 'No preview available') + '</div>' +
+        '<div class="search-tile-footer">' +
+          '<div class="search-tile-source">' +
+            '<span class="source-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+            '<span class="search-tile-space">' + r.space + '</span>' +
+          '</div>' +
+          '<span class="search-tile-arrow">&#8594;</span>' +
+        '</div>' +
+      '</button>';
+    }
 
-    pv.innerHTML = `
-      <div class="breadcrumb">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Search results
-      </div>
-      <div class="search-results-header">
-        <div class="search-results-title">Results for "${q}"</div>
-        <div class="search-results-count">${results.length} found</div>
-      </div>
-      ${results.length
-        ? '<div class="search-results-grid">' + tilesHtml + '</div>'
-        : '<div class="search-empty">No results found for "' + q + '"<br><br>Try different keywords or browse a vertical from the sidebar.</div>'
-      }`;
+    let html = '<div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>' +
+      '<div class="search-results-header">' +
+        '<div class="search-results-title">Results for "' + q + '"</div>' +
+        '<div class="search-results-count">' + results.length + ' found</div>' +
+      '</div>';
+
+    if (results.length === 0) {
+      html += '<div class="search-empty">No results found for "' + q + '"<br><br>Try different keywords or browse a vertical from the sidebar.</div>';
+    } else {
+      if (kbResults.length) {
+        html += '<div class="search-section-label">Knowledge Base</div>';
+        html += '<div class="search-results-grid">' + kbResults.map(r => makeTile(r, 'badge-kb', 'KB')).join('') + '</div>';
+      }
+      if (otherResults.length) {
+        html += '<div class="search-section-label" style="margin-top:24px">Confluence</div>';
+        html += '<div class="search-results-grid">' + otherResults.map(r => makeTile(r, 'badge-confluence', 'Confluence')).join('') + '</div>';
+      }
+    }
+
+    pv.innerHTML = html;
   } catch(e) {
     pv.innerHTML = '<div class="content-error">Search failed. Please try again.</div>';
   }
