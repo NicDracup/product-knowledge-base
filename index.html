@@ -252,31 +252,11 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
         <div class="cf-banner">
           <div class="cf-banner-left">
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Confluence page always up to date
+            Live from Confluence always up to date
           </div>
           <button class="cf-open-btn" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">Open in Confluence &#8599;</button>
         </div>
-        <div class="overview-body">
-          <p>Plain English guides on our games, product types, and mechanics written for anyone in the business.</p>
-          <h2>What's covered</h2>
-          <ul>
-            <li>Slots, Live Casino, Arcade, Jackpots, Bingo, and Multiplayer verticals</li>
-            <li>Per-game overviews, key mechanics, and venture availability</li>
-            <li>Product type explainers in plain English</li>
-          </ul>
-          <h2>How it works</h2>
-          <p>Content is pulled live from <a href="https://confluence.cloud.ballys.com" target="_blank">Confluence</a>. Browse by vertical or use the search bar to find any page across Confluence.</p>
-          <h2>Team</h2>
-          <div class="team-grid">
-            <div class="team-card"><div class="name">Dez Pazmany</div><div class="role">Head of Product Operations</div></div>
-            <div class="team-card"><div class="name">Dale Myers</div><div class="role">Senior Bingo Product Executive</div></div>
-            <div class="team-card"><div class="name">Shannon Gavin</div><div class="role">Casino Product Manager</div></div>
-            <div class="team-card"><div class="name">Craig Walker</div><div class="role">Casino Product Executive</div></div>
-            <div class="team-card"><div class="name">Freddie Watford</div><div class="role">Casino Product Executive</div></div>
-            <div class="team-card"><div class="name">Will Pritchard</div><div class="role">Casino Product Executive</div></div>
-            <div class="team-card"><div class="name">Nic Dracup</div><div class="role">Multiplayer Operations Executive</div></div>
-          </div>
-        </div>
+        <div id="overviewContent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>
       </div>
       <div id="pageView" style="display:none"></div>
     </div>
@@ -439,7 +419,7 @@ async function fetchCF(pageId) {
   return cleaned;
 }
 
-function showOverview() {
+async function showOverview() {
   document.querySelectorAll('.nav-overview').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tree-node-row').forEach(r => r.classList.remove('active'));
   document.getElementById('overviewBtn').classList.add('active');
@@ -448,6 +428,20 @@ function showOverview() {
   document.getElementById('pageView').style.display = 'none';
   hideTilesBar();
   document.getElementById('contentArea').scrollTop = 0;
+
+  const oc = document.getElementById('overviewContent');
+  if (oc.dataset.loaded) return;
+  try {
+    const html = await fetchCF(OVERVIEW_PAGE_ID);
+    if (html && html.trim().length > 10) {
+      oc.innerHTML = '<div class="cf-content">' + html + '</div>';
+    } else {
+      oc.innerHTML = '<div class="content-error">No content found on the overview Confluence page.</div>';
+    }
+  } catch(e) {
+    oc.innerHTML = '<div class="content-error">Could not load overview from Confluence.</div>';
+  }
+  oc.dataset.loaded = '1';
 }
 
 async function loadPage(page) {
@@ -591,6 +585,7 @@ async function runSearch() {
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 buildTree();
+showOverview();
 </script>
 </body>
 </html>
