@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PKB Analytics</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --red: #C8102E; --bg: #0F0F0F; --surface: #1A1A1A; --surface2: #222222; --surface3: #2A2A2A;
+  --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
+  --text: #F0F0F0; --text2: #A0A0A0; --text3: #555555;
+  --font: 'DM Sans', system-ui, sans-serif;
+}
+body { font-family: var(--font); background: var(--bg); color: var(--text); padding: 32px; }
+header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+.logo-mark { width: 26px; height: 26px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; color: white; }
+h1 { font-size: 18px; font-weight: 600; }
+.badge { padding: 2px 9px; background: rgba(200,16,46,0.12); border: 1px solid rgba(200,16,46,0.25); border-radius: 20px; font-size: 10px; color: #e05070; font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+.stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.stat-value { font-size: 32px; font-weight: 600; color: var(--text); }
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+.section-title { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 16px; }
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.bar-label { font-size: 12px; color: var(--text2); width: 200px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--red); border-radius: 3px; transition: width 0.3s; }
+.bar-count { font-size: 12px; color: var(--text3); width: 40px; text-align: right; flex-shrink: 0; }
+.recent-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.recent-row:last-child { border-bottom: none; }
+.recent-type { color: var(--text2); width: 120px; flex-shrink: 0; }
+.recent-value { color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-ts { color: var(--text3); flex-shrink: 0; font-size: 11px; }
+.loading { color: var(--text3); font-size: 14px; padding: 40px 0; text-align: center; }
+.refresh-btn { margin-left: auto; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; }
+.refresh-btn:hover { background: var(--surface3); color: var(--text); }
+.no-search { background: rgba(200,16,46,0.07); border: 1px solid rgba(200,16,46,0.15); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 12px; color: #e05070; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-mark">PK</div>
+  <h1>PKB Analytics</h1>
+  <div class="badge">Internal</div>
+  <button class="refresh-btn" onclick="loadData()">Refresh</button>
+</header>
+<div id="content"><div class="loading">Loading analytics...</div></div>
+
+<script>
+function fmtTime(ts) {
+  const d = new Date(ts);
+  return d.toLocaleString('en-GB', { timeZone: 'Europe/London', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+}
+
+function makeBars(items, maxVal) {
+  if (!items.length) return '<div style="color:#555;font-size:12px">No data yet</div>';
+  return items.map(([label, count]) => `
+    <div class="bar-row">
+      <div class="bar-label" title="${label}">${label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round((count/maxVal)*100)}%"></div></div>
+      <div class="bar-count">${count}</div>
+    </div>`).join('');
+}
+
+async function loadData() {
+  document.getElementById('content').innerHTML = '<div class="loading">Loading analytics...</div>';
+  try {
+    const res = await fetch('/analytics?action=read');
+    const data = await res.json();
+    const counts = data.counts || {};
+    const recent = data.recent || [];
+
+    const pageLoads = counts['pageload'] || 0;
+    const searches = counts['search'] || 0;
+    const cfOpens = counts['confluence_open'] || 0;
+
+    const verticals = Object.entries(counts)
+      .filter(([k]) => k.startsWith('vertical:'))
+      .map(([k, v]) => [k.replace('vertical:', ''), v])
+      .sort((a, b) => b[1] - a[1]);
+
+    const quicklinks = Object.entries(counts)
+      .filter(([k]) => k.startsWith('quicklink:'))
+      .map(([k, v]) => [k.replace('quicklink:', ''), v])
+      .sort((a, b) => b[1] - a[1]);
+
+    const searches_used = Object.entries(counts)
+      .filter(([k]) => k.startsWith('search:') && !k.startsWith('search:noresults:'))
+      .map(([k, v]) => [k.replace('search:', ''), v])
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10);
+
+    const noResults = Object.entries(counts)
+      .filter(([k]) => k.startsWith('search:noresults:'))
+      .map(([k, v]) => [k.replace('search:noresults:', ''), v])
+      .sort((a, b) => b[1] - a[1]);
+
+    const maxV = verticals.length ? verticals[0][1] : 1;
+    const maxQ = quicklinks.length ? quicklinks[0][1] : 1;
+    const maxS = searches_used.length ? searches_used[0][1] : 1;
+
+    document.getElementById('content').innerHTML = `
+      <div class="grid">
+        <div class="stat-card"><div class="stat-label">Page Loads</div><div class="stat-value">${pageLoads}</div></div>
+        <div class="stat-card"><div class="stat-label">Searches</div><div class="stat-value">${searches}</div></div>
+        <div class="stat-card"><div class="stat-label">Confluence Opens</div><div class="stat-value">${cfOpens}</div></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Verticals</div>
+        ${makeBars(verticals, maxV)}
+      </div>
+
+      <div class="section">
+        <div class="section-title">Quick Links</div>
+        ${makeBars(quicklinks, maxQ)}
+      </div>
+
+      <div class="section">
+        <div class="section-title">Top Search Terms</div>
+        ${makeBars(searches_used, maxS)}
+      </div>
+
+      ${noResults.length ? `<div class="section">
+        <div class="section-title">Searches with No Results</div>
+        ${noResults.map(([term, count]) => `<div class="no-search">"${term}" &mdash; ${count} time${count > 1 ? 's' : ''}</div>`).join('')}
+      </div>` : ''}
+
+      <div class="section">
+        <div class="section-title">Recent Activity (last 50)</div>
+        ${recent.slice(0, 50).map(e => `
+          <div class="recent-row">
+            <div class="recent-type">${e.type}</div>
+            <div class="recent-value">${e.value || ''}</div>
+            <div class="recent-ts">${fmtTime(e.ts)}</div>
+          </div>`).join('') || '<div style="color:#555;font-size:12px">No activity yet</div>'}
+      </div>`;
+  } catch(e) {
+    document.getElementById('content').innerHTML = '<div class="loading">Failed to load analytics.</div>';
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
