@@ -37,7 +37,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .sidebar-inner::-webkit-scrollbar { width: 3px; }
 .sidebar-inner::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 .sidebar-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); padding: 0 16px; margin: 10px 0 4px; }
-.nav-overview { display: flex; align-items: center; gap: 9px; padding: 7px 16px; cursor: pointer; color: var(--text2); font-size: 12px; transition: all 0.12s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); border-left: 2px solid transparent; }
+.nav-overview { display: flex; align-items: center; gap: 9px; padding: 7px 16px; cursor: pointer; color: var(--text); font-size: 12px; transition: all 0.12s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); border-left: 2px solid transparent; }
 .nav-overview:hover { background: var(--surface2); color: var(--text); }
 .nav-overview.active { background: var(--surface2); color: var(--text); border-left-color: var(--red); }
 .nav-icon { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
@@ -191,20 +191,20 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
       <div id="treeRoot"><div class="sidebar-loading">Loading...</div></div>
       <div class="sidebar-divider"></div>
       <div class="sidebar-label">Quick Links</div>
-      <button class="nav-overview" id="scheduleBtn" onclick="showSchedule()">
+      <button class="nav-overview" id="scheduleBtn" onclick="showSchedule(); track('quicklink', 'Bingo Schedule')">
         <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Bingo Schedule
       </button>
-      <button class="nav-overview" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">
+      <button class="nav-overview" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base'); track('quicklink', 'KB Confluence Page')">
         <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>KB Confluence Page
       </button>
-      <button class="nav-overview" onclick="window.open('https://neon-mousse-b10a92.netlify.app/')">
+      <button class="nav-overview" onclick="window.open('https://neon-mousse-b10a92.netlify.app/'); track('quicklink', 'Game IQ')">
         <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Game IQ
       </button>
-      <button class="nav-overview" onclick="window.open('https://supporthub.cloud.ballys.com/helpcenter/pt/')">
+      <button class="nav-overview" onclick="window.open('https://supporthub.cloud.ballys.com/helpcenter/pt/'); track('quicklink', 'People Playbook')">
         <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>People Playbook
       </button>
-      <button class="nav-overview" onclick="window.open('https://app.contentful.com')">
+      <button class="nav-overview" onclick="window.open('https://app.contentful.com'); track('quicklink', 'Contentful')">
         <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Contentful
       </button>
     </div>
@@ -277,6 +277,14 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 </div>
 
 <script>
+function track(type, value) {
+  fetch('/analytics', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, value: value || '' })
+  }).catch(() => {});
+}
+
 const OVERVIEW_PAGE_ID = '129630288';
 const OVERVIEW_URL = 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base';
 const SUPPLIERS_PAGE_ID = '132186474';
@@ -361,6 +369,7 @@ function createTreeNode(page, depth, inheritColor) {
 
   row.addEventListener('click', async () => {
     loadPage(page);
+    if (depth === 0) track('vertical', page.title);
 
     if (!loaded) {
       childContainer.innerHTML = '<div class="sidebar-loading" style="padding:4px 0 4px 8px">Loading...</div>';
@@ -562,7 +571,7 @@ async function loadPage(page) {
     <div class="page-meta"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence</div>
     <div class="cf-banner">
       <div class="cf-banner-left"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live from Confluence always up to date</div>
-      <button class="cf-open-btn" onclick="window.open('${cfUrl}','_blank')">Open in Confluence &#8599;</button>
+      <button class="cf-open-btn" onclick="window.open('${cfUrl}','_blank'); track('confluence_open', '${page.title}')">Open in Confluence &#8599;</button>
     </div>
     <div id="pagecontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>`;
 
@@ -614,6 +623,7 @@ async function runSearch() {
   const q = input.value.trim();
   if (!q || searchLoading) return;
   searchLoading = true;
+  track('search', q);
 
   document.querySelectorAll('.nav-overview').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tree-node-row').forEach(r => r.classList.remove('active'));
@@ -665,16 +675,11 @@ async function runSearch() {
       '</div>';
 
     if (results.length === 0) {
+      track('search:noresults', q);
       html += '<div class="search-empty">No results found for "' + q + '"<br><br>Try different keywords or browse a vertical from the sidebar.</div>';
     } else {
-      if (kbResults.length) {
-        html += '<div class="search-section-label">Knowledge Base</div>';
-        html += '<div class="search-results-grid">' + kbResults.map(r => makeTile(r, 'badge-kb', 'KB')).join('') + '</div>';
-      }
-      if (otherResults.length) {
-        html += '<div class="search-section-label" style="margin-top:24px">Confluence</div>';
-        html += '<div class="search-results-grid">' + otherResults.map(r => makeTile(r, 'badge-confluence', 'Confluence')).join('') + '</div>';
-      }
+      const allResults = [...kbResults.map(r => ({ ...r, _badge: 'badge-kb', _label: 'KB' })), ...otherResults.map(r => ({ ...r, _badge: 'badge-confluence', _label: 'Confluence' }))];
+      html += '<div class="search-results-grid">' + allResults.map(r => makeTile(r, r._badge, r._label)).join('') + '</div>';
     }
 
     pv.innerHTML = html;
@@ -686,6 +691,7 @@ async function runSearch() {
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
+track('pageload', '');
 buildTree();
 showOverview();
 </script>
