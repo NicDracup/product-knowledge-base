@@ -68,7 +68,7 @@ function makeBars(items, maxVal) {
 async function loadData() {
   document.getElementById('content').innerHTML = '<div class="loading">Loading analytics...</div>';
   try {
-    const res = await fetch('/analytics?action=read');
+    const res = await fetch('/track?action=read');
     const data = await res.json();
     const counts = data.counts || {};
     const recent = data.recent || [];
