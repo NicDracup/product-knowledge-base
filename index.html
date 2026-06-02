@@ -822,7 +822,7 @@ function applyFilter(filter) {
 
 function makeTile(r) {
   if (r._source === 'contentful') {
-    const pageObj = JSON.stringify({ _contentful: true, entryId: r.entryId, title: r.title, provider: r.provider, gameType: r.gameType, features: r.features, paylines: r.paylines, maxMultiplier: r.maxMultiplier, progressiveJackpot: r.progressiveJackpot, volatility: r.volatility, waysToWin: r.waysToWin, winLineType: r.winLineType, platform: r.platform, demoUrl: r.demoUrl, realUrl: r.realUrl, infoDetails: r.infoDetails, excerpt: r.excerpt }).replace(/"/g, '&quot;');
+    const pageObj = JSON.stringify({ _contentful: true, entryId: r.entryId, title: r.title, provider: r.provider, gameType: r.gameType, features: r.features, paylines: r.paylines, maxMultiplier: r.maxMultiplier, progressiveJackpot: r.progressiveJackpot, volatility: r.volatility, waysToWin: r.waysToWin, winLineType: r.winLineType, platform: r.platform, demoUrl: r.demoUrl, realUrl: r.realUrl, infoDetails: r.infoDetails, excerpt: r.excerpt, cashierConfig: r.cashierConfig || null }).replace(/"/g, '&quot;');
     return '<button class="search-tile" onclick="loadContentfulPage(' + pageObj + ')">' +
       '<div class="search-tile-name">' + r.title + '</div>' +
       '<div class="search-tile-excerpt">' + (r.excerpt || 'No preview available') + '</div>' +
