@@ -522,6 +522,56 @@ function loadContentfulPage(game) {
 
   const features = (game.features || []).map(f => `<span class="tag">${f}</span>`).join('');
   const platform = (game.platform || []).map(p => `<span class="platform-tag">${p}</span>`).join('');
+  const cc = game.cashierConfig || null;
+
+  const boxStyle = 'background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px';
+  const headStyle = 'font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px';
+  const rowStyle = 'display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px';
+
+  const gameDetailRows = [
+    ['Provider', game.provider],
+    ['Game Type', game.gameType],
+    ['Paylines', game.paylines],
+    ['Max Win', game.maxWin || ''],
+    ['Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : ''],
+    ['Ways to Win', game.waysToWin],
+    ['Win Line Type', game.winLineType],
+    ['Progressive JP', game.progressiveJackpot ? 'Yes' : 'No'],
+    ['Volatility', game.volatility],
+    ['RTP', ''],
+    ['Min Bet', ''],
+    ['Max Bet', '']
+  ].map(([label, val]) => `
+    <div style="${rowStyle}">
+      <span style="color:var(--text2)">${label}</span>
+      <span style="color:${val ? 'var(--text)' : 'var(--text3)'};font-weight:${val ? '500' : '400'};font-style:${val ? 'normal' : 'italic'}">${val || 'Not set'}</span>
+    </div>`).join('');
+
+  const cashierRows = cc ? [
+    ['Game ID', cc.gameId],
+    ['Game Name', cc.gameName],
+    ['Skin Name', cc.skinName],
+    ['Product Name', cc.productName],
+    ['W2G Reportable', cc.w2gReportable ? 'Yes' : 'No'],
+    ['Group Compliant', cc.groupCompliant ? 'Yes' : 'No'],
+    ['Mini Game', cc.miniGame ? 'Yes' : 'No'],
+    ['Progressive', cc.progressive ? 'Yes' : 'No'],
+    ['Integration', cc.integration ? 'Yes' : 'No'],
+    ['PP', cc.pp ? 'Yes' : 'No'],
+    ['Live', cc.live ? 'Yes' : 'No']
+  ].map(([label, val]) => `
+    <div style="${rowStyle}">
+      <span style="color:var(--text2)">${label}</span>
+      <span style="color:var(--text);font-weight:500">${val !== undefined && val !== '' ? val : 'Not set'}</span>
+    </div>`).join('') : '';
+
+  const venturesHtml = cc && cc.ventures && cc.ventures.length ? `
+    <div style="margin-top:12px">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:6px">Ventures</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${cc.ventures.map(v => `<span class="tag">${v}</span>`).join('')}
+      </div>
+    </div>` : '';
 
   pv.innerHTML = `
     <div class="breadcrumb">
@@ -535,54 +585,48 @@ function loadContentfulPage(game) {
     <div class="cf-banner" style="background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.2);margin-bottom:16px">
       <div class="cf-banner-left" style="color:#f5c842">
         <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Contentful &middot; Game Model V2
+        Contentful &middot; Game Model V2 ${cc ? '&middot; Cashier Game Config' : ''}
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-        <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">URLs</div>
-        ${game.demoUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.demoUrl}</span></div>` : ''}
-        ${game.realUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.realUrl}</span></div>` : ''}
-      </div>
-      ${platform ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-        <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Platform</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
-      </div>` : '<div></div>'}
-    </div>
+    <div style="display:grid;grid-template-columns:220px 1fr 220px;gap:12px;align-items:start">
 
-    <div style="display:grid;grid-template-columns:240px 1fr;gap:12px">
       <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-          <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Game Details</div>
-          ${[
-            ['Provider', game.provider],
-            ['Game Type', game.gameType],
-            ['Paylines', game.paylines],
-            ['Max Win', game.maxWin],
-            ['Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : ''],
-            ['Ways to Win', game.waysToWin],
-            ['Win Line Type', game.winLineType],
-            ['Progressive JP', game.progressiveJackpot ? 'Yes' : 'No'],
-            ['Volatility', game.volatility],
-            ['RTP', ''],
-            ['Min Bet', ''],
-            ['Max Bet', '']
-          ].map(([label, val]) => `
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
-              <span style="color:var(--text2)">${label}</span>
-              <span style="color:${val ? 'var(--text)' : 'var(--text3)'};font-weight:${val ? '500' : '400'};font-style:${val ? 'normal' : 'italic'}">${val || 'Not set'}</span>
-            </div>`).join('')}
+        <div style="${boxStyle}">
+          <div style="${headStyle}">Game Details</div>
+          ${gameDetailRows}
         </div>
-        ${features ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-          <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Features</div>
+        ${features ? `<div style="${boxStyle}">
+          <div style="${headStyle}">Features</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">${features}</div>
         </div>` : ''}
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px">
-        <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Description</div>
-        <div style="font-size:14px;color:var(--text2);line-height:1.8">${game.excerpt || 'No description available.'}</div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="${boxStyle}">
+          <div style="${headStyle}">URLs</div>
+          ${game.demoUrl ? `<div style="${rowStyle}"><span style="color:var(--text2);flex-shrink:0;width:50px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.demoUrl}</span></div>` : ''}
+          ${game.realUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.realUrl}</span></div>` : ''}
+          ${!game.demoUrl && !game.realUrl ? `<div style="font-size:12px;color:var(--text3);font-style:italic">No URLs set</div>` : ''}
+        </div>
+        <div style="${boxStyle}">
+          <div style="${headStyle}">Description</div>
+          <div style="font-size:14px;color:var(--text2);line-height:1.8">${game.excerpt || 'No description available.'}</div>
+        </div>
       </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        ${platform ? `<div style="${boxStyle}">
+          <div style="${headStyle}">Platform</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
+        </div>` : ''}
+        ${cc ? `<div style="${boxStyle}">
+          <div style="${headStyle}">Game Config</div>
+          ${cashierRows}
+          ${venturesHtml}
+        </div>` : ''}
+      </div>
+
     </div>`;
 }
 
