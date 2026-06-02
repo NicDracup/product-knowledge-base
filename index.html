@@ -534,13 +534,26 @@ function loadContentfulPage(game) {
     </div>
     <div class="page-title">${game.title}</div>
     <div class="page-meta">${game.provider || ''}${game.gameType ? ' &middot; ' + game.gameType : ''}</div>
-    <div class="cf-banner" style="background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.2)">
+    <div class="cf-banner" style="background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.2);margin-bottom:16px">
       <div class="cf-banner-left" style="color:#f5c842">
         <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         Contentful &middot; Game Model V2
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:200px 1fr;gap:12px;margin-bottom:12px">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
+        <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">URLs</div>
+        ${game.demoUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.demoUrl}</span></div>` : ''}
+        ${game.realUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.realUrl}</span></div>` : ''}
+      </div>
+      ${platform ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
+        <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Platform</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
+      </div>` : '<div></div>'}
+    </div>
+
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:12px">
       <div style="display:flex;flex-direction:column;gap:12px">
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
           <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Game Details</div>
@@ -548,6 +561,7 @@ function loadContentfulPage(game) {
             ['Provider', game.provider],
             ['Game Type', game.gameType],
             ['Paylines', game.paylines],
+            ['Max Win', game.maxWin],
             ['Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : ''],
             ['Ways to Win', game.waysToWin],
             ['Win Line Type', game.winLineType],
@@ -565,10 +579,6 @@ function loadContentfulPage(game) {
         ${features ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
           <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Features</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">${features}</div>
-        </div>` : ''}
-        ${platform ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-          <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Platform</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
         </div>` : ''}
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px">
