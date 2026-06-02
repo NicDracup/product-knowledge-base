@@ -28,7 +28,26 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .header-search svg { width: 13px; height: 13px; stroke: var(--text3); fill: none; stroke-width: 2; flex-shrink: 0; }
 .search-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 12px; min-width: 0; }
 .search-input::placeholder { color: var(--text3); }
+.search-filter { display: flex; align-items: center; gap: 2px; background: var(--surface3); border-radius: 5px; padding: 2px; flex-shrink: 0; }
+.search-filter-btn { font-size: 10px; padding: 2px 8px; border: none; background: transparent; color: var(--text3); font-family: var(--font); border-radius: 4px; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+.search-filter-btn.active { background: var(--surface); color: var(--text); }
 .header-search kbd { font-size: 10px; padding: 1px 5px; background: var(--surface3); border: 1px solid var(--border); border-radius: 3px; color: var(--text3); font-family: var(--font); flex-shrink: 0; }
+.feedback-btn { display: flex; align-items: center; gap: 6px; padding: 5px 12px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 11px; font-family: var(--font); cursor: pointer; transition: all 0.12s; flex-shrink: 0; }
+.feedback-btn:hover { border-color: var(--border2); color: var(--text); }
+.feedback-btn svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+/* FEEDBACK MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.modal { background: var(--surface); border: 1px solid var(--border2); border-radius: 12px; padding: 24px; width: 440px; }
+.modal-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+.modal-sub { font-size: 12px; color: var(--text2); margin-bottom: 16px; }
+.modal-textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 7px; padding: 10px 12px; color: var(--text); font-family: var(--font); font-size: 13px; resize: none; outline: none; height: 100px; }
+.modal-textarea:focus { border-color: var(--red); }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+.modal-cancel { padding: 7px 16px; background: transparent; border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; }
+.modal-submit { padding: 7px 16px; background: var(--red); border: none; border-radius: 6px; color: white; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; }
+.modal-submit:hover { background: var(--red-dark); }
+.modal-success { font-size: 13px; color: #4ade80; margin-top: 10px; display: none; }
 
 .layout { display: flex; flex: 1; min-height: 0; overflow: hidden; }
 
@@ -173,10 +192,32 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
   <div class="proto-badge">Prototype</div>
   <div class="header-search">
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="searchInput" class="search-input" placeholder="Search Confluence..." onkeydown="if(event.key==='Enter')runSearch()" />
+    <input id="searchInput" class="search-input" placeholder="Search..." onkeydown="if(event.key==='Enter')runSearch()" />
+    <div class="search-filter">
+      <button class="search-filter-btn active" id="filterAll" onclick="setFilter('all')">All</button>
+      <button class="search-filter-btn" id="filterConfluence" onclick="setFilter('confluence')">Confluence</button>
+    </div>
     <kbd>&#8629;</kbd>
   </div>
+  <button class="feedback-btn" onclick="openFeedback()">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Feedback
+  </button>
 </header>
+
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeFeedback()">
+  <div class="modal">
+    <div class="modal-title">Leave Feedback</div>
+    <div class="modal-sub">Suggestions, missing content, or anything else -- let us know.</div>
+    <textarea class="modal-textarea" id="feedbackText" placeholder="Type your suggestion here..."></textarea>
+    <div class="modal-success" id="feedbackSuccess">Thanks! Your feedback has been saved.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeFeedback()">Cancel</button>
+      <button class="modal-submit" onclick="submitFeedback()">Submit</button>
+    </div>
+  </div>
+</div>
 
 <div class="layout">
   <nav class="sidebar">
@@ -195,17 +236,14 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
         <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Bingo Schedule
       </button>
-      <button class="nav-overview" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base'); track('quicklink', 'KB Confluence Page')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>KB Confluence Page
-      </button>
       <button class="nav-overview" onclick="window.open('https://neon-mousse-b10a92.netlify.app/'); track('quicklink', 'Game IQ')">
         <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Game IQ
       </button>
-      <button class="nav-overview" onclick="window.open('https://supporthub.cloud.ballys.com/helpcenter/pt/'); track('quicklink', 'People Playbook')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>People Playbook
+      <button class="nav-overview" onclick="window.open('https://confluence.cloud.ballys.com/wiki/home'); track('quicklink', 'Confluence Home')">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence Home
       </button>
       <button class="nav-overview" onclick="window.open('https://app.contentful.com'); track('quicklink', 'Contentful')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Contentful
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Contentful Home
       </button>
     </div>
   </nav>
@@ -277,12 +315,45 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 </div>
 
 <script>
+let searchFilter = 'all';
+
+function setFilter(f) {
+  searchFilter = f;
+  document.getElementById('filterAll').classList.toggle('active', f === 'all');
+  document.getElementById('filterConfluence').classList.toggle('active', f === 'confluence');
+}
+
 function track(type, value) {
   fetch('/track', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ type, value: value || '' })
   }).catch(() => {});
+}
+
+function openFeedback() {
+  document.getElementById('feedbackModal').style.display = 'flex';
+  document.getElementById('feedbackText').value = '';
+  document.getElementById('feedbackSuccess').style.display = 'none';
+  setTimeout(() => document.getElementById('feedbackText').focus(), 50);
+}
+
+function closeFeedback() {
+  document.getElementById('feedbackModal').style.display = 'none';
+}
+
+async function submitFeedback() {
+  const text = document.getElementById('feedbackText').value.trim();
+  if (!text) return;
+  await fetch('/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'feedback', value: text })
+  }).catch(() => {});
+  document.getElementById('feedbackSuccess').style.display = 'block';
+  document.getElementById('feedbackText').style.display = 'none';
+  document.querySelector('.modal-actions').style.display = 'none';
+  setTimeout(() => closeFeedback(), 1500);
 }
 
 const OVERVIEW_PAGE_ID = '129630288';
@@ -635,12 +706,13 @@ async function runSearch() {
   pv.style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
 
+  const filterLabel = searchFilter === 'confluence' ? 'Confluence' : 'All Sources';
   pv.innerHTML = `
     <div class="breadcrumb">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       Search results
     </div>
-    <div class="search-loading"><div class="spinner"></div>Searching Confluence...</div>`;
+    <div class="search-loading"><div class="spinner"></div>Searching ${filterLabel}...</div>`;
 
   try {
     const res = await fetch(`/confluence-search?q=${encodeURIComponent(q)}`);
