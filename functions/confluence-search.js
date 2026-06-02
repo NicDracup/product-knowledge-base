@@ -11,26 +11,29 @@ export async function onRequest(context) {
     const headers = { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' };
     const base = 'https://ballysgroup.atlassian.net/wiki/rest/api/search';
 
-    // Try phrase search first, fall back to regular if no results
     const phraseQuery = `text ~ "\\"${query}\\"" AND type = page`;
-    const fallbackQuery = `text ~ "${query}" AND type = page`;
+    const broadQuery = `text ~ "${query}" AND type = page`;
 
-    let res = await fetch(`${base}?cql=${encodeURIComponent(phraseQuery)}&limit=15`, { headers });
-    let data = res.ok ? await res.json() : { results: [] };
+    // Run both in parallel
+    const [phraseRes, broadRes] = await Promise.all([
+      fetch(`${base}?cql=${encodeURIComponent(phraseQuery)}&limit=10`, { headers })
+        .then(r => r.ok ? r.json() : { results: [] })
+        .then(d => d.results || [])
+        .catch(() => []),
+      fetch(`${base}?cql=${encodeURIComponent(broadQuery)}&limit=15`, { headers })
+        .then(r => r.ok ? r.json() : { results: [] })
+        .then(d => d.results || [])
+        .catch(() => [])
+    ]);
 
-    // If phrase search returns nothing, fall back to regular search
-    if (!data.results || data.results.length === 0) {
-      res = await fetch(`${base}?cql=${encodeURIComponent(fallbackQuery)}&limit=15`, { headers });
-      data = res.ok ? await res.json() : { results: [] };
-    }
-
+    // Phrase matches first, then fill with broad results, deduplicate
     const seen = new Set();
-    const results = (data.results || []).filter(r => {
+    const merged = [...phraseRes, ...broadRes].filter(r => {
       const id = r.content?.id;
       if (!id || seen.has(id)) return false;
       seen.add(id);
       return true;
-    }).map(r => ({
+    }).slice(0, 15).map(r => ({
       title: r.title,
       excerpt: r.excerpt || '',
       url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
@@ -38,7 +41,7 @@ export async function onRequest(context) {
       spaceKey: r.content?.space?.key || r.content?._expandable?.space?.replace('/rest/api/space/', '') || ''
     }));
 
-    return new Response(JSON.stringify({ results }), {
+    return new Response(JSON.stringify({ results: merged }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
   } catch (err) {
