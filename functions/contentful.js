@@ -8,7 +8,7 @@ export async function onRequest(context) {
     const token = context.env.CONTENTFUL_TOKEN;
     const spaceId = '08wz2hjuit8t';
     const res = await fetch(
-      `https://cdn.contentful.com/spaces/${spaceId}/entries?content_type=gameV2&query=${encodeURIComponent(query)}&select=fields.title,fields.gamePlatformConfig,fields.infoDetails,fields.introductionContent,fields.progressiveJackpot&limit=10&locale=en-GB`,
+      `https://api.contentful.com/spaces/${spaceId}/environments/master/entries?content_type=gameV2&query=${encodeURIComponent(query)}&select=fields.title,fields.gamePlatformConfig,fields.infoDetails,fields.introductionContent,fields.progressiveJackpot&limit=10`,
       { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } }
     );
     if (!res.ok) {
@@ -22,10 +22,8 @@ export async function onRequest(context) {
       const f = item.fields;
       const config = f.gamePlatformConfig?.['en-GB'] || f.gamePlatformConfig || {};
       const gameType = config.gameType || {};
-      const infoDetails = f.infoDetails?.['en-GB'] || f.infoDetails || '';
       const intro = f.introductionContent?.['en-GB'] || f.introductionContent || '';
       const title = f.title?.['en-GB'] || f.title || '';
-      // Strip HTML from intro for excerpt
       const excerpt = intro.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200);
       return {
         title,
@@ -34,7 +32,6 @@ export async function onRequest(context) {
         gameType: gameType.type || '',
         features: gameType.features || [],
         paylines: gameType.winLines || '',
-        maxWin: '',
         maxMultiplier: gameType.maxMultiplier || '',
         progressiveJackpot: f.progressiveJackpot?.['en-GB'] ?? f.progressiveJackpot ?? false,
         volatility: gameType.volatility || '',
@@ -43,7 +40,7 @@ export async function onRequest(context) {
         platform: config.platform || [],
         demoUrl: config.demoUrl || '',
         realUrl: config.realUrl || '',
-        infoDetails,
+        infoDetails: f.infoDetails?.['en-GB'] || f.infoDetails || '',
         entryId: item.sys.id
       };
     });
