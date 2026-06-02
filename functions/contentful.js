@@ -2,24 +2,29 @@ export async function onRequest(context) {
   const url = new URL(context.request.url);
   const query = url.searchParams.get('q');
   if (!query) {
-    return new Response(JSON.stringify({ error: 'Missing query' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ error: 'Missing query' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
+
   try {
     const token = context.env.CONTENTFUL_TOKEN;
     const spaceId = '08wz2hjuit8t';
-    const res = await fetch(
-      `https://api.contentful.com/spaces/${spaceId}/environments/master/entries?content_type=gameV2&query=${encodeURIComponent(query)}&limit=10`,
-      { headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' } }
-    );
-    if (!res.ok) {
-      const errText = await res.text();
-      return new Response(JSON.stringify({ error: `Contentful returned ${res.status}`, detail: errText }), {
-        status: res.status,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
-    }
-    const data = await res.json();
-    const results = (data.items || []).map(item => {
+    const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/master/entries`;
+    const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' };
+
+    const [gameV2Res, cashierRes] = await Promise.all([
+      fetch(`${baseUrl}?content_type=gameV2&query=${encodeURIComponent(query)}&limit=10`, { headers }),
+      fetch(`${baseUrl}?content_type=cashierGameConfig&query=${encodeURIComponent(query)}&limit=10`, { headers })
+    ]);
+
+    const [gameV2Data, cashierData] = await Promise.all([
+      gameV2Res.ok ? gameV2Res.json() : { items: [] },
+      cashierRes.ok ? cashierRes.json() : { items: [] }
+    ]);
+
+    const gameV2Results = (gameV2Data.items || []).map(item => {
       try {
         const f = item.fields || {};
         const config = (f.gamePlatformConfig && (f.gamePlatformConfig['en-GB'] || f.gamePlatformConfig)) || {};
@@ -28,7 +33,8 @@ export async function onRequest(context) {
         const title = (f.title && (f.title['en-GB'] || f.title)) || '';
         const excerpt = typeof intro === 'string' ? intro.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() : '';
         const platformRaw = f.platformVisibility && (f.platformVisibility['en-GB'] || f.platformVisibility);
-        const platform = Array.isArray(platformRaw) ? platformRaw : (config.platform || []);        return {
+        const platform = Array.isArray(platformRaw) ? platformRaw : (config.platform || []);
+        return {
           title,
           excerpt,
           provider: config.gameStudio || config.gameProvider || '',
@@ -40,19 +46,80 @@ export async function onRequest(context) {
           volatility: gameType.volatility || '',
           waysToWin: gameType.waysToWin || '',
           winLineType: gameType.winLineType || '',
-          platform: platform,
+          platform,
           demoUrl: config.demoUrl || '',
           realUrl: config.realUrl || '',
           infoDetails: (f.infoDetails && (f.infoDetails['en-GB'] || f.infoDetails)) || '',
-          entryId: item.sys && item.sys.id ? item.sys.id : ''
+          entryId: item.sys?.id || '',
+          cashierConfig: null
         };
       } catch(e) {
         return null;
       }
     }).filter(Boolean);
-    return new Response(JSON.stringify({ results }), {
+
+    const cashierResults = (cashierData.items || []).map(item => {
+      try {
+        const f = item.fields || {};
+        const g = k => f[k] && (f[k]['en-GB'] !== undefined ? f[k]['en-GB'] : f[k]);
+        return {
+          gameId: g('gameId') || '',
+          gameName: g('gameName') || '',
+          skinName: g('gameSkinName') || '',
+          productName: g('gameProductName') || '',
+          ventures: g('ventures') || [],
+          w2gReportable: g('w2gReportable') ?? false,
+          groupCompliant: g('groupCompliant') ?? false,
+          miniGame: g('miniGame') ?? false,
+          progressive: g('progressive') ?? false,
+          integration: Array.isArray(g('integration')) ? g('integration').includes('yes') : false,
+          pp: Array.isArray(g('pp')) ? g('pp').includes('yes') : false,
+          live: Array.isArray(g('live')) ? g('live').includes('yes') : false,
+          entryId: item.sys?.id || ''
+        };
+      } catch(e) {
+        return null;
+      }
+    }).filter(Boolean);
+
+    gameV2Results.forEach(game => {
+      const match = cashierResults.find(c =>
+        c.gameName && game.title &&
+        c.gameName.toLowerCase().replace(/_/g, ' ') === game.title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim()
+      );
+      if (match) game.cashierConfig = match;
+    });
+
+    const unmatchedCashier = cashierResults.filter(c =>
+      !gameV2Results.some(g => g.cashierConfig && g.cashierConfig.entryId === c.entryId)
+    );
+
+    unmatchedCashier.forEach(c => {
+      gameV2Results.push({
+        title: c.gameName || '',
+        excerpt: '',
+        provider: '',
+        gameType: '',
+        features: [],
+        paylines: '',
+        maxMultiplier: '',
+        progressiveJackpot: false,
+        volatility: '',
+        waysToWin: '',
+        winLineType: '',
+        platform: [],
+        demoUrl: '',
+        realUrl: '',
+        infoDetails: '',
+        entryId: '',
+        cashierConfig: c
+      });
+    });
+
+    return new Response(JSON.stringify({ results: gameV2Results }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
+
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
