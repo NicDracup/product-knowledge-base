@@ -11,7 +11,7 @@ export async function onRequest(context) {
     const headers = { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' };
     const base = 'https://ballysgroup.atlassian.net/wiki/rest/api/search';
 
-    const cql = `text ~ "${query}" AND type = page ORDER BY score DESC`;
+    const cql = `text ~ "${query}" AND type = page`;
     const res = await fetch(`${base}?cql=${encodeURIComponent(cql)}&limit=15`, { headers });
 
     if (!res.ok) {
@@ -22,7 +22,13 @@ export async function onRequest(context) {
     }
 
     const data = await res.json();
-    const results = (data.results || []).map(r => ({
+    const seen = new Set();
+    const results = (data.results || []).filter(r => {
+      const id = r.content?.id;
+      if (!id || seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }).map(r => ({
       title: r.title,
       excerpt: r.excerpt || '',
       url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
