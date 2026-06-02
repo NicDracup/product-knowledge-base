@@ -145,15 +145,7 @@ async function loadData() {
           </div>`).join('') : '<div style="color:#555;font-size:12px">No feedback yet</div>'}
       </div>
 
-      <div class="section">
-        <div class="section-title">Recent Activity (last 50)</div>
-        ${recentActivity.map(e => `
-          <div class="recent-row">
-            <div class="recent-type">${e.type}</div>
-            <div class="recent-value">${e.value || ''}</div>
-            <div class="recent-ts">${fmtTime(e.ts)}</div>
-          </div>`).join('') || '<div style="color:#555;font-size:12px">No activity yet</div>'}
-      </div>`;
+      `;
   } catch(e) {
     document.getElementById('content').innerHTML = '<div class="loading">Failed to load analytics.</div>';
   }
