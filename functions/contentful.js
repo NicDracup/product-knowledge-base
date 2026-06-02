@@ -36,6 +36,7 @@ export async function onRequest(context) {
         const platform = Array.isArray(platformRaw) ? platformRaw : (config.platform || []);
         return {
           title,
+          entryTitle: (f.entryTitle && (f.entryTitle['en-GB'] || f.entryTitle)) || '',
           excerpt,
           provider: config.gameStudio || config.gameProvider || '',
           gameType: gameType.type || '',
@@ -84,8 +85,8 @@ export async function onRequest(context) {
 
     gameV2Results.forEach(game => {
       const match = cashierResults.find(c =>
-        c.gameName && game.title &&
-        c.gameName.toLowerCase().replace(/_/g, ' ') === game.title.toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim()
+        c.gameName && game.entryTitle &&
+        c.gameName.toUpperCase() === game.entryTitle.toUpperCase()
       );
       if (match) game.cashierConfig = match;
     });
