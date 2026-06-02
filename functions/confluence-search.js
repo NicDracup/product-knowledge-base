@@ -11,17 +11,19 @@ export async function onRequest(context) {
     const headers = { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' };
     const base = 'https://ballysgroup.atlassian.net/wiki/rest/api/search';
 
-    const cql = `text ~ "${query}" AND type = page`;
-    const res = await fetch(`${base}?cql=${encodeURIComponent(cql)}&limit=15`, { headers });
+    // Try phrase search first, fall back to regular if no results
+    const phraseQuery = `text ~ "\\"${query}\\"" AND type = page`;
+    const fallbackQuery = `text ~ "${query}" AND type = page`;
 
-    if (!res.ok) {
-      return new Response(JSON.stringify({ error: `Confluence returned ${res.status}` }), {
-        status: res.status,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
-      });
+    let res = await fetch(`${base}?cql=${encodeURIComponent(phraseQuery)}&limit=15`, { headers });
+    let data = res.ok ? await res.json() : { results: [] };
+
+    // If phrase search returns nothing, fall back to regular search
+    if (!data.results || data.results.length === 0) {
+      res = await fetch(`${base}?cql=${encodeURIComponent(fallbackQuery)}&limit=15`, { headers });
+      data = res.ok ? await res.json() : { results: [] };
     }
 
-    const data = await res.json();
     const seen = new Set();
     const results = (data.results || []).filter(r => {
       const id = r.content?.id;
