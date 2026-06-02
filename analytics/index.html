@@ -38,6 +38,10 @@ h1 { font-size: 18px; font-weight: 600; }
 .refresh-btn { margin-left: auto; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; }
 .refresh-btn:hover { background: var(--surface3); color: var(--text); }
 .no-search { background: rgba(200,16,46,0.07); border: 1px solid rgba(200,16,46,0.15); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 12px; color: #e05070; }
+.feedback-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.feedback-item:last-child { border-bottom: none; }
+.feedback-text { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.5; }
+.feedback-ts { font-size: 11px; color: var(--text3); }
 </style>
 </head>
 <body>
@@ -98,6 +102,9 @@ async function loadData() {
       .map(([k, v]) => [k.replace('search:noresults:', ''), v])
       .sort((a, b) => b[1] - a[1]);
 
+    const feedbackItems = recent.filter(e => e.type === 'feedback');
+    const recentActivity = recent.filter(e => e.type !== 'feedback').slice(0, 50);
+
     const maxV = verticals.length ? verticals[0][1] : 1;
     const maxQ = quicklinks.length ? quicklinks[0][1] : 1;
     const maxS = searches_used.length ? searches_used[0][1] : 1;
@@ -130,8 +137,17 @@ async function loadData() {
       </div>` : ''}
 
       <div class="section">
+        <div class="section-title">Feedback (${feedbackItems.length})</div>
+        ${feedbackItems.length ? feedbackItems.map(e => `
+          <div class="feedback-item">
+            <div class="feedback-text">${e.value}</div>
+            <div class="feedback-ts">${fmtTime(e.ts)}</div>
+          </div>`).join('') : '<div style="color:#555;font-size:12px">No feedback yet</div>'}
+      </div>
+
+      <div class="section">
         <div class="section-title">Recent Activity (last 50)</div>
-        ${recent.slice(0, 50).map(e => `
+        ${recentActivity.map(e => `
           <div class="recent-row">
             <div class="recent-type">${e.type}</div>
             <div class="recent-value">${e.value || ''}</div>
