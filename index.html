@@ -561,8 +561,8 @@ function loadContentfulPage(game) {
     ['Live', cc.live ? 'Yes' : 'No']
   ].map(([label, val]) => `
     <div style="${rowStyle}">
-      <span style="color:var(--text2)">${label}</span>
-      <span style="color:var(--text);font-weight:500">${val !== undefined && val !== '' ? val : 'Not set'}</span>
+      <span style="color:var(--text2);flex-shrink:0;margin-right:8px">${label}</span>
+      <span style="color:var(--text);font-weight:500;text-align:right;word-break:break-all;min-width:0">${val !== undefined && val !== '' ? val : 'Not set'}</span>
     </div>`).join('') : '';
 
   const venturesHtml = cc && cc.ventures && cc.ventures.length ? `
@@ -589,7 +589,7 @@ function loadContentfulPage(game) {
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:220px 1fr 220px;gap:12px;align-items:start">
+    <div style="display:grid;grid-template-columns:280px 1fr 320px;gap:12px;align-items:start">
 
       <div style="display:flex;flex-direction:column;gap:12px">
         <div style="${boxStyle}">
@@ -602,7 +602,7 @@ function loadContentfulPage(game) {
         </div>` : ''}
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
         <div style="${boxStyle}">
           <div style="${headStyle}">URLs</div>
           ${game.demoUrl ? `<div style="${rowStyle}"><span style="color:var(--text2);flex-shrink:0;width:50px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.demoUrl}</span></div>` : ''}
@@ -616,14 +616,14 @@ function loadContentfulPage(game) {
       </div>
 
       <div style="display:flex;flex-direction:column;gap:12px">
-        ${platform ? `<div style="${boxStyle}">
-          <div style="${headStyle}">Platform</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
-        </div>` : ''}
         ${cc ? `<div style="${boxStyle}">
           <div style="${headStyle}">Game Config</div>
           ${cashierRows}
           ${venturesHtml}
+        </div>` : ''}
+        ${platform ? `<div style="${boxStyle}">
+          <div style="${headStyle}">Platform</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
         </div>` : ''}
       </div>
 
