@@ -524,9 +524,9 @@ function loadContentfulPage(game) {
   const platform = (game.platform || []).map(p => `<span class="platform-tag">${p}</span>`).join('');
   const cc = game.cashierConfig || null;
 
-  const boxStyle = 'background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px';
-  const headStyle = 'font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px';
-  const rowStyle = 'display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px';
+  const boxStyle = 'background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;';
+  const headStyle = 'font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px;flex-shrink:0';
+  const rowStyle = 'display:flex;align-items:flex-start;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;flex-shrink:0';
 
   const gameDetailRows = [
     ['Provider', game.provider],
@@ -543,8 +543,8 @@ function loadContentfulPage(game) {
     ['Max Bet', '']
   ].map(([label, val]) => `
     <div style="${rowStyle}">
-      <span style="color:var(--text2)">${label}</span>
-      <span style="color:${val ? 'var(--text)' : 'var(--text3)'};font-weight:${val ? '500' : '400'};font-style:${val ? 'normal' : 'italic'}">${val || 'Not set'}</span>
+      <span style="color:var(--text2);flex-shrink:0">${label}</span>
+      <span style="color:${val ? 'var(--text)' : 'var(--text3)'};font-weight:${val ? '500' : '400'};font-style:${val ? 'normal' : 'italic'};text-align:right;word-break:break-word;min-width:0">${val || 'Not set'}</span>
     </div>`).join('');
 
   const cashierRows = cc ? [
@@ -562,11 +562,11 @@ function loadContentfulPage(game) {
   ].map(([label, val]) => `
     <div style="${rowStyle}">
       <span style="color:var(--text2);flex-shrink:0;margin-right:8px">${label}</span>
-      <span style="color:var(--text);font-weight:500;text-align:right;word-break:break-all;min-width:0">${val !== undefined && val !== '' ? val : 'Not set'}</span>
+      <span style="color:var(--text);font-weight:500;text-align:right;word-break:break-word;min-width:0">${val !== undefined && val !== '' ? val : 'Not set'}</span>
     </div>`).join('') : '';
 
   const venturesHtml = cc && cc.ventures && cc.ventures.length ? `
-    <div style="margin-top:12px">
+    <div style="margin-top:12px;flex-shrink:0">
       <div style="font-size:11px;color:var(--text2);margin-bottom:6px">Ventures</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         ${cc.ventures.map(v => `<span class="tag">${v}</span>`).join('')}
@@ -589,45 +589,69 @@ function loadContentfulPage(game) {
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:280px 1fr 320px;gap:12px;align-items:start">
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);gap:12px;">
 
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div style="${boxStyle}">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div id="cf-box-details" style="${boxStyle}">
           <div style="${headStyle}">Game Details</div>
           ${gameDetailRows}
         </div>
-        ${features ? `<div style="${boxStyle}">
+        <div id="cf-box-features" style="${boxStyle}">
           <div style="${headStyle}">Features</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">${features}</div>
-        </div>` : ''}
+          <div style="display:flex;gap:6px;flex-wrap:wrap">${features || '<span style="font-size:12px;color:var(--text3);font-style:italic">None listed</span>'}</div>
+        </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+      <div style="display:flex;flex-direction:column;gap:12px;min-width:0;">
         <div style="${boxStyle}">
           <div style="${headStyle}">URLs</div>
-          ${game.demoUrl ? `<div style="${rowStyle}"><span style="color:var(--text2);flex-shrink:0;width:50px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.demoUrl}</span></div>` : ''}
-          ${game.realUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.realUrl}</span></div>` : ''}
+          ${game.demoUrl ? `<div style="${rowStyle}"><span style="color:var(--text2);flex-shrink:0;width:36px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${game.demoUrl}</span></div>` : ''}
+          ${game.realUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px;gap:8px;flex-shrink:0"><span style="color:var(--text2);flex-shrink:0;width:36px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${game.realUrl}</span></div>` : ''}
           ${!game.demoUrl && !game.realUrl ? `<div style="font-size:12px;color:var(--text3);font-style:italic">No URLs set</div>` : ''}
         </div>
-        <div style="${boxStyle}">
+        <div style="${boxStyle}flex:1;">
           <div style="${headStyle}">Description</div>
           <div style="font-size:14px;color:var(--text2);line-height:1.8">${game.excerpt || 'No description available.'}</div>
         </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:12px">
-        ${cc ? `<div style="${boxStyle}">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        ${cc ? `<div id="cf-box-config" style="${boxStyle}">
           <div style="${headStyle}">Game Config</div>
           ${cashierRows}
           ${venturesHtml}
         </div>` : ''}
-        ${platform ? `<div style="${boxStyle}">
+        ${platform ? `<div id="cf-box-platform" style="${boxStyle}">
           <div style="${headStyle}">Platform</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
         </div>` : ''}
       </div>
 
     </div>`;
+
+  // Match heights: Game Details = Game Config, Features = Platform
+  requestAnimationFrame(() => {
+    const details = document.getElementById('cf-box-details');
+    const config = document.getElementById('cf-box-config');
+    const features = document.getElementById('cf-box-features');
+    const platform = document.getElementById('cf-box-platform');
+
+    if (details && config) {
+      details.style.height = '';
+      config.style.height = '';
+      const h1 = Math.max(details.offsetHeight, config.offsetHeight);
+      details.style.height = h1 + 'px';
+      config.style.height = h1 + 'px';
+    }
+
+    if (features && platform) {
+      features.style.height = '';
+      platform.style.height = '';
+      const h2 = Math.max(features.offsetHeight, platform.offsetHeight);
+      features.style.height = h2 + 'px';
+      platform.style.height = h2 + 'px';
+    }
+  });
 }
 
 // ── CONTENT ───────────────────────────────────────────────────────────────────
