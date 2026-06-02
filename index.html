@@ -127,19 +127,23 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .team-card .name { font-size: 12px; font-weight: 500; color: var(--text); }
 .team-card .role { font-size: 10px; color: var(--text3); margin-top: 2px; }
 
-.search-results-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.search-results-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .search-results-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
-.search-results-count { font-size: 12px; color: var(--text3); padding: 2px 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; }
+.results-filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.results-filter-btn { padding: 4px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; color: var(--text2); font-size: 11px; font-family: var(--font); cursor: pointer; transition: all 0.12s; }
+.results-filter-btn:hover { border-color: var(--border2); color: var(--text); }
+.results-filter-btn.active { background: var(--surface3); border-color: var(--border2); color: var(--text); }
 .search-results-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: 220px; gap: 12px; }
 .search-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; cursor: pointer; transition: all 0.12s; text-align: left; font-family: var(--font); display: flex; flex-direction: column; min-width: 0; width: 100%; height: 100%; }
 .search-tile:hover { border-color: var(--border2); background: var(--surface2); }
 .search-tile-name { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 8px; flex-shrink: 0; }
-.search-tile-excerpt { font-size: 13px; color: var(--text2); line-height: 1.6; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
+.search-tile-excerpt { font-size: 13px; color: var(--text); line-height: 1.6; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
 .search-tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border); flex-shrink: 0; margin-top: auto; }
 .search-tile-source { display: flex; align-items: center; gap: 6px; }
 .source-badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 3px; }
 .badge-confluence { background: rgba(0,82,204,0.15); color: #5b8dee; }
 .badge-kb { background: rgba(200,16,46,0.15); color: #e05070; }
+.badge-contentful { background: rgba(255,196,0,0.12); color: #f5c842; }
 .search-section-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
 .search-tile-space { font-size: 10px; color: var(--text3); }
 .search-tile-arrow { font-size: 13px; color: var(--text3); }
@@ -168,6 +172,9 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .pw-gate-btn:hover { background: var(--red-dark); }
 .pw-gate-error { font-size: 12px; color: #e05070; margin-top: 10px; display: none; }
 
+.tag { font-size: 11px; padding: 3px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); }
+.platform-tag { font-size: 11px; padding: 3px 8px; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); border-radius: 4px; color: #818cf8; }
+
 /* SCHEDULE PAGE */
 .schedule-intro { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 10px; }
 .schedule-cards { display: flex; gap: 16px; margin-top: 24px; margin-bottom: 28px; }
@@ -193,10 +200,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
   <div class="header-search">
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input id="searchInput" class="search-input" placeholder="Search..." onkeydown="if(event.key==='Enter')runSearch()" />
-    <div class="search-filter">
-      <button class="search-filter-btn active" id="filterAll" onclick="setFilter('all')">All</button>
-      <button class="search-filter-btn" id="filterConfluence" onclick="setFilter('confluence')">Confluence</button>
-    </div>
     <kbd>&#8629;</kbd>
   </div>
   <button class="feedback-btn" onclick="openFeedback()">
@@ -315,14 +318,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 </div>
 
 <script>
-let searchFilter = 'all';
-
-function setFilter(f) {
-  searchFilter = f;
-  document.getElementById('filterAll').classList.toggle('active', f === 'all');
-  document.getElementById('filterConfluence').classList.toggle('active', f === 'confluence');
-}
-
 function track(type, value) {
   fetch('/track', {
     method: 'POST',
@@ -517,6 +512,72 @@ function loadScheduleFrame(url) {
   document.getElementById('contentArea').scrollTop = document.getElementById('contentArea').scrollHeight;
 }
 
+function loadContentfulPage(game) {
+  document.querySelectorAll('.nav-overview').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tree-node-row').forEach(r => r.classList.remove('active'));
+  document.getElementById('overviewView').style.display = 'none';
+  document.getElementById('scheduleView').style.display = 'none';
+  const pv = document.getElementById('pageView');
+  pv.style.display = 'block';
+  hideTilesBar();
+  document.getElementById('contentArea').scrollTop = 0;
+
+  const features = (game.features || []).map(f => `<span class="tag">${f}</span>`).join('');
+  const platform = (game.platform || []).map(p => `<span class="platform-tag">${p}</span>`).join('');
+
+  pv.innerHTML = `
+    <div class="breadcrumb">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span onclick="history.back()">Search results</span>
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      ${game.title}
+    </div>
+    <div class="page-title">${game.title}</div>
+    <div class="page-meta">${game.provider || ''}${game.gameType ? ' &middot; ' + game.gameType : ''}</div>
+    <div class="cf-banner" style="background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.2)">
+      <div class="cf-banner-left" style="color:#f5c842">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Contentful &middot; Game Model V2
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:12px;margin-bottom:12px">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
+          <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Game Details</div>
+          ${[
+            ['Provider', game.provider],
+            ['Game Type', game.gameType],
+            ['Paylines', game.paylines],
+            ['Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : ''],
+            ['Ways to Win', game.waysToWin],
+            ['Win Line Type', game.winLineType],
+            ['Progressive JP', game.progressiveJackpot ? 'Yes' : 'No'],
+            ['Volatility', game.volatility],
+            ['RTP', ''],
+            ['Min Bet', ''],
+            ['Max Bet', '']
+          ].map(([label, val]) => `
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+              <span style="color:var(--text2)">${label}</span>
+              <span style="color:${val ? 'var(--text)' : 'var(--text3)'};font-weight:${val ? '500' : '400'};font-style:${val ? 'normal' : 'italic'}">${val || 'Not set'}</span>
+            </div>`).join('')}
+        </div>
+        ${features ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
+          <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Features</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">${features}</div>
+        </div>` : ''}
+        ${platform ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
+          <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Platform</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
+        </div>` : ''}
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px">
+        <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Description</div>
+        <div style="font-size:14px;color:var(--text2);line-height:1.8">${game.excerpt || 'No description available.'}</div>
+      </div>
+    </div>`;
+}
+
 // ── CONTENT ───────────────────────────────────────────────────────────────────
 async function fetchCF(pageId) {
   if (cfCache[pageId]) return cfCache[pageId];
@@ -689,6 +750,58 @@ function showTilesBar(pages) {
 function hideTilesBar() { document.getElementById('tilesBar').style.display = 'none'; }
 
 // ── SEARCH ────────────────────────────────────────────────────────────────────
+let allSearchResults = [];
+let currentFilter = 'all';
+
+function applyFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.results-filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('filter-' + filter).classList.add('active');
+
+  const grid = document.getElementById('resultsGrid');
+  if (!grid) return;
+
+  const cfResults = allSearchResults.filter(r => r._source === 'confluence');
+  const ctResults = allSearchResults.filter(r => r._source === 'contentful');
+  const visible = filter === 'confluence' ? cfResults : filter === 'contentful' ? ctResults : allSearchResults;
+
+  grid.innerHTML = visible.map(r => makeTile(r)).join('') || '<div class="search-empty">No results for this filter.</div>';
+}
+
+function makeTile(r) {
+  if (r._source === 'contentful') {
+    const pageObj = JSON.stringify({ _contentful: true, entryId: r.entryId, title: r.title, provider: r.provider, gameType: r.gameType, features: r.features, paylines: r.paylines, maxMultiplier: r.maxMultiplier, progressiveJackpot: r.progressiveJackpot, volatility: r.volatility, waysToWin: r.waysToWin, winLineType: r.winLineType, platform: r.platform, demoUrl: r.demoUrl, realUrl: r.realUrl, infoDetails: r.infoDetails, excerpt: r.excerpt }).replace(/"/g, '&quot;');
+    return '<button class="search-tile" onclick="loadContentfulPage(' + pageObj + ')">' +
+      '<div class="search-tile-name">' + r.title + '</div>' +
+      '<div class="search-tile-excerpt">' + (r.excerpt || 'No preview available') + '</div>' +
+      '<div class="search-tile-footer">' +
+        '<div class="search-tile-source">' +
+          '<span class="source-badge badge-contentful">Contentful</span>' +
+          '<span class="search-tile-space">' + (r.provider ? r.provider + (r.gameType ? ' · ' + r.gameType : '') : '') + '</span>' +
+        '</div>' +
+        '<span class="search-tile-arrow">&#8594;</span>' +
+      '</div>' +
+    '</button>';
+  }
+  const badgeClass = r._badge || 'badge-confluence';
+  const badgeLabel = r._label || 'Confluence';
+  const pageIdMatch = r.url ? r.url.match(/pages\/([0-9]+)/) : null;
+  const pageId = pageIdMatch ? pageIdMatch[1] : null;
+  const cleanExcerpt = (r.excerpt || '').replace(/[\u0000-\u001F]/g, ' ').trim();
+  const pageObj = JSON.stringify({ id: pageId, title: r.title, url: r.url }).replace(/"/g, '&quot;');
+  return '<button class="search-tile" onclick="loadPage(' + pageObj + ')">' +
+    '<div class="search-tile-name">' + r.title + '</div>' +
+    '<div class="search-tile-excerpt">' + (cleanExcerpt || 'No preview available') + '</div>' +
+    '<div class="search-tile-footer">' +
+      '<div class="search-tile-source">' +
+        '<span class="source-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+        '<span class="search-tile-space">' + r.space + '</span>' +
+      '</div>' +
+      '<span class="search-tile-arrow">&#8594;</span>' +
+    '</div>' +
+  '</button>';
+}
+
 async function runSearch() {
   const input = document.getElementById('searchInput');
   const q = input.value.trim();
@@ -706,55 +819,49 @@ async function runSearch() {
   pv.style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
 
-  const filterLabel = searchFilter === 'confluence' ? 'Confluence' : 'All Sources';
   pv.innerHTML = `
     <div class="breadcrumb">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       Search results
     </div>
-    <div class="search-loading"><div class="spinner"></div>Searching ${filterLabel}...</div>`;
+    <div class="search-loading"><div class="spinner"></div>Searching...</div>`;
 
   try {
-    const res = await fetch(`/confluence-search?q=${encodeURIComponent(q)}`);
-    const data = res.ok ? await res.json() : { results: [] };
-    const results = data.results || [];
+    const [cfRes, ctRes] = await Promise.all([
+      fetch(`/confluence-search?q=${encodeURIComponent(q)}`).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
+      fetch(`/contentful?q=${encodeURIComponent(q)}`).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }))
+    ]);
 
-    const kbResults = results.filter(r => r.url && /\/spaces\/(IE|ie)\//i.test(r.url));
-    const otherResults = results.filter(r => !r.url || !/\/spaces\/(IE|ie)\//i.test(r.url));
+    const cfResults = (cfRes.results || []).map(r => {
+      const isKB = r.url && /\/spaces\/(IE|ie)\//i.test(r.url);
+      return { ...r, _source: 'confluence', _badge: isKB ? 'badge-kb' : 'badge-confluence', _label: isKB ? 'KB' : 'Confluence' };
+    });
+    const ctResults = (ctRes.results || []).map(r => ({ ...r, _source: 'contentful' }));
 
-    function makeTile(r, badgeClass, badgeLabel) {
-      const pageIdMatch = r.url.match(/pages\/([0-9]+)/);
-      const pageId = pageIdMatch ? pageIdMatch[1] : null;
-      const cleanExcerpt = (r.excerpt || '').replace(/[\u0000-\u001F]/g, ' ').trim();
-      const pageObj = JSON.stringify({ id: pageId, title: r.title, url: r.url }).replace(/"/g, '&quot;');
-      return '<button class="search-tile" onclick="loadPage(' + pageObj + ')">' +
-        '<div class="search-tile-name">' + r.title + '</div>' +
-        '<div class="search-tile-excerpt">' + (cleanExcerpt || 'No preview available') + '</div>' +
-        '<div class="search-tile-footer">' +
-          '<div class="search-tile-source">' +
-            '<span class="source-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
-            '<span class="search-tile-space">' + r.space + '</span>' +
-          '</div>' +
-          '<span class="search-tile-arrow">&#8594;</span>' +
-        '</div>' +
-      '</button>';
-    }
+    allSearchResults = [...cfResults, ...ctResults];
+    currentFilter = 'all';
 
-    let html = '<div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>' +
-      '<div class="search-results-header">' +
-        '<div class="search-results-title">Results for "' + q + '"</div>' +
-        '<div class="search-results-count">' + results.length + ' found</div>' +
-      '</div>';
+    const total = allSearchResults.length;
+    const cfCount = cfResults.length;
+    const ctCount = ctResults.length;
 
-    if (results.length === 0) {
+    if (total === 0) {
       track('search:noresults', q);
-      html += '<div class="search-empty">No results found for "' + q + '"<br><br>Try different keywords or browse a vertical from the sidebar.</div>';
+      pv.innerHTML = `
+        <div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>
+        <div class="search-results-header"><div class="search-results-title">Results for "${q}"</div></div>
+        <div class="search-empty">No results found for "${q}"<br><br>Try different keywords or browse a vertical from the sidebar.</div>`;
     } else {
-      const allResults = [...kbResults.map(r => ({ ...r, _badge: 'badge-kb', _label: 'KB' })), ...otherResults.map(r => ({ ...r, _badge: 'badge-confluence', _label: 'Confluence' }))];
-      html += '<div class="search-results-grid">' + allResults.map(r => makeTile(r, r._badge, r._label)).join('') + '</div>';
+      pv.innerHTML = `
+        <div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>
+        <div class="search-results-header"><div class="search-results-title">Results for "${q}"</div></div>
+        <div class="results-filter-bar">
+          <button class="results-filter-btn active" id="filter-all" onclick="applyFilter('all')">All (${total})</button>
+          <button class="results-filter-btn" id="filter-confluence" onclick="applyFilter('confluence')">Confluence (${cfCount})</button>
+          <button class="results-filter-btn" id="filter-contentful" onclick="applyFilter('contentful')">Contentful (${ctCount})</button>
+        </div>
+        <div class="search-results-grid" id="resultsGrid">${allSearchResults.map(r => makeTile(r)).join('')}</div>`;
     }
-
-    pv.innerHTML = html;
   } catch(e) {
     pv.innerHTML = '<div class="content-error">Search failed. Please try again.</div>';
   }
