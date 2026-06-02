@@ -11,7 +11,7 @@
   --red: #C8102E; --red-dark: #9E0B22;
   --bg: #0F0F0F; --surface: #1A1A1A; --surface2: #222222; --surface3: #2A2A2A;
   --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
-  --text: #F0F0F0; --text2: #A0A0A0; --text3: #555555;
+  --text: #F0F0F0; --text2: #C8C8C8; --text3: #888888;
   --font: 'DM Sans', system-ui, sans-serif;
 }
 html, body { height: 100%; overflow: hidden; }
@@ -32,9 +32,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .search-filter-btn { font-size: 10px; padding: 2px 8px; border: none; background: transparent; color: var(--text3); font-family: var(--font); border-radius: 4px; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
 .search-filter-btn.active { background: var(--surface); color: var(--text); }
 .header-search kbd { font-size: 10px; padding: 1px 5px; background: var(--surface3); border: 1px solid var(--border); border-radius: 3px; color: var(--text3); font-family: var(--font); flex-shrink: 0; }
-.feedback-btn { display: flex; align-items: center; gap: 6px; padding: 5px 12px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 11px; font-family: var(--font); cursor: pointer; transition: all 0.12s; flex-shrink: 0; }
-.feedback-btn:hover { border-color: var(--border2); color: var(--text); }
-.feedback-btn svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; }
+.feedback-btn { display: flex; align-items: center; gap: 6px; padding: 5px 14px; background: transparent; border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-size: 12px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: all 0.12s; flex-shrink: 0; }
+.feedback-btn:hover { border-color: rgba(255,255,255,0.3); color: white; }
 
 /* FEEDBACK MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; }
@@ -55,13 +54,13 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .sidebar-inner { flex: 1; overflow-y: auto; padding: 16px 0; }
 .sidebar-inner::-webkit-scrollbar { width: 3px; }
 .sidebar-inner::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-.sidebar-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); padding: 0 16px; margin: 10px 0 4px; }
+.sidebar-label { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); padding: 0 16px; margin: 10px 0 4px; }
 .nav-overview { display: flex; align-items: center; gap: 9px; padding: 7px 16px; cursor: pointer; color: var(--text); font-size: 12px; transition: all 0.12s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); border-left: 2px solid transparent; }
 .nav-overview:hover { background: var(--surface2); color: var(--text); }
 .nav-overview.active { background: var(--surface2); color: var(--text); border-left-color: var(--red); }
 .nav-icon { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 .sidebar-divider { height: 1px; background: var(--border); margin: 12px 0; }
-.sidebar-loading { padding: 8px 16px; font-size: 11px; color: var(--text3); }
+.sidebar-loading { padding: 8px 16px; font-size: 11px; color: var(--text2); }
 
 .tree-node { width: 100%; }
 .tree-node-row { display: flex; align-items: center; width: 100%; border: none; background: transparent; font-family: var(--font); cursor: pointer; border-left: 2px solid transparent; transition: all 0.12s; padding: 6px 10px 6px 0; text-align: left; color: var(--text2); }
@@ -82,12 +81,12 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
 #overviewView, #pageView { width: 100%; }
 
-.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); margin-bottom: 14px; flex-wrap: wrap; }
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); margin-bottom: 14px; flex-wrap: wrap; }
 .breadcrumb svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 .breadcrumb span { cursor: pointer; }
-.breadcrumb span:hover { color: var(--text2); }
+.breadcrumb span:hover { color: var(--text); }
 .page-title { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin-bottom: 5px; }
-.page-meta { font-size: 11px; color: var(--text3); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.page-meta { font-size: 11px; color: var(--text2); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 .page-meta svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; }
 .cf-banner { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: rgba(0,82,204,0.07); border: 1px solid rgba(0,82,204,0.18); border-radius: 6px; margin-bottom: 18px; }
 .cf-banner-left { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #5b8dee; }
@@ -111,7 +110,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .cf-content tr:hover td { background: var(--surface2); }
 .cf-content hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .cf-content img { max-width: 100%; border-radius: 6px; margin: 4px 0; }
-.content-loading { display: flex; align-items: center; gap: 10px; color: var(--text3); font-size: 14px; padding: 24px 0; }
+.content-loading { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: 14px; padding: 24px 0; }
 .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .content-error { padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 13px; line-height: 1.6; }
@@ -125,7 +124,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
 .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
 .team-card .name { font-size: 12px; font-weight: 500; color: var(--text); }
-.team-card .role { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.team-card .role { font-size: 10px; color: var(--text2); margin-top: 2px; }
 
 .search-results-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .search-results-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
@@ -144,24 +143,24 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .badge-confluence { background: rgba(0,82,204,0.15); color: #5b8dee; }
 .badge-kb { background: rgba(200,16,46,0.15); color: #e05070; }
 .badge-contentful { background: rgba(255,196,0,0.12); color: #f5c842; }
-.search-section-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
-.search-tile-space { font-size: 10px; color: var(--text3); }
-.search-tile-arrow { font-size: 13px; color: var(--text3); }
-.search-tile:hover .search-tile-arrow { color: var(--text2); }
-.search-empty { padding: 40px 0; text-align: center; color: var(--text3); font-size: 14px; }
-.search-loading { display: flex; align-items: center; gap: 10px; color: var(--text3); font-size: 14px; padding: 32px 0; }
+.search-section-label { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); margin-bottom: 10px; }
+.search-tile-space { font-size: 10px; color: var(--text2); }
+.search-tile-arrow { font-size: 13px; color: var(--text2); }
+.search-tile:hover .search-tile-arrow { color: var(--text); }
+.search-empty { padding: 40px 0; text-align: center; color: var(--text2); font-size: 14px; }
+.search-loading { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: 14px; padding: 32px 0; }
 
 .tiles-bar { flex-shrink: 0; border-top: 1px solid var(--border); background: var(--surface); }
 .tiles-bar-header { padding: 8px 16px 6px; display: flex; align-items: center; gap: 8px; }
-.tiles-bar-label { font-size: 9px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text3); }
-.tiles-bar-count { font-size: 10px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 1px 7px; }
+.tiles-bar-label { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); }
+.tiles-bar-count { font-size: 10px; color: var(--text2); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 1px 7px; }
 .tiles-row { display: flex; gap: 8px; padding: 0 16px 12px; overflow-x: auto; }
 .tiles-row::-webkit-scrollbar { height: 3px; }
 .tiles-row::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 .tile { flex-shrink: 0; width: 200px; background: var(--surface2); border: 1px solid var(--border); border-top: 2px solid var(--red); border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: all 0.12s; text-align: left; font-family: var(--font); }
 .tile:hover { border-color: var(--border2); background: var(--surface3); }
 .tile-name { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-.tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 6px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text3); margin-top: 8px; }
+.tile-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 6px; border-top: 1px solid var(--border); font-size: 10px; color: var(--text2); margin-top: 8px; }
 .pw-gate { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
 .pw-gate-icon { font-size: 32px; margin-bottom: 16px; }
 .pw-gate-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
@@ -203,8 +202,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
     <kbd>&#8629;</kbd>
   </div>
   <button class="feedback-btn" onclick="openFeedback()">
-    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    Feedback
+    💬 Share Feedback
   </button>
 </header>
 
@@ -543,12 +541,12 @@ function loadContentfulPage(game) {
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-        <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">URLs</div>
+        <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">URLs</div>
         ${game.demoUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.demoUrl}</span></div>` : ''}
         ${game.realUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px"><span style="color:var(--text2);flex-shrink:0;width:50px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${game.realUrl}</span></div>` : ''}
       </div>
       ${platform ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-        <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Platform</div>
+        <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Platform</div>
         <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
       </div>` : '<div></div>'}
     </div>
@@ -556,7 +554,7 @@ function loadContentfulPage(game) {
     <div style="display:grid;grid-template-columns:240px 1fr;gap:12px">
       <div style="display:flex;flex-direction:column;gap:12px">
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-          <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Game Details</div>
+          <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Game Details</div>
           ${[
             ['Provider', game.provider],
             ['Game Type', game.gameType],
@@ -577,12 +575,12 @@ function loadContentfulPage(game) {
             </div>`).join('')}
         </div>
         ${features ? `<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px">
-          <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Features</div>
+          <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Features</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">${features}</div>
         </div>` : ''}
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px">
-        <div style="font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text3);margin-bottom:12px">Description</div>
+        <div style="font-size:13px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px">Description</div>
         <div style="font-size:14px;color:var(--text2);line-height:1.8">${game.excerpt || 'No description available.'}</div>
       </div>
     </div>`;
