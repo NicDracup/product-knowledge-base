@@ -26,8 +26,9 @@ export async function onRequest(context) {
         const gameType = config.gameType || {};
         const intro = (f.introductionContent && (f.introductionContent['en-GB'] || f.introductionContent)) || '';
         const title = (f.title && (f.title['en-GB'] || f.title)) || '';
-        const excerpt = typeof intro === 'string' ? intro.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 200) : '';
-        return {
+        const excerpt = typeof intro === 'string' ? intro.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() : '';
+        const platformRaw = f.platformVisibility && (f.platformVisibility['en-GB'] || f.platformVisibility);
+        const platform = Array.isArray(platformRaw) ? platformRaw : (config.platform || []);        return {
           title,
           excerpt,
           provider: config.gameStudio || config.gameProvider || '',
@@ -39,7 +40,7 @@ export async function onRequest(context) {
           volatility: gameType.volatility || '',
           waysToWin: gameType.waysToWin || '',
           winLineType: gameType.winLineType || '',
-          platform: config.platform || [],
+          platform: platform,
           demoUrl: config.demoUrl || '',
           realUrl: config.realUrl || '',
           infoDetails: (f.infoDetails && (f.infoDetails['en-GB'] || f.infoDetails)) || '',
