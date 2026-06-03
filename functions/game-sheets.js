@@ -6,7 +6,6 @@ export async function onRequest(context) {
   const gameType = url.searchParams.get('gameType') || '';
   const platform = url.searchParams.get('platform') || '';
 
-  // At least one filter required
   if (!query && !venture && !provider && !gameType && !platform) {
     return new Response(JSON.stringify({ results: [], error: 'No filters provided' }), {
       status: 400,
@@ -20,7 +19,6 @@ export async function onRequest(context) {
     const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/master/entries`;
     const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' };
 
-    // Provider variant map -- canonical name to all Contentful variants
     const PROVIDER_VARIANTS = {
       'Light & Wonder': ['Light & Wonder', 'Light And Wonder'],
       'Pragmatic Play': ['PragmaticPlay', 'Pragmatic Play', 'Pragmatic'],
@@ -30,69 +28,82 @@ export async function onRequest(context) {
       'YGG Drasil': ['YGG Drasil', 'Yggdrasil'],
     };
 
-    // Step 1: Get matching live cashier game names (filtered by venture and/or gameType)
-    let cashierParams = `content_type=cashierGameConfig&fields.live=yes&limit=1000`;
+    // Step 1: Fetch ALL matching cashier entries (paginated)
+    let cashierParams = `content_type=cashierGameConfig&fields.live=yes`;
     if (venture) cashierParams += `&fields.ventures=${encodeURIComponent(venture)}`;
     if (gameType) cashierParams += `&fields.gameType=${encodeURIComponent(gameType)}`;
 
-    const cashierRes = await fetch(`${baseUrl}?${cashierParams}&select=fields.gameName,fields.ventures,fields.live,fields.pp,fields.integration,fields.w2gReportable,fields.groupCompliant,fields.miniGame,fields.progressive,fields.isRng,fields.gameType,fields.gameSkinName,fields.gameProductName,fields.gameId`, { headers });
-    const cashierData = cashierRes.ok ? await cashierRes.json() : { items: [] };
-
-    // Build cashier lookup by game name (uppercase)
     const cashierLookup = {};
-    for (const item of (cashierData.items || [])) {
-      const f = item.fields || {};
-      const g = k => f[k] && (f[k]['en-GB'] !== undefined ? f[k]['en-GB'] : f[k]);
-      const name = g('gameName');
-      if (name) {
-        cashierLookup[name.toUpperCase()] = {
-          gameId: g('gameId') || '',
-          gameName: name,
-          skinName: g('gameSkinName') || '',
-          productName: g('gameProductName') || '',
-          ventures: g('ventures') || [],
-          w2gReportable: g('w2gReportable') ?? false,
-          groupCompliant: g('groupCompliant') ?? false,
-          miniGame: g('miniGame') ?? false,
-          progressive: g('progressive') ?? false,
-          integration: Array.isArray(g('integration')) ? g('integration').includes('yes') : false,
-          pp: Array.isArray(g('pp')) ? g('pp').includes('yes') : false,
-          live: Array.isArray(g('live')) ? g('live').includes('yes') : false,
-          entryId: item.sys?.id || ''
-        };
+    let cashierSkip = 0;
+    const cashierLimit = 200;
+
+    while (true) {
+      const cashierRes = await fetch(`${baseUrl}?${cashierParams}&limit=${cashierLimit}&skip=${cashierSkip}`, { headers });
+      const cashierData = cashierRes.ok ? await cashierRes.json() : { items: [], total: 0 };
+      const items = cashierData.items || [];
+      const total = cashierData.total || 0;
+
+      for (const item of items) {
+        const f = item.fields || {};
+        const g = k => f[k] && (f[k]['en-GB'] !== undefined ? f[k]['en-GB'] : f[k]);
+        const name = g('gameName');
+        if (name) {
+          cashierLookup[name.toUpperCase()] = {
+            gameId: g('gameId') || '',
+            gameName: name,
+            skinName: g('gameSkinName') || '',
+            productName: g('gameProductName') || '',
+            ventures: g('ventures') || [],
+            w2gReportable: g('w2gReportable') ?? false,
+            groupCompliant: g('groupCompliant') ?? false,
+            miniGame: g('miniGame') ?? false,
+            progressive: g('progressive') ?? false,
+            integration: Array.isArray(g('integration')) ? g('integration').includes('yes') : false,
+            pp: Array.isArray(g('pp')) ? g('pp').includes('yes') : false,
+            live: Array.isArray(g('live')) ? g('live').includes('yes') : false,
+            entryId: item.sys?.id || ''
+          };
+        }
       }
+
+      cashierSkip += cashierLimit;
+      if (cashierSkip >= total) break;
     }
 
     const liveGameNames = new Set(Object.keys(cashierLookup));
+
     if (liveGameNames.size === 0) {
       return new Response(JSON.stringify({ results: [] }), {
         headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
       });
     }
 
-    // Step 2: Get matching gameV2 entries
-    let gameParams = `content_type=gameV2&limit=200`;
+    // Step 2: Fetch ALL matching gameV2 entries (paginated)
+    let gameParams = `content_type=gameV2`;
     if (query) gameParams += `&query=${encodeURIComponent(query)}`;
-
-    // Provider filtering -- expand variants
-    if (provider) {
-      const variants = PROVIDER_VARIANTS[provider] || [provider];
-      if (variants.length === 1) {
-        gameParams += `&fields.gamePlatformConfig.en-GB.gameStudio=${encodeURIComponent(variants[0])}`;
-      }
-      // Multiple variants handled client-side below
-    }
-
     if (platform) gameParams += `&fields.platformVisibility=${encodeURIComponent(platform)}`;
 
-    const gameRes = await fetch(`${baseUrl}?${gameParams}`, { headers });
-    const gameData = gameRes.ok ? await gameRes.json() : { items: [] };
-
-    // Step 3: Cross reference and build results
     const providerVariants = provider ? (PROVIDER_VARIANTS[provider] || [provider]) : null;
 
+    const allGameItems = [];
+    let gameSkip = 0;
+    const gameLimit = 200;
+
+    while (true) {
+      const gameRes = await fetch(`${baseUrl}?${gameParams}&limit=${gameLimit}&skip=${gameSkip}`, { headers });
+      const gameData = gameRes.ok ? await gameRes.json() : { items: [], total: 0 };
+      const items = gameData.items || [];
+      const total = gameData.total || 0;
+
+      allGameItems.push(...items);
+      gameSkip += gameLimit;
+      if (gameSkip >= total) break;
+    }
+
+    // Step 3: Cross reference and build results
     const results = [];
-    for (const item of (gameData.items || [])) {
+
+    for (const item of allGameItems) {
       try {
         const f = item.fields || {};
         const config = (f.gamePlatformConfig && (f.gamePlatformConfig['en-GB'] || f.gamePlatformConfig)) || {};
@@ -101,8 +112,8 @@ export async function onRequest(context) {
         const title = (f.title && (f.title['en-GB'] || f.title)) || '';
         const studio = config.gameStudio || config.gameProvider || '';
 
-        // Filter by provider variants if multiple
-        if (providerVariants && providerVariants.length > 1) {
+        // Filter by provider variants
+        if (providerVariants) {
           if (!providerVariants.includes(studio)) continue;
         }
 
@@ -140,7 +151,6 @@ export async function onRequest(context) {
       }
     }
 
-    // Sort alphabetically by title
     results.sort((a, b) => a.title.localeCompare(b.title));
 
     return new Response(JSON.stringify({ results, total: results.length }), {
