@@ -28,9 +28,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .header-search svg { width: 13px; height: 13px; stroke: var(--text3); fill: none; stroke-width: 2; flex-shrink: 0; }
 .search-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 12px; min-width: 0; }
 .search-input::placeholder { color: var(--text3); }
-.search-filter { display: flex; align-items: center; gap: 2px; background: var(--surface3); border-radius: 5px; padding: 2px; flex-shrink: 0; }
-.search-filter-btn { font-size: 10px; padding: 2px 8px; border: none; background: transparent; color: var(--text3); font-family: var(--font); border-radius: 4px; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
-.search-filter-btn.active { background: var(--surface); color: var(--text); }
 .header-search kbd { font-size: 10px; padding: 1px 5px; background: var(--surface3); border: 1px solid var(--border); border-radius: 3px; color: var(--text3); font-family: var(--font); flex-shrink: 0; }
 .feedback-btn { display: flex; align-items: center; gap: 6px; padding: 5px 14px; background: transparent; border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-size: 12px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: all 0.12s; flex-shrink: 0; }
 .feedback-btn:hover { border-color: rgba(255,255,255,0.3); color: white; }
@@ -48,7 +45,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .modal-success { font-size: 13px; color: #4ade80; margin-top: 10px; display: none; }
 
 .layout { display: flex; flex: 1; min-height: 0; overflow: hidden; }
-
 .sidebar { width: 220px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
 .sidebar-inner { flex: 1; overflow-y: auto; padding: 16px 0; }
 .sidebar-inner::-webkit-scrollbar { width: 3px; }
@@ -60,7 +56,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .nav-icon { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 .sidebar-divider { height: 1px; background: var(--border); margin: 12px 0; }
 .sidebar-loading { padding: 8px 16px; font-size: 11px; color: var(--text2); }
-
 .tree-node { width: 100%; }
 .tree-node-row { display: flex; align-items: center; width: 100%; border: none; background: transparent; font-family: var(--font); cursor: pointer; border-left: 2px solid transparent; transition: all 0.12s; padding: 6px 10px 6px 0; text-align: left; color: var(--text2); }
 .tree-node-row:hover { background: var(--surface2); color: var(--text); }
@@ -72,14 +67,11 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .tree-node-chevron.open svg { transform: rotate(90deg); }
 .tree-node-chevron.hidden { opacity: 0; pointer-events: none; }
 .tree-children { padding-left: 14px; }
-
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: hidden; }
 .content-area { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; padding: 28px 32px; }
 .content-area::-webkit-scrollbar { width: 4px; }
 .content-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
 #overviewView, #pageView { width: 100%; }
-
 .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); margin-bottom: 14px; flex-wrap: wrap; }
 .breadcrumb svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 .breadcrumb span { cursor: pointer; }
@@ -113,7 +105,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .content-error { padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 13px; line-height: 1.6; }
-
 .overview-body { font-size: 14px; line-height: 1.8; color: var(--text2); }
 .overview-body h2 { font-size: 14px; font-weight: 600; color: var(--text); margin: 22px 0 8px; }
 .overview-body p { margin-bottom: 10px; }
@@ -124,7 +115,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
 .team-card .name { font-size: 12px; font-weight: 500; color: var(--text); }
 .team-card .role { font-size: 10px; color: var(--text2); margin-top: 2px; }
-
 .search-results-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .search-results-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 .results-filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
@@ -142,13 +132,11 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .badge-confluence { background: rgba(0,82,204,0.15); color: #5b8dee; }
 .badge-kb { background: rgba(200,16,46,0.15); color: #e05070; }
 .badge-contentful { background: rgba(255,196,0,0.12); color: #f5c842; }
-.search-section-label { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); margin-bottom: 10px; }
 .search-tile-space { font-size: 10px; color: var(--text2); }
 .search-tile-arrow { font-size: 13px; color: var(--text2); }
 .search-tile:hover .search-tile-arrow { color: var(--text); }
 .search-empty { padding: 40px 0; text-align: center; color: var(--text2); font-size: 14px; }
 .search-loading { display: flex; align-items: center; gap: 10px; color: var(--text2); font-size: 14px; padding: 32px 0; }
-
 .tiles-bar { flex-shrink: 0; border-top: 1px solid var(--border); background: var(--surface); }
 .tiles-bar-header { padding: 8px 16px 6px; display: flex; align-items: center; gap: 8px; }
 .tiles-bar-label { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); }
@@ -169,11 +157,10 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .pw-gate-btn { margin-top: 12px; padding: 9px 28px; background: var(--red); border: none; border-radius: 7px; color: white; font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.12s; }
 .pw-gate-btn:hover { background: var(--red-dark); }
 .pw-gate-error { font-size: 12px; color: #e05070; margin-top: 10px; display: none; }
-
 .tag { font-size: 11px; padding: 3px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); }
 .platform-tag { font-size: 11px; padding: 3px 8px; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); border-radius: 4px; color: #818cf8; }
 
-/* SCHEDULE PAGE */
+/* SCHEDULE */
 .schedule-intro { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 10px; }
 .schedule-cards { display: flex; gap: 16px; margin-top: 24px; margin-bottom: 28px; }
 .schedule-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; width: 200px; }
@@ -186,8 +173,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .schedule-frame-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; height: calc(100vh - 320px); }
 .schedule-frame-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
 
-/* GAME SHEETS PAGE */
-.gs-layout { display: flex; gap: 20px; height: 100%; }
+/* GAME SHEETS */
+.gs-layout { display: flex; gap: 20px; }
 .gs-filters { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; }
 .gs-filter-group { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
 .gs-filter-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); margin-bottom: 8px; }
@@ -199,9 +186,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .gs-select option { background: var(--surface2); color: var(--text); }
 .gs-select-wrap { position: relative; }
 .gs-select-wrap::after { content: ''; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--text3); pointer-events: none; }
-.gs-venture-group { margin-bottom: 8px; }
-.gs-venture-group-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
-.gs-venture-btn { display: block; width: 100%; text-align: left; padding: 5px 8px; background: transparent; border: 1px solid transparent; border-radius: 5px; color: var(--text2); font-size: 11px; font-family: var(--font); cursor: pointer; transition: all 0.12s; margin-bottom: 2px; }
+.gs-venture-list { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.gs-venture-btn { display: block; width: 100%; text-align: left; padding: 5px 8px; background: transparent; border: 1px solid transparent; border-radius: 5px; color: var(--text2); font-size: 11px; font-family: var(--font); cursor: pointer; transition: all 0.12s; }
 .gs-venture-btn:hover { background: var(--surface2); color: var(--text); }
 .gs-venture-btn.active { background: var(--surface2); border-color: var(--border2); color: var(--text); }
 .gs-search-btn { width: 100%; padding: 9px; background: var(--red); border: none; border-radius: 6px; color: white; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.12s; }
@@ -237,9 +223,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
     <input id="searchInput" class="search-input" placeholder="Search..." onkeydown="if(event.key==='Enter')runSearch()" />
     <kbd>&#8629;</kbd>
   </div>
-  <button class="feedback-btn" onclick="openFeedback()">
-    💬 Share Feedback
-  </button>
+  <button class="feedback-btn" onclick="openFeedback()">&#x1F4AC; Share Feedback</button>
 </header>
 
 <div id="feedbackModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeFeedback()">
@@ -290,10 +274,10 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
   <main class="main">
     <div class="content-area" id="contentArea">
+
       <div id="overviewView">
         <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          Overview
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Overview
         </div>
         <div class="page-title">Product Knowledge Base</div>
         <div class="page-meta">
@@ -312,8 +296,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
       <div id="scheduleView" style="display:none">
         <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Bingo Schedule
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Bingo Schedule
         </div>
         <div class="page-title">Bingo Schedule</div>
         <div class="page-meta">
@@ -346,8 +329,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
       <div id="gameSheetsView" style="display:none">
         <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Game Sheets
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Game Sheets
         </div>
         <div class="page-title">Game Sheets</div>
         <div class="page-meta">
@@ -356,27 +338,41 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
         </div>
         <div class="gs-layout">
           <div class="gs-filters">
+
             <div class="gs-filter-group">
               <div class="gs-filter-label">Game Name</div>
               <input id="gs-query" class="gs-filter-input" type="text" placeholder="Search by name..." onkeydown="if(event.key==='Enter')runGameSheets()" />
             </div>
+
             <div class="gs-filter-group">
-              <div class="gs-filter-label">Venture</div>
-              <div class="gs-venture-group">
-                <div class="gs-venture-group-label">UK</div>
-                <button class="gs-venture-btn" data-venture="JACKPOTJOY" onclick="selectVenture(this)">Jackpot Joy</button>
-                <button class="gs-venture-btn" data-venture="HEART" onclick="selectVenture(this)">Double Bubble Bingo</button>
-                <button class="gs-venture-btn" data-venture="STARSPINS" onclick="selectVenture(this)">BallyBet</button>
-                <button class="gs-venture-btn" data-venture="VIRGINGAMES" onclick="selectVenture(this)">Virgin Games</button>
-                <button class="gs-venture-btn" data-venture="MONOPOLYCASINO" onclick="selectVenture(this)">Monopoly Casino</button>
-                <button class="gs-venture-btn" data-venture="RAINBOWRICHES" onclick="selectVenture(this)">Rainbow Riches</button>
-              </div>
-              <div class="gs-venture-group">
-                <div class="gs-venture-group-label">Spain</div>
-                <button class="gs-venture-btn" data-venture="BOTEMANIA" onclick="selectVenture(this)">Botemania</button>
-                <button class="gs-venture-btn" data-venture="MONOPOLYCASINOSPAIN" onclick="selectVenture(this)">Monopoly Casino Spain</button>
+              <div class="gs-filter-label">Country</div>
+              <div class="gs-select-wrap">
+                <select id="gs-country" class="gs-select" onchange="onCountryChange()">
+                  <option value="">All Countries</option>
+                  <option value="uk">UK</option>
+                  <option value="spain">Spain</option>
+                </select>
               </div>
             </div>
+
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Venture</div>
+              <div class="gs-venture-list">
+                <div id="gs-ventures-uk">
+                  <button class="gs-venture-btn" data-venture="JACKPOTJOY" onclick="selectVenture(this)">Jackpot Joy</button>
+                  <button class="gs-venture-btn" data-venture="HEART" onclick="selectVenture(this)">Double Bubble Bingo</button>
+                  <button class="gs-venture-btn" data-venture="STARSPINS" onclick="selectVenture(this)">BallyBet</button>
+                  <button class="gs-venture-btn" data-venture="VIRGINGAMES" onclick="selectVenture(this)">Virgin Games</button>
+                  <button class="gs-venture-btn" data-venture="MONOPOLYCASINO" onclick="selectVenture(this)">Monopoly Casino</button>
+                  <button class="gs-venture-btn" data-venture="RAINBOWRICHES" onclick="selectVenture(this)">Rainbow Riches</button>
+                </div>
+                <div id="gs-ventures-spain">
+                  <button class="gs-venture-btn" data-venture="BOTEMANIA" onclick="selectVenture(this)">Botemania</button>
+                  <button class="gs-venture-btn" data-venture="MONOPOLYCASINOSPAIN" onclick="selectVenture(this)">Monopoly Casino Spain</button>
+                </div>
+              </div>
+            </div>
+
             <div class="gs-filter-group">
               <div class="gs-filter-label">Provider</div>
               <div class="gs-select-wrap">
@@ -420,6 +416,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
+
             <div class="gs-filter-group">
               <div class="gs-filter-label">Game Type</div>
               <div class="gs-select-wrap">
@@ -432,6 +429,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
+
             <div class="gs-filter-group">
               <div class="gs-filter-label">Platform</div>
               <div class="gs-select-wrap">
@@ -443,18 +441,17 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
+
             <button class="gs-search-btn" onclick="runGameSheets()">Search</button>
             <button class="gs-clear-btn" onclick="clearGameSheets()">Clear Filters</button>
           </div>
+
           <div class="gs-results">
             <div id="gs-results-header" class="gs-results-header" style="display:none">
               <span id="gs-results-count" class="gs-results-count"></span>
             </div>
             <div id="gs-results-list" class="gs-results-list">
-              <div class="gs-empty">
-                <div class="gs-empty-icon">🎮</div>
-                Select at least one filter to find games
-              </div>
+              <div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>
             </div>
           </div>
         </div>
@@ -474,35 +471,22 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
 <script>
 const CONTENTFUL_SPACE = '08wz2hjuit8t';
-const CONTENTFUL_BASE = `https://app.contentful.com/spaces/${CONTENTFUL_SPACE}/environments/master/entries`;
+const CONTENTFUL_BASE = 'https://app.contentful.com/spaces/' + CONTENTFUL_SPACE + '/environments/master/entries';
 
 function track(type, value) {
-  fetch('/track', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type, value: value || '' })
-  }).catch(() => {});
+  fetch('/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, value: value || '' }) }).catch(() => {});
 }
-
 function openFeedback() {
   document.getElementById('feedbackModal').style.display = 'flex';
   document.getElementById('feedbackText').value = '';
   document.getElementById('feedbackSuccess').style.display = 'none';
   setTimeout(() => document.getElementById('feedbackText').focus(), 50);
 }
-
-function closeFeedback() {
-  document.getElementById('feedbackModal').style.display = 'none';
-}
-
+function closeFeedback() { document.getElementById('feedbackModal').style.display = 'none'; }
 async function submitFeedback() {
   const text = document.getElementById('feedbackText').value.trim();
   if (!text) return;
-  await fetch('/track', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type: 'feedback', value: text })
-  }).catch(() => {});
+  await fetch('/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'feedback', value: text }) }).catch(() => {});
   document.getElementById('feedbackSuccess').style.display = 'block';
   document.getElementById('feedbackText').style.display = 'none';
   document.querySelector('.modal-actions').style.display = 'none';
@@ -510,30 +494,22 @@ async function submitFeedback() {
 }
 
 const OVERVIEW_PAGE_ID = '129630288';
-const OVERVIEW_URL = 'https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base';
 const SUPPLIERS_PAGE_ID = '132186474';
 const SUPPLIERS_PASSWORD = 'Restricted';
-
-let cfCache = {};
-let childrenCache = {};
-let activeNodeId = null;
-let searchLoading = false;
-let suppliersUnlocked = false;
-let gsSelectedVenture = '';
-let gsLoading = false;
+let cfCache = {}, childrenCache = {}, activeNodeId = null, searchLoading = false, suppliersUnlocked = false;
+let gsSelectedVenture = '', gsLoading = false;
 
 // ── TREE ──────────────────────────────────────────────────────────────────────
 async function fetchChildren(pageId) {
   if (childrenCache[pageId]) return childrenCache[pageId];
   try {
-    const res = await fetch(`/confluence?id=${pageId}&children=true`);
+    const res = await fetch('/confluence?id=' + pageId + '&children=true');
     if (!res.ok) return [];
     const data = await res.json();
     childrenCache[pageId] = data.results || [];
     return childrenCache[pageId];
   } catch(e) { return []; }
 }
-
 async function buildTree() {
   const root = document.getElementById('treeRoot');
   const children = await fetchChildren(OVERVIEW_PAGE_ID);
@@ -542,34 +518,17 @@ async function buildTree() {
   paletteIndex = 0;
   children.forEach(page => root.appendChild(createTreeNode(page, 0)));
 }
-
 const PALETTE = ['#00C853','#E63946','#2196F3','#FF9800','#9C27B0','#FF4081','#00BFA5','#FFD600'];
 let paletteIndex = 0;
-
 function createTreeNode(page, depth, inheritColor) {
   let dotColor = inheritColor || PALETTE[paletteIndex++ % PALETTE.length];
-  const wrapper = document.createElement('div');
-  wrapper.className = 'tree-node';
-  const row = document.createElement('button');
-  row.className = 'tree-node-row';
-  row.id = 'node-' + page.id;
-  row.style.paddingLeft = (depth * 10 + 16) + 'px';
-  const dot = document.createElement('div');
-  dot.className = 'tree-node-dot';
-  dot.style.background = dotColor;
-  dot.style.marginRight = '8px';
-  const label = document.createElement('span');
-  label.className = 'tree-node-label';
-  label.textContent = page.title;
-  const chevron = document.createElement('div');
-  chevron.className = 'tree-node-chevron hidden';
-  chevron.id = 'chevron-' + page.id;
-  chevron.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+  const wrapper = document.createElement('div'); wrapper.className = 'tree-node';
+  const row = document.createElement('button'); row.className = 'tree-node-row'; row.id = 'node-' + page.id; row.style.paddingLeft = (depth * 10 + 16) + 'px';
+  const dot = document.createElement('div'); dot.className = 'tree-node-dot'; dot.style.background = dotColor; dot.style.marginRight = '8px';
+  const label = document.createElement('span'); label.className = 'tree-node-label'; label.textContent = page.title;
+  const chevron = document.createElement('div'); chevron.className = 'tree-node-chevron hidden'; chevron.id = 'chevron-' + page.id; chevron.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
   row.appendChild(dot); row.appendChild(label); row.appendChild(chevron);
-  const childContainer = document.createElement('div');
-  childContainer.className = 'tree-children';
-  childContainer.id = 'children-' + page.id;
-  childContainer.style.display = 'none';
+  const childContainer = document.createElement('div'); childContainer.className = 'tree-children'; childContainer.id = 'children-' + page.id; childContainer.style.display = 'none';
   let isOpen = false, hasChildren = false, loaded = false;
   row.addEventListener('click', async () => {
     loadPage(page);
@@ -577,31 +536,23 @@ function createTreeNode(page, depth, inheritColor) {
     if (!loaded) {
       childContainer.innerHTML = '<div class="sidebar-loading" style="padding:4px 0 4px 8px">Loading...</div>';
       childContainer.style.display = 'block'; isOpen = true; chevron.classList.add('open');
-      const kids = await fetchChildren(page.id);
-      loaded = true; childContainer.innerHTML = '';
-      if (kids.length) {
-        hasChildren = true; chevron.classList.remove('hidden');
-        kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor)));
-      } else { childContainer.style.display = 'none'; isOpen = false; chevron.classList.remove('open'); }
+      const kids = await fetchChildren(page.id); loaded = true; childContainer.innerHTML = '';
+      if (kids.length) { hasChildren = true; chevron.classList.remove('hidden'); kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor))); }
+      else { childContainer.style.display = 'none'; isOpen = false; chevron.classList.remove('open'); }
     } else if (hasChildren) {
-      isOpen = !isOpen;
-      childContainer.style.display = isOpen ? 'block' : 'none';
+      isOpen = !isOpen; childContainer.style.display = isOpen ? 'block' : 'none';
       isOpen ? chevron.classList.add('open') : chevron.classList.remove('open');
     }
   });
   if (depth === 0) {
     fetchChildren(page.id).then(kids => {
       loaded = true;
-      if (kids.length) {
-        hasChildren = true; chevron.classList.remove('hidden');
-        kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor)));
-      }
+      if (kids.length) { hasChildren = true; chevron.classList.remove('hidden'); kids.forEach(kid => childContainer.appendChild(createTreeNode(kid, depth + 1, dotColor))); }
     });
   }
   wrapper.appendChild(row); wrapper.appendChild(childContainer);
   return wrapper;
 }
-
 function setActiveNode(pageId) {
   document.querySelectorAll('.tree-node-row').forEach(r => r.classList.remove('active'));
   document.querySelectorAll('.nav-overview').forEach(b => b.classList.remove('active'));
@@ -612,12 +563,8 @@ function setActiveNode(pageId) {
 
 // ── VIEW HELPERS ──────────────────────────────────────────────────────────────
 function hideAllViews() {
-  document.getElementById('overviewView').style.display = 'none';
-  document.getElementById('scheduleView').style.display = 'none';
-  document.getElementById('gameSheetsView').style.display = 'none';
-  document.getElementById('pageView').style.display = 'none';
+  ['overviewView','scheduleView','gameSheetsView','pageView'].forEach(id => document.getElementById(id).style.display = 'none');
 }
-
 function clearNavActive() {
   document.querySelectorAll('.nav-overview').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tree-node-row').forEach(r => r.classList.remove('active'));
@@ -625,57 +572,53 @@ function clearNavActive() {
 
 // ── SCHEDULE ──────────────────────────────────────────────────────────────────
 function showSchedule() {
-  clearNavActive();
-  document.getElementById('scheduleBtn').classList.add('active');
-  activeNodeId = null;
-  hideAllViews();
-  document.getElementById('scheduleView').style.display = 'block';
-  document.getElementById('scheduleFrameWrap').style.display = 'none';
-  document.getElementById('scheduleFrame').src = '';
-  hideTilesBar();
-  document.getElementById('contentArea').scrollTop = 0;
+  clearNavActive(); document.getElementById('scheduleBtn').classList.add('active'); activeNodeId = null;
+  hideAllViews(); document.getElementById('scheduleView').style.display = 'block';
+  document.getElementById('scheduleFrameWrap').style.display = 'none'; document.getElementById('scheduleFrame').src = '';
+  hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
 }
-
 function loadScheduleFrame(url) {
-  const wrap = document.getElementById('scheduleFrameWrap');
-  const frame = document.getElementById('scheduleFrame');
-  frame.src = url;
-  wrap.style.display = 'block';
+  document.getElementById('scheduleFrame').src = url;
+  document.getElementById('scheduleFrameWrap').style.display = 'block';
   document.getElementById('contentArea').scrollTop = document.getElementById('contentArea').scrollHeight;
 }
 
 // ── GAME SHEETS ───────────────────────────────────────────────────────────────
 function showGameSheets() {
-  clearNavActive();
-  document.getElementById('gameSheetsBtn').classList.add('active');
-  activeNodeId = null;
-  hideAllViews();
-  document.getElementById('gameSheetsView').style.display = 'block';
-  hideTilesBar();
-  document.getElementById('contentArea').scrollTop = 0;
+  clearNavActive(); document.getElementById('gameSheetsBtn').classList.add('active'); activeNodeId = null;
+  hideAllViews(); document.getElementById('gameSheetsView').style.display = 'block';
+  hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
+}
+
+function onCountryChange() {
+  const country = document.getElementById('gs-country').value;
+  const uk = document.getElementById('gs-ventures-uk');
+  const spain = document.getElementById('gs-ventures-spain');
+  gsSelectedVenture = '';
+  document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active'));
+  if (country === 'uk') { uk.style.display = 'block'; spain.style.display = 'none'; }
+  else if (country === 'spain') { uk.style.display = 'none'; spain.style.display = 'block'; }
+  else { uk.style.display = 'block'; spain.style.display = 'block'; }
 }
 
 function selectVenture(btn) {
   const venture = btn.dataset.venture;
-  if (gsSelectedVenture === venture) {
-    gsSelectedVenture = '';
-    btn.classList.remove('active');
-  } else {
-    document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active'));
-    gsSelectedVenture = venture;
-    btn.classList.add('active');
-  }
+  if (gsSelectedVenture === venture) { gsSelectedVenture = ''; btn.classList.remove('active'); }
+  else { document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active')); gsSelectedVenture = venture; btn.classList.add('active'); }
 }
 
 function clearGameSheets() {
   gsSelectedVenture = '';
   document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('gs-query').value = '';
+  document.getElementById('gs-country').value = '';
   document.getElementById('gs-provider').value = '';
   document.getElementById('gs-gametype').value = '';
   document.getElementById('gs-platform').value = '';
+  document.getElementById('gs-ventures-uk').style.display = 'block';
+  document.getElementById('gs-ventures-spain').style.display = 'block';
   document.getElementById('gs-results-header').style.display = 'none';
-  document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">🎮</div>Select at least one filter to find games</div>';
+  document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>';
 }
 
 async function runGameSheets() {
@@ -685,54 +628,43 @@ async function runGameSheets() {
   const gameType = document.getElementById('gs-gametype').value;
   const platform = document.getElementById('gs-platform').value;
   const venture = gsSelectedVenture;
-
   if (!query && !venture && !provider && !gameType && !platform) {
-    document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">🎮</div>Select at least one filter to find games</div>';
+    document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>';
     return;
   }
-
   gsLoading = true;
   track('gamesheets_search', [venture, provider, gameType, platform, query].filter(Boolean).join(','));
-
   const list = document.getElementById('gs-results-list');
   const header = document.getElementById('gs-results-header');
   list.innerHTML = '<div class="content-loading"><div class="spinner"></div>Searching...</div>';
   header.style.display = 'none';
-
   const params = new URLSearchParams();
   if (query) params.set('q', query);
   if (venture) params.set('venture', venture);
   if (provider) params.set('provider', provider);
   if (gameType) params.set('gameType', gameType);
   if (platform) params.set('platform', platform);
-
   try {
-    const res = await fetch(`/game-sheets?${params.toString()}`);
+    const res = await fetch('/game-sheets?' + params.toString());
     const data = res.ok ? await res.json() : { results: [] };
     const results = data.results || [];
-
-    document.getElementById('gs-results-count').textContent = `${results.length} game${results.length !== 1 ? 's' : ''} found`;
+    document.getElementById('gs-results-count').textContent = results.length + ' game' + (results.length !== 1 ? 's' : '') + ' found';
     header.style.display = 'flex';
-
     if (results.length === 0) {
-      list.innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">🔍</div>No games found for these filters.<br>Try adjusting your search.</div>';
+      list.innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F50D;</div>No games found for these filters.<br>Try adjusting your search.</div>';
     } else {
       list.innerHTML = results.map(game => {
         const meta = [game.provider, game.gameType].filter(Boolean).join(' · ');
         const safeGame = JSON.stringify(game).replace(/"/g, '&quot;');
-        return `<div class="gs-game-row" onclick="loadContentfulPage(${safeGame})">
-          <div>
-            <div class="gs-game-name">${game.title || game.entryTitle}</div>
-            ${meta ? `<div class="gs-game-meta">${meta}</div>` : ''}
-          </div>
-          <span class="gs-game-arrow">&#8594;</span>
-        </div>`;
+        return '<div class="gs-game-row" onclick="loadContentfulPage(' + safeGame + ')">' +
+          '<div><div class="gs-game-name">' + (game.title || game.entryTitle) + '</div>' +
+          (meta ? '<div class="gs-game-meta">' + meta + '</div>' : '') +
+          '</div><span class="gs-game-arrow">&#8594;</span></div>';
       }).join('');
     }
   } catch(e) {
     list.innerHTML = '<div class="content-error">Search failed. Please try again.</div>';
   }
-
   gsLoading = false;
 }
 
@@ -745,8 +677,8 @@ function loadContentfulPage(game) {
   hideTilesBar();
   document.getElementById('contentArea').scrollTop = 0;
 
-  const features = (game.features || []).map(f => `<span class="tag">${f}</span>`).join('');
-  const platform = (game.platform || []).map(p => `<span class="platform-tag">${p}</span>`).join('');
+  const features = (game.features || []).map(f => '<span class="tag">' + f + '</span>').join('');
+  const platform = (game.platform || []).map(p => '<span class="platform-tag">' + p + '</span>').join('');
   const cc = game.cashierConfig || null;
 
   const boxStyle = 'background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;';
@@ -754,131 +686,93 @@ function loadContentfulPage(game) {
   const rowStyle = 'display:flex;align-items:flex-start;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;flex-shrink:0';
 
   const gameDetailRows = [
-    ['Provider', game.provider],
-    ['Game Type', game.gameType],
-    ['Paylines', game.paylines],
-    ['Max Win', game.maxWin || ''],
-    ['Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : ''],
-    ['Ways to Win', game.waysToWin],
-    ['Win Line Type', game.winLineType],
-    ['Progressive JP', game.progressiveJackpot ? 'Yes' : 'No'],
-    ['Volatility', game.volatility],
-    ['RTP', ''],
-    ['Min Bet', ''],
-    ['Max Bet', '']
-  ].map(([label, val]) => `
-    <div style="${rowStyle}">
-      <span style="color:var(--text2);flex-shrink:0">${label}</span>
-      <span style="color:${val ? 'var(--text)' : 'var(--text3)'};font-weight:${val ? '500' : '400'};font-style:${val ? 'normal' : 'italic'};text-align:right;word-break:break-word;min-width:0">${val || 'Not set'}</span>
-    </div>`).join('');
+    ['Provider', game.provider],['Game Type', game.gameType],['Paylines', game.paylines],
+    ['Max Win', game.maxWin || ''],['Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : ''],
+    ['Ways to Win', game.waysToWin],['Win Line Type', game.winLineType],
+    ['Progressive JP', game.progressiveJackpot ? 'Yes' : 'No'],['Volatility', game.volatility],
+    ['RTP', ''],['Min Bet', ''],['Max Bet', '']
+  ].map(function(pair) {
+    var label = pair[0], val = pair[1];
+    return '<div style="' + rowStyle + '"><span style="color:var(--text2);flex-shrink:0">' + label + '</span>' +
+      '<span style="color:' + (val ? 'var(--text)' : 'var(--text3)') + ';font-weight:' + (val ? '500' : '400') + ';font-style:' + (val ? 'normal' : 'italic') + ';text-align:right;word-break:break-word;min-width:0">' + (val || 'Not set') + '</span></div>';
+  }).join('');
 
   const cashierRows = cc ? [
-    ['Game ID', cc.gameId],
-    ['Game Name', cc.gameName],
-    ['Skin Name', cc.skinName],
-    ['Product Name', cc.productName],
-    ['W2G Reportable', cc.w2gReportable ? 'Yes' : 'No'],
-    ['Group Compliant', cc.groupCompliant ? 'Yes' : 'No'],
-    ['Mini Game', cc.miniGame ? 'Yes' : 'No'],
-    ['Progressive', cc.progressive ? 'Yes' : 'No'],
-    ['Integration', cc.integration ? 'Yes' : 'No'],
-    ['PP', cc.pp ? 'Yes' : 'No'],
-    ['Live', cc.live ? 'Yes' : 'No']
-  ].map(([label, val]) => `
-    <div style="${rowStyle}">
-      <span style="color:var(--text2);flex-shrink:0;margin-right:8px">${label}</span>
-      <span style="color:var(--text);font-weight:500;text-align:right;word-break:break-word;min-width:0">${val !== undefined && val !== '' ? val : 'Not set'}</span>
-    </div>`).join('') : '';
+    ['Game ID', cc.gameId],['Game Name', cc.gameName],['Skin Name', cc.skinName],['Product Name', cc.productName],
+    ['W2G Reportable', cc.w2gReportable ? 'Yes' : 'No'],['Group Compliant', cc.groupCompliant ? 'Yes' : 'No'],
+    ['Mini Game', cc.miniGame ? 'Yes' : 'No'],['Progressive', cc.progressive ? 'Yes' : 'No'],
+    ['Integration', cc.integration ? 'Yes' : 'No'],['PP', cc.pp ? 'Yes' : 'No'],['Live', cc.live ? 'Yes' : 'No']
+  ].map(function(pair) {
+    var label = pair[0], val = pair[1];
+    return '<div style="' + rowStyle + '"><span style="color:var(--text2);flex-shrink:0;margin-right:8px">' + label + '</span>' +
+      '<span style="color:var(--text);font-weight:500;text-align:right;word-break:break-word;min-width:0">' + (val !== undefined && val !== '' ? val : 'Not set') + '</span></div>';
+  }).join('') : '';
 
-  const venturesHtml = cc && cc.ventures && cc.ventures.length ? `
-    <div style="margin-top:12px;flex-shrink:0">
-      <div style="font-size:11px;color:var(--text2);margin-bottom:6px">Ventures</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${cc.ventures.map(v => `<span class="tag">${v}</span>`).join('')}
-      </div>
-    </div>` : '';
+  const venturesHtml = cc && cc.ventures && cc.ventures.length ? '<div style="margin-top:12px;flex-shrink:0"><div style="font-size:11px;color:var(--text2);margin-bottom:6px">Ventures</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + cc.ventures.map(function(v) { return '<span class="tag">' + v + '</span>'; }).join('') + '</div></div>' : '';
 
-  const gameV2Link = game.entryId ? `${CONTENTFUL_BASE}/${game.entryId}` : null;
-  const cashierLink = cc && cc.entryId ? `${CONTENTFUL_BASE}/${cc.entryId}` : null;
+  const gameV2Link = game.entryId ? CONTENTFUL_BASE + '/' + game.entryId : null;
+  const cashierLink = cc && cc.entryId ? CONTENTFUL_BASE + '/' + cc.entryId : null;
 
-  const cfLinks = [
-    gameV2Link ? `<button class="cf-open-btn" onclick="window.open('${gameV2Link}','_blank')">Game Model V2 &#8599;</button>` : '',
-    cashierLink ? `<button class="cf-open-btn" style="margin-left:6px" onclick="window.open('${cashierLink}','_blank')">Cashier Config &#8599;</button>` : ''
-  ].join('');
+  var cfLinkParts = [];
+  if (gameV2Link) cfLinkParts.push('<button class="cf-open-btn" style="margin-left:0" onclick="window.open(\'' + gameV2Link + '\',\'_blank\')">Game Model V2 &#8599;</button>');
+  if (cashierLink) cfLinkParts.push('<button class="cf-open-btn" onclick="window.open(\'' + cashierLink + '\',\'_blank\')">Cashier Config &#8599;</button>');
+  const cfLinks = cfLinkParts.join('');
 
-  pv.innerHTML = `
-    <div class="breadcrumb">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <span onclick="history.back()">Search results</span>
-      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-      ${game.title}
-    </div>
-    <div class="page-title">${game.title}</div>
-    <div class="page-meta">${game.provider || ''}${game.gameType ? ' &middot; ' + game.gameType : ''}</div>
-    <div class="cf-banner" style="background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.2);margin-bottom:16px">
-      <div class="cf-banner-left" style="color:#f5c842">
-        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        Contentful
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
-        ${cfLinks}
-      </div>
-    </div>
+  pv.innerHTML = '<div class="breadcrumb">' +
+    '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+    '<span onclick="history.back()">Search results</span>' +
+    '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>' +
+    game.title + '</div>' +
+    '<div class="page-title">' + game.title + '</div>' +
+    '<div class="page-meta">' + (game.provider || '') + (game.gameType ? ' &middot; ' + game.gameType : '') + '</div>' +
+    '<div class="cf-banner" style="background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.2);margin-bottom:16px">' +
+      '<div class="cf-banner-left" style="color:#f5c842">' +
+        '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>' +
+        'Contentful</div>' +
+      '<div style="display:flex;align-items:center;gap:6px;margin-left:auto">' + cfLinks + '</div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);gap:12px;">' +
+      '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div id="cf-box-details" style="' + boxStyle + '">' +
+          '<div style="' + headStyle + '">Game Details</div>' + gameDetailRows +
+        '</div>' +
+        '<div id="cf-box-features" style="' + boxStyle + '">' +
+          '<div style="' + headStyle + '">Features</div>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap">' + (features || '<span style="font-size:12px;color:var(--text3);font-style:italic">None listed</span>') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:12px;min-width:0;">' +
+        '<div style="' + boxStyle + '">' +
+          '<div style="' + headStyle + '">URLs</div>' +
+          (game.demoUrl ? '<div style="' + rowStyle + '"><span style="color:var(--text2);flex-shrink:0;width:36px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">' + game.demoUrl + '</span></div>' : '') +
+          (game.realUrl ? '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px;gap:8px;flex-shrink:0"><span style="color:var(--text2);flex-shrink:0;width:36px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">' + game.realUrl + '</span></div>' : '') +
+          (!game.demoUrl && !game.realUrl ? '<div style="font-size:12px;color:var(--text3);font-style:italic">No URLs set</div>' : '') +
+        '</div>' +
+        '<div style="' + boxStyle + 'flex:1;">' +
+          '<div style="' + headStyle + '">Description</div>' +
+          '<div style="font-size:14px;color:var(--text2);line-height:1.8">' + (game.excerpt || 'No description available.') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        (cc ? '<div id="cf-box-config" style="' + boxStyle + '"><div style="' + headStyle + '">Game Config</div>' + cashierRows + venturesHtml + '</div>' : '') +
+        (platform ? '<div id="cf-box-platform" style="' + boxStyle + '"><div style="' + headStyle + '">Platform</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + platform + '</div></div>' : '') +
+      '</div>' +
+    '</div>';
 
-    <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);gap:12px;">
-
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div id="cf-box-details" style="${boxStyle}">
-          <div style="${headStyle}">Game Details</div>
-          ${gameDetailRows}
-        </div>
-        <div id="cf-box-features" style="${boxStyle}">
-          <div style="${headStyle}">Features</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">${features || '<span style="font-size:12px;color:var(--text3);font-style:italic">None listed</span>'}</div>
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:12px;min-width:0;">
-        <div style="${boxStyle}">
-          <div style="${headStyle}">URLs</div>
-          ${game.demoUrl ? `<div style="${rowStyle}"><span style="color:var(--text2);flex-shrink:0;width:36px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${game.demoUrl}</span></div>` : ''}
-          ${game.realUrl ? `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px;gap:8px;flex-shrink:0"><span style="color:var(--text2);flex-shrink:0;width:36px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">${game.realUrl}</span></div>` : ''}
-          ${!game.demoUrl && !game.realUrl ? `<div style="font-size:12px;color:var(--text3);font-style:italic">No URLs set</div>` : ''}
-        </div>
-        <div style="${boxStyle}flex:1;">
-          <div style="${headStyle}">Description</div>
-          <div style="font-size:14px;color:var(--text2);line-height:1.8">${game.excerpt || 'No description available.'}</div>
-        </div>
-      </div>
-
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        ${cc ? `<div id="cf-box-config" style="${boxStyle}">
-          <div style="${headStyle}">Game Config</div>
-          ${cashierRows}
-          ${venturesHtml}
-        </div>` : ''}
-        ${platform ? `<div id="cf-box-platform" style="${boxStyle}">
-          <div style="${headStyle}">Platform</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">${platform}</div>
-        </div>` : ''}
-      </div>
-
-    </div>`;
-
-  requestAnimationFrame(() => {
-    const details = document.getElementById('cf-box-details');
-    const config = document.getElementById('cf-box-config');
-    const features2 = document.getElementById('cf-box-features');
-    const platform2 = document.getElementById('cf-box-platform');
+  requestAnimationFrame(function() {
+    var details = document.getElementById('cf-box-details');
+    var config = document.getElementById('cf-box-config');
+    var feat = document.getElementById('cf-box-features');
+    var plat = document.getElementById('cf-box-platform');
     if (details && config) {
       details.style.height = ''; config.style.height = '';
-      const h1 = Math.max(details.offsetHeight, config.offsetHeight);
+      var h1 = Math.max(details.offsetHeight, config.offsetHeight);
       details.style.height = h1 + 'px'; config.style.height = h1 + 'px';
     }
-    if (features2 && platform2) {
-      features2.style.height = ''; platform2.style.height = '';
-      const h2 = Math.max(features2.offsetHeight, platform2.offsetHeight);
-      features2.style.height = h2 + 'px'; platform2.style.height = h2 + 'px';
+    if (feat && plat) {
+      feat.style.height = ''; plat.style.height = '';
+      var h2 = Math.max(feat.offsetHeight, plat.offsetHeight);
+      feat.style.height = h2 + 'px'; plat.style.height = h2 + 'px';
     }
   });
 }
@@ -886,10 +780,10 @@ function loadContentfulPage(game) {
 // ── CONTENT ───────────────────────────────────────────────────────────────────
 async function fetchCF(pageId) {
   if (cfCache[pageId]) return cfCache[pageId];
-  const res = await fetch(`/confluence?id=${pageId}`);
+  const res = await fetch('/confluence?id=' + pageId);
   if (!res.ok) throw new Error('Fetch failed ' + res.status);
   const data = await res.json();
-  const html = data.body?.view?.value || data.body?.storage?.value || '';
+  const html = data.body && (data.body.view && data.body.view.value || data.body.storage && data.body.storage.value) || '';
   const cleaned = html
     .replace(/<ac:structured-macro[\s\S]*?<\/ac:structured-macro>/gi, '')
     .replace(/<ac:[^>]*\/?>/gi, '').replace(/<ri:[^>]*\/?>/gi, '')
@@ -902,25 +796,15 @@ async function fetchCF(pageId) {
 }
 
 async function showOverview() {
-  clearNavActive();
-  document.getElementById('overviewBtn').classList.add('active');
-  activeNodeId = null;
-  hideAllViews();
-  document.getElementById('overviewView').style.display = 'block';
-  hideTilesBar();
-  document.getElementById('contentArea').scrollTop = 0;
+  clearNavActive(); document.getElementById('overviewBtn').classList.add('active'); activeNodeId = null;
+  hideAllViews(); document.getElementById('overviewView').style.display = 'block';
+  hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
   const oc = document.getElementById('overviewContent');
   if (oc.dataset.loaded) return;
   try {
     const html = await fetchCF(OVERVIEW_PAGE_ID);
-    if (html && html.trim().length > 10) {
-      oc.innerHTML = '<div class="cf-content">' + html + '</div>';
-    } else {
-      oc.innerHTML = '<div class="content-error">No content found on the overview Confluence page.</div>';
-    }
-  } catch(e) {
-    oc.innerHTML = '<div class="content-error">Could not load overview from Confluence.</div>';
-  }
+    oc.innerHTML = html && html.trim().length > 10 ? '<div class="cf-content">' + html + '</div>' : '<div class="content-error">No content found on the overview Confluence page.</div>';
+  } catch(e) { oc.innerHTML = '<div class="content-error">Could not load overview from Confluence.</div>'; }
   oc.dataset.loaded = '1';
 }
 
@@ -928,84 +812,56 @@ function isRestrictedPage(pageId) {
   if (pageId === SUPPLIERS_PAGE_ID) return true;
   const suppliersKids = childrenCache[SUPPLIERS_PAGE_ID] || [];
   if (suppliersKids.some(p => p.id === pageId)) return true;
-  for (const kid of suppliersKids) {
-    const grandkids = childrenCache[kid.id] || [];
-    if (grandkids.some(p => p.id === pageId)) return true;
-  }
+  for (const kid of suppliersKids) { if ((childrenCache[kid.id] || []).some(p => p.id === pageId)) return true; }
   return false;
 }
 
 let pendingRestrictedPage = null;
-
 function showPasswordGate(page) {
-  pendingRestrictedPage = page;
-  setActiveNode(page.id);
-  hideAllViews();
-  const pv = document.getElementById('pageView');
-  pv.style.display = 'block';
+  pendingRestrictedPage = page; setActiveNode(page.id);
+  hideAllViews(); document.getElementById('pageView').style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
-  pv.innerHTML = '<div class="pw-gate">' +
-    '<div class="pw-gate-icon">&#128274;</div>' +
-    '<div class="pw-gate-title">Restricted Section</div>' +
+  document.getElementById('pageView').innerHTML = '<div class="pw-gate">' +
+    '<div class="pw-gate-icon">&#128274;</div><div class="pw-gate-title">Restricted Section</div>' +
     '<div class="pw-gate-sub">This section requires a password to access.</div>' +
     '<input class="pw-gate-input" id="pwInput" type="password" placeholder="Enter password" />' +
     '<button class="pw-gate-btn" id="pwBtn">Unlock</button>' +
-    '<div class="pw-gate-error" id="pwError">Incorrect password. Please try again.</div>' +
-    '</div>';
-  setTimeout(() => {
-    const input = document.getElementById('pwInput');
-    const btn = document.getElementById('pwBtn');
+    '<div class="pw-gate-error" id="pwError">Incorrect password. Please try again.</div></div>';
+  setTimeout(function() {
+    var input = document.getElementById('pwInput'), btn = document.getElementById('pwBtn');
     if (input) { input.focus(); input.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPassword(); }); }
     if (btn) btn.addEventListener('click', checkPassword);
   }, 50);
 }
-
 function checkPassword() {
-  const input = document.getElementById('pwInput');
+  var input = document.getElementById('pwInput');
   if (!input) return;
-  if (input.value === SUPPLIERS_PASSWORD) {
-    suppliersUnlocked = true;
-    if (pendingRestrictedPage) loadPage(pendingRestrictedPage);
-  } else {
-    const err = document.getElementById('pwError');
-    if (err) err.style.display = 'block';
-    input.value = ''; input.focus();
-  }
+  if (input.value === SUPPLIERS_PASSWORD) { suppliersUnlocked = true; if (pendingRestrictedPage) loadPage(pendingRestrictedPage); }
+  else { var err = document.getElementById('pwError'); if (err) err.style.display = 'block'; input.value = ''; input.focus(); }
 }
 
 async function loadPage(page) {
   if (isRestrictedPage(page.id) && !suppliersUnlocked) { showPasswordGate(page); return; }
-  setActiveNode(page.id);
-  hideAllViews();
-  const pv = document.getElementById('pageView');
-  pv.style.display = 'block';
+  setActiveNode(page.id); hideAllViews();
+  document.getElementById('pageView').style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
   const cfUrl = page.url;
-  pv.innerHTML = `
-    <div class="breadcrumb">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-      <span onclick="showOverview()">Overview</span>
-      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-      ${page.title}
-    </div>
-    <div class="page-title">${page.title}</div>
-    <div class="page-meta"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence</div>
-    <div class="cf-banner">
-      <div class="cf-banner-left"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live from Confluence always up to date</div>
-      <button class="cf-open-btn" onclick="window.open('${cfUrl}','_blank'); track('confluence_open', '${page.title}')">Open in Confluence &#8599;</button>
-    </div>
-    <div id="pagecontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>`;
+  document.getElementById('pageView').innerHTML =
+    '<div class="breadcrumb"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' +
+    '<span onclick="showOverview()">Overview</span><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>' + page.title + '</div>' +
+    '<div class="page-title">' + page.title + '</div>' +
+    '<div class="page-meta"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence</div>' +
+    '<div class="cf-banner"><div class="cf-banner-left"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live from Confluence always up to date</div>' +
+    '<button class="cf-open-btn" onclick="window.open(\'' + cfUrl + '\',\'_blank\'); track(\'confluence_open\', \'' + page.title + '\')">Open in Confluence &#8599;</button></div>' +
+    '<div id="pagecontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>';
   loadSiblingTiles(page.id);
   try {
     const html = await fetchCF(page.id);
     const el = document.getElementById('pagecontent');
-    if (html && html.trim().length > 10) {
-      el.innerHTML = '<div class="cf-content">' + html + '</div>';
-    } else {
-      el.innerHTML = '<div class="content-error">This page has no content yet.<br><br><a href="' + cfUrl + '" target="_blank" style="color:#5b8dee">Open in Confluence &#8599;</a></div>';
-    }
+    if (html && html.trim().length > 10) { el.innerHTML = '<div class="cf-content">' + html + '</div>'; }
+    else { el.innerHTML = '<div class="content-error">This page has no content yet.<br><br><a href="' + cfUrl + '" target="_blank" style="color:#5b8dee">Open in Confluence &#8599;</a></div>'; }
   } catch(e) {
-    const el = document.getElementById('pagecontent');
+    var el = document.getElementById('pagecontent');
     if (el) el.innerHTML = '<div class="content-error">Could not load from Confluence.<br><a href="' + cfUrl + '" target="_blank" style="color:#5b8dee">Open in Confluence &#8599;</a></div>';
   }
 }
@@ -1013,29 +869,21 @@ async function loadPage(page) {
 async function loadSiblingTiles(pageId) {
   const allCached = Object.values(childrenCache).flat();
   const siblings = allCached.filter(p => p.id !== pageId);
-  if (siblings.length) { showTilesBar(siblings.slice(0, 8)); } else { hideTilesBar(); }
+  siblings.length ? showTilesBar(siblings.slice(0, 8)) : hideTilesBar();
 }
-
 function showTilesBar(pages) {
-  const bar = document.getElementById('tilesBar');
-  const row = document.getElementById('tilesRow');
-  const count = document.getElementById('tilesCount');
-  if (!pages || !pages.length) { bar.style.display = 'none'; return; }
-  bar.style.display = 'block';
-  count.textContent = pages.length;
-  row.innerHTML = pages.map(p => `
-    <button class="tile" onclick="loadPage(${JSON.stringify(p).replace(/"/g,'&quot;')})">
-      <div class="tile-name">${p.title}</div>
-      <div class="tile-footer"><span>Confluence</span><span>&#8594;</span></div>
-    </button>`).join('');
+  if (!pages || !pages.length) { document.getElementById('tilesBar').style.display = 'none'; return; }
+  document.getElementById('tilesBar').style.display = 'block';
+  document.getElementById('tilesCount').textContent = pages.length;
+  document.getElementById('tilesRow').innerHTML = pages.map(p =>
+    '<button class="tile" onclick="loadPage(' + JSON.stringify(p).replace(/"/g,'&quot;') + ')">' +
+    '<div class="tile-name">' + p.title + '</div>' +
+    '<div class="tile-footer"><span>Confluence</span><span>&#8594;</span></div></button>').join('');
 }
-
 function hideTilesBar() { document.getElementById('tilesBar').style.display = 'none'; }
 
 // ── SEARCH ────────────────────────────────────────────────────────────────────
-let allSearchResults = [];
-let currentFilter = 'all';
-
+let allSearchResults = [], currentFilter = 'all';
 function applyFilter(filter) {
   currentFilter = filter;
   document.querySelectorAll('.results-filter-btn').forEach(b => b.classList.remove('active'));
@@ -1047,21 +895,17 @@ function applyFilter(filter) {
   const visible = filter === 'confluence' ? cfResults : filter === 'contentful' ? ctResults : allSearchResults;
   grid.innerHTML = visible.map(r => makeTile(r)).join('') || '<div class="search-empty">No results for this filter.</div>';
 }
-
 function makeTile(r) {
   if (r._source === 'contentful') {
     const pageObj = JSON.stringify({ _contentful: true, entryId: r.entryId, title: r.title, provider: r.provider, gameType: r.gameType, features: r.features, paylines: r.paylines, maxMultiplier: r.maxMultiplier, progressiveJackpot: r.progressiveJackpot, volatility: r.volatility, waysToWin: r.waysToWin, winLineType: r.winLineType, platform: r.platform, demoUrl: r.demoUrl, realUrl: r.realUrl, infoDetails: r.infoDetails, excerpt: r.excerpt, cashierConfig: r.cashierConfig || null }).replace(/"/g, '&quot;');
     return '<button class="search-tile" onclick="loadContentfulPage(' + pageObj + ')">' +
       '<div class="search-tile-name">' + r.title + '</div>' +
       '<div class="search-tile-excerpt">' + (r.excerpt || 'No preview available') + '</div>' +
-      '<div class="search-tile-footer">' +
-        '<div class="search-tile-source"><span class="source-badge badge-contentful">Contentful</span>' +
-        '<span class="search-tile-space">' + (r.provider ? r.provider + (r.gameType ? ' · ' + r.gameType : '') : '') + '</span></div>' +
-        '<span class="search-tile-arrow">&#8594;</span>' +
-      '</div></button>';
+      '<div class="search-tile-footer"><div class="search-tile-source"><span class="source-badge badge-contentful">Contentful</span>' +
+      '<span class="search-tile-space">' + (r.provider ? r.provider + (r.gameType ? ' · ' + r.gameType : '') : '') + '</span></div>' +
+      '<span class="search-tile-arrow">&#8594;</span></div></button>';
   }
-  const badgeClass = r._badge || 'badge-confluence';
-  const badgeLabel = r._label || 'Confluence';
+  const badgeClass = r._badge || 'badge-confluence', badgeLabel = r._label || 'Confluence';
   const pageIdMatch = r.url ? r.url.match(/pages\/([0-9]+)/) : null;
   const pageId = pageIdMatch ? pageIdMatch[1] : null;
   const cleanExcerpt = (r.excerpt || '').replace(/[\u0000-\u001F]/g, ' ').trim();
@@ -1069,63 +913,48 @@ function makeTile(r) {
   return '<button class="search-tile" onclick="loadPage(' + pageObj + ')">' +
     '<div class="search-tile-name">' + r.title + '</div>' +
     '<div class="search-tile-excerpt">' + (cleanExcerpt || 'No preview available') + '</div>' +
-    '<div class="search-tile-footer">' +
-      '<div class="search-tile-source"><span class="source-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
-      '<span class="search-tile-space">' + r.space + '</span></div>' +
-      '<span class="search-tile-arrow">&#8594;</span>' +
-    '</div></button>';
+    '<div class="search-tile-footer"><div class="search-tile-source"><span class="source-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
+    '<span class="search-tile-space">' + r.space + '</span></div>' +
+    '<span class="search-tile-arrow">&#8594;</span></div></button>';
 }
-
 async function runSearch() {
   const input = document.getElementById('searchInput');
   const q = input.value.trim();
   if (!q || searchLoading) return;
-  searchLoading = true;
-  track('search', q);
-  clearNavActive();
-  hideTilesBar();
-  hideAllViews();
-  const pv = document.getElementById('pageView');
-  pv.style.display = 'block';
+  searchLoading = true; track('search', q);
+  clearNavActive(); hideTilesBar(); hideAllViews();
+  document.getElementById('pageView').style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
-  pv.innerHTML = `
-    <div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>
-    <div class="search-loading"><div class="spinner"></div>Searching...</div>`;
+  document.getElementById('pageView').innerHTML =
+    '<div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>' +
+    '<div class="search-loading"><div class="spinner"></div>Searching...</div>';
   try {
     const [cfRes, ctRes] = await Promise.all([
-      fetch(`/confluence-search?q=${encodeURIComponent(q)}`).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
-      fetch(`/contentful?q=${encodeURIComponent(q)}`).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }))
+      fetch('/confluence-search?q=' + encodeURIComponent(q)).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] })),
+      fetch('/contentful?q=' + encodeURIComponent(q)).then(r => r.ok ? r.json() : { results: [] }).catch(() => ({ results: [] }))
     ]);
-    const cfResults = (cfRes.results || []).map(r => {
-      const isKB = r.url && /\/spaces\/(IE|ie)\//i.test(r.url);
-      return { ...r, _source: 'confluence', _badge: isKB ? 'badge-kb' : 'badge-confluence', _label: isKB ? 'KB' : 'Confluence' };
-    });
-    const ctResults = (ctRes.results || []).map(r => ({ ...r, _source: 'contentful' }));
-    allSearchResults = [...cfResults, ...ctResults];
-    currentFilter = 'all';
-    const total = allSearchResults.length;
-    const cfCount = cfResults.length;
-    const ctCount = ctResults.length;
+    const cfResults = (cfRes.results || []).map(r => { const isKB = r.url && /\/spaces\/(IE|ie)\//i.test(r.url); return Object.assign({}, r, { _source: 'confluence', _badge: isKB ? 'badge-kb' : 'badge-confluence', _label: isKB ? 'KB' : 'Confluence' }); });
+    const ctResults = (ctRes.results || []).map(r => Object.assign({}, r, { _source: 'contentful' }));
+    allSearchResults = cfResults.concat(ctResults); currentFilter = 'all';
+    const total = allSearchResults.length, cfCount = cfResults.length, ctCount = ctResults.length;
     if (total === 0) {
       track('search:noresults', q);
-      pv.innerHTML = `
-        <div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>
-        <div class="search-results-header"><div class="search-results-title">Results for "${q}"</div></div>
-        <div class="search-empty">No results found for "${q}"<br><br>Try different keywords or browse a vertical from the sidebar.</div>`;
+      document.getElementById('pageView').innerHTML =
+        '<div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>' +
+        '<div class="search-results-header"><div class="search-results-title">Results for "' + q + '"</div></div>' +
+        '<div class="search-empty">No results found for "' + q + '"<br><br>Try different keywords or browse a vertical from the sidebar.</div>';
     } else {
-      pv.innerHTML = `
-        <div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>
-        <div class="search-results-header"><div class="search-results-title">Results for "${q}"</div></div>
-        <div class="results-filter-bar">
-          <button class="results-filter-btn active" id="filter-all" onclick="applyFilter('all')">All (${total})</button>
-          <button class="results-filter-btn" id="filter-confluence" onclick="applyFilter('confluence')">Confluence (${cfCount})</button>
-          <button class="results-filter-btn" id="filter-contentful" onclick="applyFilter('contentful')">Contentful (${ctCount})</button>
-        </div>
-        <div class="search-results-grid" id="resultsGrid">${allSearchResults.map(r => makeTile(r)).join('')}</div>`;
+      document.getElementById('pageView').innerHTML =
+        '<div class="breadcrumb"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search results</div>' +
+        '<div class="search-results-header"><div class="search-results-title">Results for "' + q + '"</div></div>' +
+        '<div class="results-filter-bar">' +
+          '<button class="results-filter-btn active" id="filter-all" onclick="applyFilter(\'all\')">All (' + total + ')</button>' +
+          '<button class="results-filter-btn" id="filter-confluence" onclick="applyFilter(\'confluence\')">Confluence (' + cfCount + ')</button>' +
+          '<button class="results-filter-btn" id="filter-contentful" onclick="applyFilter(\'contentful\')">Contentful (' + ctCount + ')</button>' +
+        '</div>' +
+        '<div class="search-results-grid" id="resultsGrid">' + allSearchResults.map(r => makeTile(r)).join('') + '</div>';
     }
-  } catch(e) {
-    pv.innerHTML = '<div class="content-error">Search failed. Please try again.</div>';
-  }
+  } catch(e) { document.getElementById('pageView').innerHTML = '<div class="content-error">Search failed. Please try again.</div>'; }
   searchLoading = false;
 }
 
