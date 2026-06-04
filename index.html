@@ -166,6 +166,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .pw-gate-error { font-size: 12px; color: #e05070; margin-top: 10px; display: none; }
 .tag { font-size: 11px; padding: 3px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); }
 .platform-tag { font-size: 11px; padding: 3px 8px; background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); border-radius: 4px; color: #818cf8; }
+.tag-theme { font-size: 11px; padding: 3px 8px; background: rgba(0,200,130,0.08); border: 1px solid rgba(0,200,130,0.2); border-radius: 4px; color: #4ade9a; }
 
 /* SCHEDULE */
 .schedule-intro { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 10px; }
@@ -317,7 +318,9 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
         <div class="home-section">
           <div class="home-section-title">Tools</div>
-          <div class="home-section-body">Purpose-built tools for day to day use. The Bingo Schedule gives you a full 8 day view of UK and Spain streams with ticket prices, prize structures, and special features. Game Sheets lets you search and filter the full live game catalogue from Contentful, find games by venture, provider, game type, platform, and more, then pull up a full game sheet with all available metadata.</div>
+          <div class="home-section-body">Purpose-built tools for day to day use.</div>
+          <div class="home-section-body" style="margin-top:8px">The Bingo Schedule gives you a full 8 day view of UK and Spain streams with ticket prices, prize structures, and special features.</div>
+          <div class="home-section-body" style="margin-top:8px">Game Sheets lets you search and filter the full live game catalogue from Contentful, find games by venture, provider, game type, platform, and more, then pull up a full game sheet with all available metadata from active games for UK and Spain.</div>
         </div>
 
         <div class="home-section">
@@ -761,107 +764,170 @@ function loadContentfulPage(game) {
   hideTilesBar();
   document.getElementById('contentArea').scrollTop = 0;
 
-  const features = (game.features || []).map(f => '<span class="tag">' + f + '</span>').join('');
-  const platform = (game.platform || []).map(p => '<span class="platform-tag">' + p + '</span>').join('');
   const cc = game.cashierConfig || null;
 
   const boxStyle = 'background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;';
   const headStyle = 'font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--text);margin-bottom:12px;flex-shrink:0';
   const rowStyle = 'display:flex;align-items:flex-start;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;gap:8px;flex-shrink:0';
+  const lastRowStyle = 'display:flex;align-items:flex-start;justify-content:space-between;padding:6px 0;font-size:12px;gap:8px;flex-shrink:0';
 
-  const gameDetailRows = [
-    ['Provider', game.provider],['Game Type', game.gameType],['Paylines', game.paylines],
-    ['Max Win', game.maxWin || ''],['Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : ''],
-    ['Ways to Win', game.waysToWin],['Win Line Type', game.winLineType],
-    ['Progressive JP', game.progressiveJackpot ? 'Yes' : 'No'],['Volatility', game.volatility],
-    ['RTP', ''],['Min Bet', ''],['Max Bet', '']
-  ].map(function(pair) {
-    var label = pair[0], val = pair[1];
-    return '<div style="' + rowStyle + '"><span style="color:var(--text2);flex-shrink:0">' + label + '</span>' +
+  function makeRow(label, val, last) {
+    var style = last ? lastRowStyle : rowStyle;
+    return '<div style="' + style + '"><span style="color:var(--text2);flex-shrink:0">' + label + '</span>' +
       '<span style="color:' + (val ? 'var(--text)' : 'var(--text3)') + ';font-weight:' + (val ? '500' : '400') + ';font-style:' + (val ? 'normal' : 'italic') + ';text-align:right;word-break:break-word;min-width:0">' + (val || 'Not set') + '</span></div>';
-  }).join('');
+  }
 
-  const cashierRows = cc ? [
-    ['Game ID', cc.gameId],['Game Name', cc.gameName],['Skin Name', cc.skinName],['Product Name', cc.productName],
-    ['W2G Reportable', cc.w2gReportable ? 'Yes' : 'No'],['Group Compliant', cc.groupCompliant ? 'Yes' : 'No'],
-    ['Mini Game', cc.miniGame ? 'Yes' : 'No'],['Progressive', cc.progressive ? 'Yes' : 'No'],
-    ['Integration', cc.integration ? 'Yes' : 'No'],['PP', cc.pp ? 'Yes' : 'No'],['Live', cc.live ? 'Yes' : 'No']
-  ].map(function(pair) {
-    var label = pair[0], val = pair[1];
-    return '<div style="' + rowStyle + '"><span style="color:var(--text2);flex-shrink:0;margin-right:8px">' + label + '</span>' +
-      '<span style="color:var(--text);font-weight:500;text-align:right;word-break:break-word;min-width:0">' + (val !== undefined && val !== '' ? val : 'Not set') + '</span></div>';
-  }).join('') : '';
+  function makeConfigRow(label, val, last) {
+    var style = last ? lastRowStyle : rowStyle;
+    return '<div style="' + style + '"><span style="color:var(--text2);flex-shrink:0;margin-right:8px">' + label + '</span>' +
+      '<span style="color:var(--text);font-weight:500;text-align:right;word-break:break-word;min-width:0">' + (val !== undefined && val !== null && val !== '' ? val : 'Not set') + '</span></div>';
+  }
 
-  const venturesHtml = cc && cc.ventures && cc.ventures.length ? '<div style="margin-top:12px;flex-shrink:0"><div style="font-size:11px;color:var(--text2);margin-bottom:6px">Ventures</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + cc.ventures.map(function(v) { return '<span class="tag">' + v + '</span>'; }).join('') + '</div></div>' : '';
+  // Provider Details
+  var providerRows =
+    makeRow('Provider', game.provider || game.gameStudio || '') +
+    makeRow('Game Studio', game.gameStudio || '') +
+    makeRow('Game Aggregator', game.gameAggregator || '', true);
 
-  const gameV2Link = game.entryId ? CONTENTFUL_BASE + '/' + game.entryId : null;
-  const cashierLink = cc && cc.entryId ? CONTENTFUL_BASE + '/' + cc.entryId : null;
+  // Game Config (cashier)
+  var configRows = cc ? (
+    makeConfigRow('Live', cc.live ? 'Yes' : 'No') +
+    makeConfigRow('PP', cc.pp ? 'Yes' : 'No') +
+    makeConfigRow('Game ID', cc.gameId) +
+    makeConfigRow('Game Name', cc.gameName) +
+    makeConfigRow('Skin Name', cc.skinName) +
+    makeConfigRow('Product Name', cc.productName) +
+    makeConfigRow('Integration', cc.integration ? 'Yes' : 'No') +
+    makeConfigRow('W2G Reportable', cc.w2gReportable ? 'Yes' : 'No') +
+    makeConfigRow('Group Compliant', cc.groupCompliant ? 'Yes' : 'No') +
+    makeConfigRow('Mini Game', cc.miniGame ? 'Yes' : 'No') +
+    makeConfigRow('Progressive', cc.progressive ? 'Yes' : 'No', true)
+  ) : '';
 
+  var venturesHtml = cc && cc.ventures && cc.ventures.length ?
+    '<div style="margin-top:12px;flex-shrink:0"><div style="font-size:11px;color:var(--text2);margin-bottom:6px">Ventures</div><div style="display:flex;gap:6px;flex-wrap:wrap">' +
+    cc.ventures.map(function(v) { return '<span class="tag">' + v + '</span>'; }).join('') + '</div></div>' : '';
+
+  // Game Types
+  var typeRows =
+    makeRow('Game Type', game.gameType || '') +
+    makeRow('Sub Game Type', game.subGameType || '') +
+    makeRow('Contract Game Type', game.contractGameType || '', true);
+
+  // Game Mechanics
+  var rtpVal = game.rtp ? game.rtp + '%' : '';
+  var mechRows =
+    makeRow('RTP', rtpVal) +
+    makeRow('Volatility', game.volatility || '') +
+    makeRow('Max Multiplier', game.maxMultiplier ? game.maxMultiplier + 'x' : '') +
+    makeRow('Max Win', game.maxWin || '') +
+    makeRow('Progressive JP', game.progressiveJackpot ? 'Yes' : 'No') +
+    makeRow('Win Line Type', game.winLineType || '') +
+    makeRow('Paylines', game.paylines || '') +
+    makeRow('Win Lines', game.winLines || '') +
+    makeRow('Ways to Win', game.waysToWin || '') +
+    makeRow('Reel', game.reel || '') +
+    makeRow('Min Bet', '') +
+    makeRow('Max Bet', '', true);
+
+  // Features
+  var featuresHtml = (game.features || []).length ?
+    (game.features || []).map(function(f) { return '<span class="tag">' + f + '</span>'; }).join('') :
+    '<span style="font-size:12px;color:var(--text3);font-style:italic">None listed</span>';
+
+  // Themes
+  var themesHtml = (game.themes || []).length ?
+    (game.themes || []).map(function(t) { return '<span class="tag-theme">' + t + '</span>'; }).join('') :
+    '<span style="font-size:12px;color:var(--text3);font-style:italic">None listed</span>';
+
+  // Platform
+  var platformHtml = (game.platform || []).length ?
+    (game.platform || []).map(function(p) { return '<span class="platform-tag">' + p + '</span>'; }).join('') : '';
+
+  // URLs
+  var urlsHtml =
+    (game.demoUrl ? '<div style="' + rowStyle + '"><span style="color:var(--text2);flex-shrink:0;width:36px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">' + game.demoUrl + '</span></div>' : '') +
+    (game.realUrl ? '<div style="' + lastRowStyle + '"><span style="color:var(--text2);flex-shrink:0;width:36px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">' + game.realUrl + '</span></div>' : '') +
+    (!game.demoUrl && !game.realUrl ? '<div style="font-size:12px;color:var(--text3);font-style:italic">No URLs set</div>' : '');
+
+  var gameV2Link = game.entryId ? CONTENTFUL_BASE + '/' + game.entryId : null;
+  var cashierLink = cc && cc.entryId ? CONTENTFUL_BASE + '/' + cc.entryId : null;
   var cfLinkParts = [];
   if (gameV2Link) cfLinkParts.push('<button class="cf-open-btn" style="margin-left:0" onclick="window.open(\'' + gameV2Link + '\',\'_blank\')">Game Model V2 &#8599;</button>');
   if (cashierLink) cfLinkParts.push('<button class="cf-open-btn" onclick="window.open(\'' + cashierLink + '\',\'_blank\')">Cashier Config &#8599;</button>');
-  const cfLinks = cfLinkParts.join('');
+  var cfLinks = cfLinkParts.join('');
 
-  pv.innerHTML = '<div class="breadcrumb">' +
-    '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
-    'Search results' +
-    '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>' +
-    game.title + '</div>' +
+  pv.innerHTML =
+    '<div class="breadcrumb">' +
+      '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
+      'Search results' +
+      '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>' +
+      game.title +
+    '</div>' +
     '<div class="page-title">' + game.title + '</div>' +
-    '<div class="page-meta">' + (game.provider || '') + (game.gameType ? ' &middot; ' + game.gameType : '') + '</div>' +
+    '<div class="page-meta">' + (game.provider || game.gameStudio || '') + (game.gameType ? ' &middot; ' + game.gameType : '') + '</div>' +
     '<div class="cf-banner" style="background:rgba(245,200,66,0.07);border-color:rgba(245,200,66,0.2);margin-bottom:16px">' +
       '<div class="cf-banner-left" style="color:#f5c842">' +
         '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>' +
-        'Contentful</div>' +
+        'Contentful' +
+      '</div>' +
       '<div style="display:flex;align-items:center;gap:6px;margin-left:auto">' + cfLinks + '</div>' +
     '</div>' +
-    '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);gap:12px;">' +
+
+    // MAIN 3 COLUMN ROW
+    '<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.4fr);gap:12px;margin-bottom:12px">' +
+
+      // LEFT: Provider + Config + Platform
       '<div style="display:flex;flex-direction:column;gap:12px;">' +
-        '<div id="cf-box-details" style="' + boxStyle + '">' +
-          '<div style="' + headStyle + '">Game Details</div>' + gameDetailRows +
+        '<div style="' + boxStyle + '">' +
+          '<div style="' + headStyle + '">Provider Details</div>' + providerRows +
         '</div>' +
-        '<div id="cf-box-features" style="' + boxStyle + '">' +
-          '<div style="' + headStyle + '">Features</div>' +
-          '<div style="display:flex;gap:6px;flex-wrap:wrap">' + (features || '<span style="font-size:12px;color:var(--text3);font-style:italic">None listed</span>') + '</div>' +
+        (cc ? '<div style="' + boxStyle + '">' +
+          '<div style="' + headStyle + '">Game Config</div>' + configRows + venturesHtml +
+        '</div>' : '') +
+        (platformHtml ? '<div style="' + boxStyle + '">' +
+          '<div style="' + headStyle + '">Platform</div>' +
+          '<div style="display:flex;gap:6px;flex-wrap:wrap">' + platformHtml + '</div>' +
+        '</div>' : '') +
+      '</div>' +
+
+      // MIDDLE: Game Types + Game Mechanics
+      '<div style="display:flex;flex-direction:column;gap:12px;">' +
+        '<div style="' + boxStyle + '">' +
+          '<div style="' + headStyle + '">Game Types</div>' + typeRows +
+        '</div>' +
+        '<div style="' + boxStyle + 'flex:1;">' +
+          '<div style="' + headStyle + '">Game Mechanics</div>' + mechRows +
         '</div>' +
       '</div>' +
+
+      // RIGHT: URLs + Description
       '<div style="display:flex;flex-direction:column;gap:12px;min-width:0;">' +
         '<div style="' + boxStyle + '">' +
-          '<div style="' + headStyle + '">URLs</div>' +
-          (game.demoUrl ? '<div style="' + rowStyle + '"><span style="color:var(--text2);flex-shrink:0;width:36px">Demo</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">' + game.demoUrl + '</span></div>' : '') +
-          (game.realUrl ? '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:12px;gap:8px;flex-shrink:0"><span style="color:var(--text2);flex-shrink:0;width:36px">Real</span><span style="color:#818cf8;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0">' + game.realUrl + '</span></div>' : '') +
-          (!game.demoUrl && !game.realUrl ? '<div style="font-size:12px;color:var(--text3);font-style:italic">No URLs set</div>' : '') +
+          '<div style="' + headStyle + '">URLs</div>' + urlsHtml +
         '</div>' +
         '<div style="' + boxStyle + 'flex:1;">' +
           '<div style="' + headStyle + '">Description</div>' +
           '<div style="font-size:14px;color:var(--text2);line-height:1.8">' + (game.excerpt || 'No description available.') + '</div>' +
         '</div>' +
       '</div>' +
-      '<div style="display:flex;flex-direction:column;gap:12px;">' +
-        (cc ? '<div id="cf-box-config" style="' + boxStyle + '"><div style="' + headStyle + '">Game Config</div>' + cashierRows + venturesHtml + '</div>' : '') +
-        (platform ? '<div id="cf-box-platform" style="' + boxStyle + '"><div style="' + headStyle + '">Platform</div><div style="display:flex;gap:6px;flex-wrap:wrap">' + platform + '</div></div>' : '') +
+
+    '</div>' +
+
+    // TAG ROW: Features + Themes 50/50
+    '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">' +
+      '<div style="' + boxStyle + '">' +
+        '<div style="' + headStyle + '">Features</div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap">' + featuresHtml + '</div>' +
+      '</div>' +
+      '<div style="' + boxStyle + '">' +
+        '<div style="' + headStyle + '">Themes</div>' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap">' + themesHtml + '</div>' +
       '</div>' +
     '</div>';
-
-  requestAnimationFrame(function() {
-    var details = document.getElementById('cf-box-details');
-    var config = document.getElementById('cf-box-config');
-    var feat = document.getElementById('cf-box-features');
-    var plat = document.getElementById('cf-box-platform');
-    if (details && config) {
-      details.style.height = ''; config.style.height = '';
-      var h1 = Math.max(details.offsetHeight, config.offsetHeight);
-      details.style.height = h1 + 'px'; config.style.height = h1 + 'px';
-    }
-    if (feat && plat) {
-      feat.style.height = ''; plat.style.height = '';
-      var h2 = Math.max(feat.offsetHeight, plat.offsetHeight);
-      feat.style.height = h2 + 'px'; plat.style.height = h2 + 'px';
-    }
-  });
 }
 
-// CONTENT
+
 async function fetchCF(pageId) {
   if (cfCache[pageId]) return cfCache[pageId];
   const res = await fetch('/confluence?id=' + pageId);
