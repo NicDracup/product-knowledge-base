@@ -50,7 +50,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .sidebar-inner::-webkit-scrollbar { width: 3px; }
 .sidebar-inner::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 .sidebar-label { font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); padding: 0 16px; margin: 10px 0 4px; }
-.nav-overview { display: flex; align-items: center; gap: 9px; padding: 7px 16px; cursor: pointer; color: var(--text); font-size: 12px; transition: all 0.12s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); border-left: 2px solid transparent; }
+.sidebar-label:first-child { margin-top: 0; }
+.nav-overview { display: flex; align-items: center; gap: 9px; padding: 7px 16px; cursor: pointer; color: var(--text2); font-size: 12px; transition: all 0.12s; border: none; background: transparent; width: 100%; text-align: left; font-family: var(--font); border-left: 2px solid transparent; }
 .nav-overview:hover { background: var(--surface2); color: var(--text); }
 .nav-overview.active { background: var(--surface2); color: var(--text); border-left-color: var(--red); }
 .nav-icon { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
@@ -71,7 +72,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .content-area { flex: 1; min-width: 0; overflow-y: auto; overflow-x: hidden; padding: 28px 32px; }
 .content-area::-webkit-scrollbar { width: 4px; }
 .content-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-#overviewView, #pageView { width: 100%; }
 .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); margin-bottom: 14px; flex-wrap: wrap; }
 .breadcrumb svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
 .breadcrumb span { cursor: pointer; }
@@ -105,16 +105,23 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .content-error { padding: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 13px; line-height: 1.6; }
+
+/* HOME PAGE */
+.home-intro { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 28px; }
+.home-section-heading { font-size: 17px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+.home-section { margin-bottom: 22px; }
+.home-section-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.home-section-body { font-size: 14px; color: var(--text2); line-height: 1.8; }
+.home-divider { height: 1px; background: var(--border); margin: 28px 0; }
+.home-notice-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; font-size: 13px; color: var(--text2); line-height: 1.7; }
+.home-coming-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 10px; font-size: 13px; color: var(--text2); line-height: 1.7; }
+
 .overview-body { font-size: 14px; line-height: 1.8; color: var(--text2); }
 .overview-body h2 { font-size: 14px; font-weight: 600; color: var(--text); margin: 22px 0 8px; }
 .overview-body p { margin-bottom: 10px; }
 .overview-body ul { margin: 0 0 10px 20px; }
 .overview-body li { margin-bottom: 4px; }
 .overview-body a { color: #5b8dee; text-decoration: none; }
-.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
-.team-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
-.team-card .name { font-size: 12px; font-weight: 500; color: var(--text); }
-.team-card .role { font-size: 10px; color: var(--text2); margin-top: 2px; }
 .search-results-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .search-results-title { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
 .results-filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
@@ -229,7 +236,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 <div id="feedbackModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeFeedback()">
   <div class="modal">
     <div class="modal-title">Leave Feedback</div>
-    <div class="modal-sub">Suggestions, missing content, or anything else -- let us know.</div>
+    <div class="modal-sub">Suggestions, missing content, or anything else. Let us know.</div>
     <textarea class="modal-textarea" id="feedbackText" placeholder="Type your suggestion here..."></textarea>
     <div class="modal-success" id="feedbackSuccess">Thanks! Your feedback has been saved.</div>
     <div class="modal-actions">
@@ -242,16 +249,25 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 <div class="layout">
   <nav class="sidebar">
     <div class="sidebar-inner" id="sidebarInner">
-      <div class="sidebar-label">Navigation</div>
-      <button class="nav-overview active" id="overviewBtn" onclick="showOverview()">
+
+      <div class="sidebar-label">Home</div>
+      <button class="nav-overview active" id="homeBtn" onclick="showHome()">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Home
+      </button>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-label">Product</div>
+      <button class="nav-overview" id="overviewBtn" onclick="showOverview()">
         <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         Overview
       </button>
-      <div class="sidebar-divider"></div>
-      <div class="sidebar-label">Verticals</div>
       <div id="treeRoot"><div class="sidebar-loading">Loading...</div></div>
+
       <div class="sidebar-divider"></div>
-      <div class="sidebar-label">Quick Links</div>
+
+      <div class="sidebar-label">Tools</div>
       <button class="nav-overview" id="scheduleBtn" onclick="showSchedule(); track('quicklink', 'Bingo Schedule')">
         <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Bingo Schedule
@@ -261,33 +277,91 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
         Game Sheets
       </button>
       <button class="nav-overview" onclick="window.open('https://neon-mousse-b10a92.netlify.app/'); track('quicklink', 'Game IQ')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Game IQ
+        <svg class="nav-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Game IQ
       </button>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-label">Links</div>
       <button class="nav-overview" onclick="window.open('https://confluence.cloud.ballys.com/wiki/home'); track('quicklink', 'Confluence Home')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence Home
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Confluence Home
       </button>
       <button class="nav-overview" onclick="window.open('https://app.contentful.com'); track('quicklink', 'Contentful')">
-        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Contentful Home
+        <svg class="nav-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Contentful Home
       </button>
+
     </div>
   </nav>
 
   <main class="main">
     <div class="content-area" id="contentArea">
 
-      <div id="overviewView">
+      <div id="homeView">
         <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Overview
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Home
+        </div>
+        <div class="page-title">Welcome to the Product Knowledge Base</div>
+
+        <p class="home-intro">The PKB is a single place for everyone and anyone looking to find game and product information without jumping between Confluence, Contentful, and a dozen other tabs. It pulls live data from multiple sources so what you see is always up to date.</p>
+
+        <div class="home-section-heading">Finding your way around</div>
+
+        <div class="home-section">
+          <div class="home-section-title">Product</div>
+          <div class="home-section-body">Everything in the Product section comes live from Confluence. Use it to browse verticals, find process docs, and anything else the product team maintains. Content is always in sync. If it's been updated in Confluence, it's updated here.</div>
+        </div>
+
+        <div class="home-section">
+          <div class="home-section-title">Tools</div>
+          <div class="home-section-body">Purpose-built tools for day to day use. The Bingo Schedule gives you a full 8 day view of UK and Spain streams with ticket prices, prize structures, and special features. Game Sheets lets you search and filter the full live game catalogue from Contentful, find games by venture, provider, game type, platform, and more, then pull up a full game sheet with all available metadata.</div>
+        </div>
+
+        <div class="home-section">
+          <div class="home-section-title">Links</div>
+          <div class="home-section-body">Quick access to external systems like Confluence and Contentful, one click away.</div>
+        </div>
+
+        <div class="home-section">
+          <div class="home-section-title">Feedback</div>
+          <div class="home-section-body">Use the Share Feedback button in the top right corner at any time. It's anonymous and open to anything: corrections, missing content, suggestions, whatever's on your mind. Everything submitted is reviewed and helps shape what gets built next.</div>
+        </div>
+
+        <div class="home-divider"></div>
+
+        <div class="home-section-heading">A few things to know</div>
+
+        <div class="home-notice-block">RTP data is incomplete across most games. This is a known data quality issue in Contentful. The data exists but has not been consistently populated. We are working on finding the right source to connect it properly.</div>
+        <div class="home-notice-block">Game features shown on game sheets reflect what the game is capable of, not necessarily what is active on site. Some features may be disabled per market, for example Bonus Buy.</div>
+
+        <div class="home-divider"></div>
+
+        <div class="home-section-heading">What's coming</div>
+
+        <div class="home-coming-block">An AI assistant is in development that will let you chat directly with the knowledge base. Ask questions and get answers pulled from across Confluence, Contentful, and more, without having to search manually.</div>
+        <div class="home-coming-block">Game Sheets will get additional filters including Win Line Type and Features, making it easier to find games by mechanic.</div>
+        <div class="home-coming-block">RTP data will be connected once the right source is identified and accessible.</div>
+      </div>
+
+      <div id="overviewView" style="display:none">
+        <div class="breadcrumb">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span onclick="showHome()">Home</span>
+          <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          Overview
         </div>
         <div class="page-title">Product Knowledge Base</div>
         <div class="page-meta">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          Central reference for Bally's iGaming product team
+          Live from Confluence
         </div>
         <div class="cf-banner">
           <div class="cf-banner-left">
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            Live from Confluence always up to date
+            Live from Confluence, always up to date
           </div>
           <button class="cf-open-btn" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/bingo/pages/129630288/Product+Operations+Knowledge+Base')">Open in Confluence &#8599;</button>
         </div>
@@ -296,7 +370,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
       <div id="scheduleView" style="display:none">
         <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Bingo Schedule
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Bingo Schedule
         </div>
         <div class="page-title">Bingo Schedule</div>
         <div class="page-meta">
@@ -329,7 +404,8 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
       <div id="gameSheetsView" style="display:none">
         <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Game Sheets
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Game Sheets
         </div>
         <div class="page-title">Game Sheets</div>
         <div class="page-meta">
@@ -499,7 +575,7 @@ const SUPPLIERS_PASSWORD = 'Restricted';
 let cfCache = {}, childrenCache = {}, activeNodeId = null, searchLoading = false, suppliersUnlocked = false;
 let gsSelectedVenture = '', gsLoading = false;
 
-// ── TREE ──────────────────────────────────────────────────────────────────────
+// TREE
 async function fetchChildren(pageId) {
   if (childrenCache[pageId]) return childrenCache[pageId];
   try {
@@ -561,16 +637,23 @@ function setActiveNode(pageId) {
   activeNodeId = pageId;
 }
 
-// ── VIEW HELPERS ──────────────────────────────────────────────────────────────
+// VIEW HELPERS
 function hideAllViews() {
-  ['overviewView','scheduleView','gameSheetsView','pageView'].forEach(id => document.getElementById(id).style.display = 'none');
+  ['homeView','overviewView','scheduleView','gameSheetsView','pageView'].forEach(id => document.getElementById(id).style.display = 'none');
 }
 function clearNavActive() {
   document.querySelectorAll('.nav-overview').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tree-node-row').forEach(r => r.classList.remove('active'));
 }
 
-// ── SCHEDULE ──────────────────────────────────────────────────────────────────
+// HOME
+function showHome() {
+  clearNavActive(); document.getElementById('homeBtn').classList.add('active'); activeNodeId = null;
+  hideAllViews(); document.getElementById('homeView').style.display = 'block';
+  hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
+}
+
+// SCHEDULE
 function showSchedule() {
   clearNavActive(); document.getElementById('scheduleBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('scheduleView').style.display = 'block';
@@ -583,13 +666,12 @@ function loadScheduleFrame(url) {
   document.getElementById('contentArea').scrollTop = document.getElementById('contentArea').scrollHeight;
 }
 
-// ── GAME SHEETS ───────────────────────────────────────────────────────────────
+// GAME SHEETS
 function showGameSheets() {
   clearNavActive(); document.getElementById('gameSheetsBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('gameSheetsView').style.display = 'block';
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
 }
-
 function onCountryChange() {
   const country = document.getElementById('gs-country').value;
   const uk = document.getElementById('gs-ventures-uk');
@@ -600,13 +682,11 @@ function onCountryChange() {
   else if (country === 'spain') { uk.style.display = 'none'; spain.style.display = 'block'; }
   else { uk.style.display = 'block'; spain.style.display = 'block'; }
 }
-
 function selectVenture(btn) {
   const venture = btn.dataset.venture;
   if (gsSelectedVenture === venture) { gsSelectedVenture = ''; btn.classList.remove('active'); }
   else { document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active')); gsSelectedVenture = venture; btn.classList.add('active'); }
 }
-
 function clearGameSheets() {
   gsSelectedVenture = '';
   document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active'));
@@ -620,7 +700,6 @@ function clearGameSheets() {
   document.getElementById('gs-results-header').style.display = 'none';
   document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>';
 }
-
 async function runGameSheets() {
   if (gsLoading) return;
   const query = document.getElementById('gs-query').value.trim();
@@ -668,7 +747,7 @@ async function runGameSheets() {
   gsLoading = false;
 }
 
-// ── CONTENTFUL PAGE ───────────────────────────────────────────────────────────
+// CONTENTFUL PAGE
 function loadContentfulPage(game) {
   clearNavActive();
   hideAllViews();
@@ -777,7 +856,7 @@ function loadContentfulPage(game) {
   });
 }
 
-// ── CONTENT ───────────────────────────────────────────────────────────────────
+// CONTENT
 async function fetchCF(pageId) {
   if (cfCache[pageId]) return cfCache[pageId];
   const res = await fetch('/confluence?id=' + pageId);
@@ -848,10 +927,11 @@ async function loadPage(page) {
   const cfUrl = page.url;
   document.getElementById('pageView').innerHTML =
     '<div class="breadcrumb"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>' +
+    '<span onclick="showHome()">Home</span><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>' +
     '<span onclick="showOverview()">Overview</span><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>' + page.title + '</div>' +
     '<div class="page-title">' + page.title + '</div>' +
     '<div class="page-meta"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence</div>' +
-    '<div class="cf-banner"><div class="cf-banner-left"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live from Confluence always up to date</div>' +
+    '<div class="cf-banner"><div class="cf-banner-left"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Live from Confluence, always up to date</div>' +
     '<button class="cf-open-btn" onclick="window.open(\'' + cfUrl + '\',\'_blank\'); track(\'confluence_open\', \'' + page.title + '\')">Open in Confluence &#8599;</button></div>' +
     '<div id="pagecontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>';
   loadSiblingTiles(page.id);
@@ -882,7 +962,7 @@ function showTilesBar(pages) {
 }
 function hideTilesBar() { document.getElementById('tilesBar').style.display = 'none'; }
 
-// ── SEARCH ────────────────────────────────────────────────────────────────────
+// SEARCH
 let allSearchResults = [], currentFilter = 'all';
 function applyFilter(filter) {
   currentFilter = filter;
@@ -958,10 +1038,10 @@ async function runSearch() {
   searchLoading = false;
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+// INIT
 track('pageload', '');
 buildTree();
-showOverview();
+showHome();
 </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c7103ccdc19d4f39bca354af05253f51"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
