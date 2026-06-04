@@ -330,6 +330,11 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
           <div class="home-section-body">Use the Share Feedback button in the top right corner at any time. It's anonymous and open to anything: corrections, missing content, suggestions, whatever's on your mind. Everything submitted is reviewed and helps shape what gets built next.</div>
         </div>
 
+        <div class="home-section">
+          <div class="home-section-title">Search</div>
+          <div class="home-section-body">The search bar at the top searches across both Confluence and Contentful at the same time. Results are returned as cards and mixed by default. Use the filter buttons at the top of the results to narrow down by source: All, Confluence, or Contentful. Clicking a result opens it directly in the app, with a link available if you want to view it in the original source. This is a single page app so there is no browser back button. To return to your results, press Enter in the search bar again.</div>
+        </div>
+
         <div class="home-divider"></div>
 
         <div class="home-section-heading">A few things to know</div>
@@ -799,7 +804,7 @@ function loadContentfulPage(game) {
 
   pv.innerHTML = '<div class="breadcrumb">' +
     '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>' +
-    '<span onclick="history.back()">Search results</span>' +
+    'Search results' +
     '<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>' +
     game.title + '</div>' +
     '<div class="page-title">' + game.title + '</div>' +
