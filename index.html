@@ -182,10 +182,12 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .schedule-frame-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
 
 /* GAME SHEETS */
-.gs-layout { display: flex; gap: 20px; }
-.gs-filters { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; }
-.gs-filter-group { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-.gs-filter-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); margin-bottom: 8px; }
+.gs-layout { display: flex; flex-direction: column; gap: 12px; }
+.gs-filter-rows { display: flex; flex-direction: column; gap: 8px; }
+.gs-filter-row { display: flex; align-items: flex-end; gap: 8px; }
+.gs-filter-group { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.gs-filter-group-fixed { display: flex; flex-direction: column; flex-shrink: 0; }
+.gs-filter-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; }
 .gs-filter-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; color: var(--text); font-family: var(--font); font-size: 12px; outline: none; }
 .gs-filter-input:focus { border-color: var(--border2); }
 .gs-filter-input::placeholder { color: var(--text3); }
@@ -198,9 +200,9 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .gs-venture-btn { display: block; width: 100%; text-align: left; padding: 5px 8px; background: transparent; border: 1px solid transparent; border-radius: 5px; color: var(--text2); font-size: 11px; font-family: var(--font); cursor: pointer; transition: all 0.12s; }
 .gs-venture-btn:hover { background: var(--surface2); color: var(--text); }
 .gs-venture-btn.active { background: var(--surface2); border-color: var(--border2); color: var(--text); }
-.gs-search-btn { width: 100%; padding: 9px; background: var(--red); border: none; border-radius: 6px; color: white; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.12s; }
+.gs-search-btn { padding: 7px 20px; background: var(--red); border: none; border-radius: 6px; color: white; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; transition: background 0.12s; flex-shrink: 0; }
 .gs-search-btn:hover { background: var(--red-dark); }
-.gs-clear-btn { width: 100%; padding: 7px; background: transparent; border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; transition: all 0.12s; }
+.gs-clear-btn { padding: 7px 16px; background: transparent; border: none; border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; transition: all 0.12s; flex-shrink: 0; }
 .gs-clear-btn:hover { background: var(--surface2); color: var(--text); }
 .gs-results { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .gs-results-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-shrink: 0; }
@@ -411,23 +413,15 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
       </div>
 
       <div id="gameSheetsView" style="display:none">
-        <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          Game Sheets
-        </div>
         <div class="page-title">Game Sheets</div>
         <div class="page-meta">
           <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           Live game data from Contentful
         </div>
         <div class="gs-layout">
-          <div class="gs-filters">
 
-            <div class="gs-filter-group">
-              <div class="gs-filter-label">Game Name</div>
-              <input id="gs-query" class="gs-filter-input" type="text" placeholder="Search by name..." onkeydown="if(event.key==='Enter')runGameSheets()" />
-            </div>
-
+          <!-- ROW 1: Country, Venture, Provider, Aggregator, Platform + Search -->
+          <div class="gs-filter-row">
             <div class="gs-filter-group">
               <div class="gs-filter-label">Country</div>
               <div class="gs-select-wrap">
@@ -438,7 +432,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
-
             <div class="gs-filter-group">
               <div class="gs-filter-label">Venture</div>
               <div class="gs-select-wrap">
@@ -455,7 +448,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
-
             <div class="gs-filter-group">
               <div class="gs-filter-label">Provider</div>
               <div class="gs-select-wrap">
@@ -499,32 +491,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
-
-            <div class="gs-filter-group">
-              <div class="gs-filter-label">Game Type</div>
-              <div class="gs-select-wrap">
-                <select id="gs-gametype" class="gs-select">
-                  <option value="">All Types</option>
-                  <option value="SLOT">Slots</option>
-                  <option value="CASINO">Casino</option>
-                  <option value="INSTANT">Instant Win</option>
-                  <option value="FREE">Free</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="gs-filter-group">
-              <div class="gs-filter-label">Platform</div>
-              <div class="gs-select-wrap">
-                <select id="gs-platform" class="gs-select">
-                  <option value="">All Platforms</option>
-                  <option value="web">Web</option>
-                  <option value="ios">iOS</option>
-                  <option value="android">Android</option>
-                </select>
-              </div>
-            </div>
-
             <div class="gs-filter-group">
               <div class="gs-filter-label">Aggregator</div>
               <div class="gs-select-wrap">
@@ -546,7 +512,35 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Platform</div>
+              <div class="gs-select-wrap">
+                <select id="gs-platform" class="gs-select">
+                  <option value="">All Platforms</option>
+                  <option value="web">Web</option>
+                  <option value="ios">iOS</option>
+                  <option value="android">Android</option>
+                </select>
+              </div>
+            </div>
+            <div style="flex:1"></div>
+            <button id="gs-search-btn" class="gs-search-btn" onclick="runGameSheets()" disabled style="opacity:0.4;cursor:not-allowed">Search</button>
+          </div>
 
+          <!-- ROW 2: Game Type, Win Line Type, Feature, Theme, Game Name + Clear -->
+          <div class="gs-filter-row">
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Game Type</div>
+              <div class="gs-select-wrap">
+                <select id="gs-gametype" class="gs-select">
+                  <option value="">All Types</option>
+                  <option value="SLOT">Slots</option>
+                  <option value="CASINO">Casino</option>
+                  <option value="INSTANT">Instant Win</option>
+                  <option value="FREE">Free</option>
+                </select>
+              </div>
+            </div>
             <div class="gs-filter-group">
               <div class="gs-filter-label">Win Line Type</div>
               <div class="gs-select-wrap">
@@ -561,7 +555,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
-
             <div class="gs-filter-group">
               <div class="gs-filter-label">Feature</div>
               <div class="gs-select-wrap">
@@ -600,7 +593,6 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
-
             <div class="gs-filter-group">
               <div class="gs-filter-label">Theme</div>
               <div class="gs-select-wrap">
@@ -657,17 +649,21 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
                 </select>
               </div>
             </div>
-
-            <button id="gs-search-btn" class="gs-search-btn" onclick="runGameSheets()" disabled style="opacity:0.4;cursor:not-allowed">Search</button>
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Game Name</div>
+              <input id="gs-query" class="gs-filter-input" type="text" placeholder="Search by name..." onkeydown="if(event.key==='Enter')runGameSheets()" />
+            </div>
+            <div style="flex:1"></div>
             <button class="gs-clear-btn" onclick="clearGameSheets()">Clear Filters</button>
           </div>
 
+          <!-- RESULTS -->
           <div class="gs-results">
             <div id="gs-results-header" class="gs-results-header" style="display:none">
               <span id="gs-results-count" class="gs-results-count"></span>
             </div>
             <div id="gs-results-list" class="gs-results-list">
-              <div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>
+              <div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select a country to get started</div>
             </div>
           </div>
         </div>
