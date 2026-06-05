@@ -2,6 +2,7 @@ export async function onRequest(context) {
   const url = new URL(context.request.url);
   const query = url.searchParams.get('q') || '';
   const venture = url.searchParams.get('venture') || '';
+  const ventures = url.searchParams.get('ventures') || '';
   const provider = url.searchParams.get('provider') || '';
   const gameType = url.searchParams.get('gameType') || '';
   const platform = url.searchParams.get('platform') || '';
@@ -9,8 +10,9 @@ export async function onRequest(context) {
   const winLineType = url.searchParams.get('winLineType') || '';
   const feature = url.searchParams.get('feature') || '';
   const theme = url.searchParams.get('theme') || '';
+  const ventureList = venture ? [venture] : ventures ? ventures.split(',') : [];
 
-  if (!query && !venture && !provider && !gameType && !platform && !aggregator && !winLineType && !feature && !theme) {
+  if (!query && !ventureList.length && !provider && !gameType && !platform && !aggregator && !winLineType && !feature && !theme) {
     return new Response(JSON.stringify({ results: [], error: 'No filters provided' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
@@ -34,7 +36,7 @@ export async function onRequest(context) {
 
     // Step 1: Fetch ALL matching cashier entries (paginated)
     let cashierParams = `content_type=cashierGameConfig&fields.live=yes`;
-    if (venture) cashierParams += `&fields.ventures=${encodeURIComponent(venture)}`;
+    if (ventureList.length === 1) cashierParams += `&fields.ventures=${encodeURIComponent(ventureList[0])}`;
     if (gameType) cashierParams += `&fields.gameType=${encodeURIComponent(gameType)}`;
 
     const cashierLookup = {};
@@ -74,7 +76,17 @@ export async function onRequest(context) {
       if (cashierSkip >= total) break;
     }
 
-    const liveGameNames = new Set(Object.keys(cashierLookup));
+    // If multiple ventures passed, filter cashierLookup to only those ventures
+    let filteredLookup = cashierLookup;
+    if (ventureList.length > 1) {
+      filteredLookup = {};
+      for (const [name, entry] of Object.entries(cashierLookup)) {
+        if (entry.ventures && entry.ventures.some(v => ventureList.includes(v))) {
+          filteredLookup[name] = entry;
+        }
+      }
+    }
+    const liveGameNames = new Set(Object.keys(filteredLookup));
 
     if (liveGameNames.size === 0) {
       return new Response(JSON.stringify({ results: [] }), {
@@ -145,7 +157,7 @@ export async function onRequest(context) {
         // Only include if matched in cashier live list
         if (!liveGameNames.has(entryTitle.toUpperCase())) continue;
 
-        const cashier = cashierLookup[entryTitle.toUpperCase()] || null;
+        const cashier = filteredLookup[entryTitle.toUpperCase()] || null;
         const intro = (f.introductionContent && (f.introductionContent['en-GB'] || f.introductionContent)) || '';
         const excerpt = typeof intro === 'string' ? intro.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() : '';
         const platformRaw = f.platformVisibility && (f.platformVisibility['en-GB'] || f.platformVisibility);
