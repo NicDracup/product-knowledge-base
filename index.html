@@ -441,19 +441,18 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
             <div class="gs-filter-group">
               <div class="gs-filter-label">Venture</div>
-              <div class="gs-venture-list">
-                <div id="gs-ventures-uk">
-                  <button class="gs-venture-btn" data-venture="JACKPOTJOY" onclick="selectVenture(this)">Jackpot Joy</button>
-                  <button class="gs-venture-btn" data-venture="HEART" onclick="selectVenture(this)">Double Bubble Bingo</button>
-                  <button class="gs-venture-btn" data-venture="STARSPINS" onclick="selectVenture(this)">BallyBet</button>
-                  <button class="gs-venture-btn" data-venture="VIRGINGAMES" onclick="selectVenture(this)">Virgin Games</button>
-                  <button class="gs-venture-btn" data-venture="MONOPOLYCASINO" onclick="selectVenture(this)">Monopoly Casino</button>
-                  <button class="gs-venture-btn" data-venture="RAINBOWRICHES" onclick="selectVenture(this)">Rainbow Riches</button>
-                </div>
-                <div id="gs-ventures-spain">
-                  <button class="gs-venture-btn" data-venture="BOTEMANIA" onclick="selectVenture(this)">Botemania</button>
-                  <button class="gs-venture-btn" data-venture="MONOPOLYCASINOSPAIN" onclick="selectVenture(this)">Monopoly Casino Spain</button>
-                </div>
+              <div class="gs-select-wrap">
+                <select id="gs-venture" class="gs-select">
+                  <option value="">All Ventures</option>
+                  <option value="JACKPOTJOY">Jackpot Joy</option>
+                  <option value="HEART">Double Bubble Bingo</option>
+                  <option value="STARSPINS">BallyBet</option>
+                  <option value="VIRGINGAMES">Virgin Games</option>
+                  <option value="MONOPOLYCASINO">Monopoly Casino</option>
+                  <option value="RAINBOWRICHES">Rainbow Riches</option>
+                  <option value="BOTEMANIA">Botemania</option>
+                  <option value="MONOPOLYCASINOSPAIN">Monopoly Casino Spain</option>
+                </select>
               </div>
             </div>
 
@@ -526,6 +525,139 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
               </div>
             </div>
 
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Aggregator</div>
+              <div class="gs-select-wrap">
+                <select id="gs-aggregator" class="gs-select">
+                  <option value="">All Aggregators</option>
+                  <option>1X2 Network</option>
+                  <option>Blueprint</option>
+                  <option>Bragg</option>
+                  <option>Evolution Gaming</option>
+                  <option>Games Global</option>
+                  <option>IGT</option>
+                  <option>Light &amp; Wonder</option>
+                  <option>Playtech</option>
+                  <option>PragmaticPlay</option>
+                  <option>Push Gaming</option>
+                  <option>Relax</option>
+                  <option>Stakelogic</option>
+                  <option>YGG Drasil</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Win Line Type</div>
+              <div class="gs-select-wrap">
+                <select id="gs-winlinetype" class="gs-select">
+                  <option value="">All Win Line Types</option>
+                  <option>Cluster Pays</option>
+                  <option>L2R</option>
+                  <option>Megaways</option>
+                  <option>Other</option>
+                  <option>Scatter Pays</option>
+                  <option>Ways</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Feature</div>
+              <div class="gs-select-wrap">
+                <select id="gs-feature" class="gs-select">
+                  <option value="">All Features</option>
+                  <option>Ante Bet</option>
+                  <option>Bonus Game</option>
+                  <option>Bonus Wheel</option>
+                  <option>Cash Collect</option>
+                  <option>Cascading Reels</option>
+                  <option>Expanding Reels</option>
+                  <option>Expanding Symbols</option>
+                  <option>Expanding Wilds</option>
+                  <option>Fixed Jackpots</option>
+                  <option>Free Spins</option>
+                  <option>Hold and Win</option>
+                  <option>Jackpots</option>
+                  <option>Lock and Win</option>
+                  <option>Multipliers</option>
+                  <option>Multipliers with or without Wilds</option>
+                  <option>Mystery Symbols</option>
+                  <option>No Feature</option>
+                  <option>Other Wilds</option>
+                  <option>Pick Me</option>
+                  <option>Pot Collection</option>
+                  <option>Prize Ladder</option>
+                  <option>Respins</option>
+                  <option>Scatter Symbols</option>
+                  <option>Scatter Wilds/Symbols</option>
+                  <option>Stacked Symbols</option>
+                  <option>Stacked Wilds</option>
+                  <option>Sticky Wilds</option>
+                  <option>Trail Feature</option>
+                  <option>Upgrading Symbols</option>
+                  <option>Wild Symbols</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="gs-filter-group">
+              <div class="gs-filter-label">Theme</div>
+              <div class="gs-select-wrap">
+                <select id="gs-theme" class="gs-select">
+                  <option value="">All Themes</option>
+                  <option>America</option>
+                  <option>Animals</option>
+                  <option>Arabian</option>
+                  <option>Asian</option>
+                  <option>Atlantis</option>
+                  <option>Aztec</option>
+                  <option>Bank</option>
+                  <option>Branded</option>
+                  <option>Candy/Sweets</option>
+                  <option>Casino/Vegas</option>
+                  <option>Christmas</option>
+                  <option>Classic</option>
+                  <option>Egyptian</option>
+                  <option>Fantasy</option>
+                  <option>Farm</option>
+                  <option>Fire</option>
+                  <option>Fishing</option>
+                  <option>Fruit</option>
+                  <option>Gems</option>
+                  <option>Gods</option>
+                  <option>Gold</option>
+                  <option>Greece</option>
+                  <option>Horror</option>
+                  <option>Irish</option>
+                  <option>Island</option>
+                  <option>Jungle</option>
+                  <option>Magic</option>
+                  <option>Medieval</option>
+                  <option>Mexico</option>
+                  <option>Mining</option>
+                  <option>Money</option>
+                  <option>Music</option>
+                  <option>N/A</option>
+                  <option>Nature</option>
+                  <option>Other</option>
+                  <option>Pig</option>
+                  <option>Pirate</option>
+                  <option>Retro</option>
+                  <option>Robbery</option>
+                  <option>Rome</option>
+                  <option>Space</option>
+                  <option>Sports</option>
+                  <option>Train</option>
+                  <option>Vikings</option>
+                  <option>Volcano</option>
+                  <option>Water</option>
+                  <option>Western</option>
+                  <option>Winter</option>
+                </select>
+              </div>
+            </div>
+
             <button class="gs-search-btn" onclick="runGameSheets()">Search</button>
             <button class="gs-clear-btn" onclick="clearGameSheets()">Clear Filters</button>
           </div>
@@ -581,7 +713,7 @@ const OVERVIEW_PAGE_ID = '129630288';
 const SUPPLIERS_PAGE_ID = '132186474';
 const SUPPLIERS_PASSWORD = 'Restricted';
 let cfCache = {}, childrenCache = {}, activeNodeId = null, searchLoading = false, suppliersUnlocked = false;
-let gsSelectedVenture = '', gsLoading = false;
+let gsLoading = false;
 
 // TREE
 async function fetchChildren(pageId) {
@@ -680,47 +812,37 @@ function showGameSheets() {
   hideAllViews(); document.getElementById('gameSheetsView').style.display = 'block';
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
 }
-function onCountryChange() {
-  const country = document.getElementById('gs-country').value;
-  const uk = document.getElementById('gs-ventures-uk');
-  const spain = document.getElementById('gs-ventures-spain');
-  gsSelectedVenture = '';
-  document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active'));
-  if (country === 'uk') { uk.style.display = 'block'; spain.style.display = 'none'; }
-  else if (country === 'spain') { uk.style.display = 'none'; spain.style.display = 'block'; }
-  else { uk.style.display = 'block'; spain.style.display = 'block'; }
-}
-function selectVenture(btn) {
-  const venture = btn.dataset.venture;
-  if (gsSelectedVenture === venture) { gsSelectedVenture = ''; btn.classList.remove('active'); }
-  else { document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active')); gsSelectedVenture = venture; btn.classList.add('active'); }
-}
 function clearGameSheets() {
-  gsSelectedVenture = '';
-  document.querySelectorAll('.gs-venture-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('gs-query').value = '';
   document.getElementById('gs-country').value = '';
+  document.getElementById('gs-venture').value = '';
   document.getElementById('gs-provider').value = '';
   document.getElementById('gs-gametype').value = '';
   document.getElementById('gs-platform').value = '';
-  document.getElementById('gs-ventures-uk').style.display = 'block';
-  document.getElementById('gs-ventures-spain').style.display = 'block';
+  document.getElementById('gs-aggregator').value = '';
+  document.getElementById('gs-winlinetype').value = '';
+  document.getElementById('gs-feature').value = '';
+  document.getElementById('gs-theme').value = '';
   document.getElementById('gs-results-header').style.display = 'none';
   document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>';
 }
 async function runGameSheets() {
   if (gsLoading) return;
   const query = document.getElementById('gs-query').value.trim();
+  const venture = document.getElementById('gs-venture').value;
   const provider = document.getElementById('gs-provider').value;
   const gameType = document.getElementById('gs-gametype').value;
   const platform = document.getElementById('gs-platform').value;
-  const venture = gsSelectedVenture;
-  if (!query && !venture && !provider && !gameType && !platform) {
+  const aggregator = document.getElementById('gs-aggregator').value;
+  const winLineType = document.getElementById('gs-winlinetype').value;
+  const feature = document.getElementById('gs-feature').value;
+  const theme = document.getElementById('gs-theme').value;
+  if (!query && !venture && !provider && !gameType && !platform && !aggregator && !winLineType && !feature && !theme) {
     document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>';
     return;
   }
   gsLoading = true;
-  track('gamesheets_search', [venture, provider, gameType, platform, query].filter(Boolean).join(','));
+  track('gamesheets_search', [venture, provider, gameType, platform, aggregator, winLineType, feature, theme, query].filter(Boolean).join(','));
   const list = document.getElementById('gs-results-list');
   const header = document.getElementById('gs-results-header');
   list.innerHTML = '<div class="content-loading"><div class="spinner"></div>Searching...</div>';
@@ -731,6 +853,10 @@ async function runGameSheets() {
   if (provider) params.set('provider', provider);
   if (gameType) params.set('gameType', gameType);
   if (platform) params.set('platform', platform);
+  if (aggregator) params.set('aggregator', aggregator);
+  if (winLineType) params.set('winLineType', winLineType);
+  if (feature) params.set('feature', feature);
+  if (theme) params.set('theme', theme);
   try {
     const res = await fetch('/game-sheets?' + params.toString());
     const data = res.ok ? await res.json() : { results: [] };
