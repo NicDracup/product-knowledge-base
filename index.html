@@ -432,7 +432,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
               <div class="gs-filter-label">Country</div>
               <div class="gs-select-wrap">
                 <select id="gs-country" class="gs-select" onchange="onCountryChange()">
-                  <option value="">All Countries</option>
+                  <option value="">All</option>
                   <option value="uk">UK</option>
                   <option value="spain">Spain</option>
                 </select>
@@ -658,7 +658,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
               </div>
             </div>
 
-            <button class="gs-search-btn" onclick="runGameSheets()">Search</button>
+            <button id="gs-search-btn" class="gs-search-btn" onclick="runGameSheets()" disabled style="opacity:0.4;cursor:not-allowed">Search</button>
             <button class="gs-clear-btn" onclick="clearGameSheets()">Clear Filters</button>
           </div>
 
@@ -812,6 +812,38 @@ function showGameSheets() {
   hideAllViews(); document.getElementById('gameSheetsView').style.display = 'block';
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
 }
+const UK_VENTURES = [
+  { value: 'JACKPOTJOY', label: 'Jackpot Joy' },
+  { value: 'HEART', label: 'Double Bubble Bingo' },
+  { value: 'STARSPINS', label: 'BallyBet' },
+  { value: 'VIRGINGAMES', label: 'Virgin Games' },
+  { value: 'MONOPOLYCASINO', label: 'Monopoly Casino' },
+  { value: 'RAINBOWRICHES', label: 'Rainbow Riches' }
+];
+const ES_VENTURES = [
+  { value: 'BOTEMANIA', label: 'Botemania' },
+  { value: 'MONOPOLYCASINOSPAIN', label: 'Monopoly Casino Spain' }
+];
+const ALL_VENTURES = [...UK_VENTURES, ...ES_VENTURES];
+
+function onCountryChange() {
+  const country = document.getElementById('gs-country').value;
+  const ventureSelect = document.getElementById('gs-venture');
+  const searchBtn = document.getElementById('gs-search-btn');
+  const ventures = country === 'uk' ? UK_VENTURES : country === 'spain' ? ES_VENTURES : ALL_VENTURES;
+  ventureSelect.innerHTML = '<option value="">All Ventures</option>' +
+    ventures.map(v => '<option value="' + v.value + '">' + v.label + '</option>').join('');
+  if (country === '') {
+    searchBtn.disabled = true;
+    searchBtn.style.opacity = '0.4';
+    searchBtn.style.cursor = 'not-allowed';
+  } else {
+    searchBtn.disabled = false;
+    searchBtn.style.opacity = '1';
+    searchBtn.style.cursor = 'pointer';
+  }
+}
+
 function clearGameSheets() {
   document.getElementById('gs-query').value = '';
   document.getElementById('gs-country').value = '';
@@ -823,12 +855,18 @@ function clearGameSheets() {
   document.getElementById('gs-winlinetype').value = '';
   document.getElementById('gs-feature').value = '';
   document.getElementById('gs-theme').value = '';
+  const searchBtn = document.getElementById('gs-search-btn');
+  searchBtn.disabled = true;
+  searchBtn.style.opacity = '0.4';
+  searchBtn.style.cursor = 'not-allowed';
+  onCountryChange();
   document.getElementById('gs-results-header').style.display = 'none';
   document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>';
 }
 async function runGameSheets() {
   if (gsLoading) return;
   const query = document.getElementById('gs-query').value.trim();
+  const country = document.getElementById('gs-country').value;
   const venture = document.getElementById('gs-venture').value;
   const provider = document.getElementById('gs-provider').value;
   const gameType = document.getElementById('gs-gametype').value;
@@ -837,10 +875,7 @@ async function runGameSheets() {
   const winLineType = document.getElementById('gs-winlinetype').value;
   const feature = document.getElementById('gs-feature').value;
   const theme = document.getElementById('gs-theme').value;
-  if (!query && !venture && !provider && !gameType && !platform && !aggregator && !winLineType && !feature && !theme) {
-    document.getElementById('gs-results-list').innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">&#x1F3AE;</div>Select at least one filter to find games</div>';
-    return;
-  }
+  if (country === '') return;
   gsLoading = true;
   track('gamesheets_search', [venture, provider, gameType, platform, aggregator, winLineType, feature, theme, query].filter(Boolean).join(','));
   const list = document.getElementById('gs-results-list');
@@ -849,7 +884,13 @@ async function runGameSheets() {
   header.style.display = 'none';
   const params = new URLSearchParams();
   if (query) params.set('q', query);
-  if (venture) params.set('venture', venture);
+  if (venture) {
+    params.set('venture', venture);
+  } else if (country === 'uk') {
+    params.set('ventures', UK_VENTURES.map(v => v.value).join(','));
+  } else if (country === 'spain') {
+    params.set('ventures', ES_VENTURES.map(v => v.value).join(','));
+  }
   if (provider) params.set('provider', provider);
   if (gameType) params.set('gameType', gameType);
   if (platform) params.set('platform', platform);
