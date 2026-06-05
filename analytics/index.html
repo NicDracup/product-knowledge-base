@@ -18,30 +18,34 @@ header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
 .logo-mark { width: 26px; height: 26px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; color: white; }
 h1 { font-size: 18px; font-weight: 600; }
 .badge { padding: 2px 9px; background: rgba(200,16,46,0.12); border: 1px solid rgba(200,16,46,0.25); border-radius: 20px; font-size: 10px; color: #e05070; font-weight: 500; }
-.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.refresh-btn { margin-left: auto; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; }
+.refresh-btn:hover { background: var(--surface3); color: var(--text); }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
 .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
 .stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
 .stat-value { font-size: 32px; font-weight: 600; color: var(--text); }
-.section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-.section-title { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 16px; }
-.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.bar-label { font-size: 12px; color: var(--text2); width: 200px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bar-track { flex: 1; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
-.bar-fill { height: 100%; background: var(--red); border-radius: 3px; transition: width 0.3s; }
-.bar-count { font-size: 12px; color: var(--text3); width: 40px; text-align: right; flex-shrink: 0; }
-.recent-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
-.recent-row:last-child { border-bottom: none; }
-.recent-type { color: var(--text2); width: 120px; flex-shrink: 0; }
-.recent-value { color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.recent-ts { color: var(--text3); flex-shrink: 0; font-size: 11px; }
-.loading { color: var(--text3); font-size: 14px; padding: 40px 0; text-align: center; }
-.refresh-btn { margin-left: auto; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; }
-.refresh-btn:hover { background: var(--surface3); color: var(--text); }
-.no-search { background: rgba(200,16,46,0.07); border: 1px solid rgba(200,16,46,0.15); border-radius: 6px; padding: 8px 12px; margin-bottom: 8px; font-size: 12px; color: #e05070; }
+.section-pair { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+.section-full { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+.section-title { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; }
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl tr { border-bottom: 1px solid var(--border); }
+.tbl tr:last-child { border-bottom: none; }
+.tbl td { padding: 7px 0; font-size: 12px; }
+.tbl td:first-child { color: var(--text2); }
+.tbl td:last-child { color: var(--text); font-weight: 500; text-align: right; }
+.tbl-empty { font-size: 12px; color: var(--text3); font-style: italic; }
+.gs-filter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.gs-filter-title { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+.no-result { background: rgba(200,16,46,0.07); border: 1px solid rgba(200,16,46,0.15); border-radius: 6px; padding: 7px 10px; margin-bottom: 6px; font-size: 12px; color: #e05070; }
 .feedback-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
 .feedback-item:last-child { border-bottom: none; }
 .feedback-text { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.5; }
 .feedback-ts { font-size: 11px; color: var(--text3); }
+.loading { color: var(--text3); font-size: 14px; padding: 40px 0; text-align: center; }
+.chart-wrap { position: relative; height: 160px; margin-top: 4px; }
+.chart-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+.chart-label { font-size: 10px; color: var(--text3); }
 </style>
 </head>
 <body>
@@ -58,15 +62,82 @@ function fmtTime(ts) {
   const d = new Date(ts);
   return d.toLocaleString('en-GB', { timeZone: 'Europe/London', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
+function fmtDay(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString('en-GB', { timeZone: 'Europe/London', day: '2-digit', month: 'short' });
+}
 
-function makeBars(items, maxVal) {
-  if (!items.length) return '<div style="color:#555;font-size:12px">No data yet</div>';
-  return items.map(([label, count]) => `
-    <div class="bar-row">
-      <div class="bar-label" title="${label}">${label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round((count/maxVal)*100)}%"></div></div>
-      <div class="bar-count">${count}</div>
-    </div>`).join('');
+function makeTable(items, emptyMsg) {
+  if (!items.length) return '<div class="tbl-empty">' + (emptyMsg || 'No data yet') + '</div>';
+  return '<table class="tbl">' + items.map(([label, count]) =>
+    '<tr><td>' + label + '</td><td>' + count + '</td></tr>'
+  ).join('') + '</table>';
+}
+
+function drawChart(canvasId, labelsId, dailyData) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  canvas.width = wrap.clientWidth;
+  canvas.height = 160;
+  const ctx = canvas.getContext('2d');
+  const days = Object.keys(dailyData).sort();
+  const values = days.map(d => dailyData[d]);
+  if (!values.length) return;
+
+  const labelsEl = document.getElementById(labelsId);
+  labelsEl.innerHTML = '';
+  days.forEach((d, i) => {
+    const span = document.createElement('span');
+    span.className = 'chart-label';
+    span.textContent = i % 2 === 0 ? d : '';
+    labelsEl.appendChild(span);
+  });
+
+  const maxVal = Math.max(...values, 1);
+  const padTop = 16, padBottom = 8, padLeft = 32, padRight = 8;
+  const chartW = canvas.width - padLeft - padRight;
+  const chartH = canvas.height - padTop - padBottom;
+  const stepX = values.length > 1 ? chartW / (values.length - 1) : chartW;
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = padTop + (chartH / 4) * i;
+    ctx.beginPath(); ctx.moveTo(padLeft, y); ctx.lineTo(padLeft + chartW, y); ctx.stroke();
+    const val = Math.round(maxVal - (maxVal / 4) * i);
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font = '9px DM Sans, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(val, padLeft - 4, y + 3);
+  }
+
+  ctx.beginPath(); ctx.strokeStyle = '#C8102E'; ctx.lineWidth = 2; ctx.lineJoin = 'round';
+  values.forEach((v, i) => {
+    const x = padLeft + i * stepX;
+    const y = padTop + chartH - (v / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  ctx.beginPath();
+  values.forEach((v, i) => {
+    const x = padLeft + i * stepX;
+    const y = padTop + chartH - (v / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(padLeft + (values.length - 1) * stepX, padTop + chartH);
+  ctx.lineTo(padLeft, padTop + chartH);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(200,16,46,0.08)';
+  ctx.fill();
+
+  values.forEach((v, i) => {
+    const x = padLeft + i * stepX;
+    const y = padTop + chartH - (v / maxVal) * chartH;
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#C8102E'; ctx.fill();
+  });
 }
 
 async function loadData() {
@@ -77,81 +148,104 @@ async function loadData() {
     const counts = data.counts || {};
     const recent = data.recent || [];
 
+    // Stat cards
     const pageLoads = counts['pageload'] || 0;
+    const searches = Object.entries(counts).filter(([k]) => k.startsWith('search:') && !k.startsWith('search:noresults:')).reduce((s, [,v]) => s + v, 0);
+    const cfOpens = Object.entries(counts).filter(([k]) => k.startsWith('confluence_open:')).reduce((s, [,v]) => s + v, 0);
+    const ctOpens = Object.entries(counts).filter(([k]) => k.startsWith('contentful_open:')).reduce((s, [,v]) => s + v, 0);
 
-    const searches = Object.entries(counts)
-      .filter(([k]) => k.startsWith('search:') && !k.startsWith('search:noresults:'))
-      .reduce((sum, [, v]) => sum + v, 0);
+    // Verticals
+    const verticals = Object.entries(counts).filter(([k]) => k.startsWith('vertical:')).map(([k,v]) => [k.replace('vertical:',''), v]).sort((a,b) => b[1]-a[1]);
 
-    const cfOpens = Object.entries(counts)
-      .filter(([k]) => k.startsWith('confluence_open:'))
-      .reduce((sum, [, v]) => sum + v, 0);
+    // Tools (quicklinks)
+    const tools = Object.entries(counts).filter(([k]) => k.startsWith('quicklink:')).map(([k,v]) => [k.replace('quicklink:',''), v]).sort((a,b) => b[1]-a[1]);
 
-    const verticals = Object.entries(counts)
-      .filter(([k]) => k.startsWith('vertical:'))
-      .map(([k, v]) => [k.replace('vertical:', ''), v])
-      .sort((a, b) => b[1] - a[1]);
+    // Top search terms
+    const searchTerms = Object.entries(counts).filter(([k]) => k.startsWith('search:') && !k.startsWith('search:noresults:')).map(([k,v]) => [k.replace('search:',''), v]).sort((a,b) => b[1]-a[1]).slice(0, 10);
 
-    const quicklinks = Object.entries(counts)
-      .filter(([k]) => k.startsWith('quicklink:'))
-      .map(([k, v]) => [k.replace('quicklink:', ''), v])
-      .sort((a, b) => b[1] - a[1]);
+    // No results
+    const noResults = Object.entries(counts).filter(([k]) => k.startsWith('search:noresults:')).map(([k,v]) => [k.replace('search:noresults:',''), v]).sort((a,b) => b[1]-a[1]);
 
-    const searches_used = Object.entries(counts)
-      .filter(([k]) => k.startsWith('search:') && !k.startsWith('search:noresults:'))
-      .map(([k, v]) => [k.replace('search:', ''), v])
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10);
+    // Game Sheets filter usage
+    const gsFilters = {
+      venture: [], provider: [], gametype: [], platform: [],
+      aggregator: [], winlinetype: [], feature: [], theme: []
+    };
+    Object.entries(counts).forEach(([k, v]) => {
+      Object.keys(gsFilters).forEach(filter => {
+        if (k.startsWith('gs_filter:' + filter + ':')) {
+          gsFilters[filter].push([k.replace('gs_filter:' + filter + ':', ''), v]);
+        }
+      });
+    });
+    Object.keys(gsFilters).forEach(f => gsFilters[f].sort((a,b) => b[1]-a[1]));
 
-    const noResults = Object.entries(counts)
-      .filter(([k]) => k.startsWith('search:noresults:'))
-      .map(([k, v]) => [k.replace('search:noresults:', ''), v])
-      .sort((a, b) => b[1] - a[1]);
+    // Daily page loads from recent events
+    const dailyLoads = {};
+    recent.filter(e => e.type === 'pageload').forEach(e => {
+      const day = fmtDay(e.ts);
+      dailyLoads[day] = (dailyLoads[day] || 0) + 1;
+    });
 
+    // Feedback
     const feedbackItems = recent.filter(e => e.type === 'feedback');
-    const recentActivity = recent.filter(e => e.type !== 'feedback').slice(0, 50);
 
-    const maxV = verticals.length ? verticals[0][1] : 1;
-    const maxQ = quicklinks.length ? quicklinks[0][1] : 1;
-    const maxS = searches_used.length ? searches_used[0][1] : 1;
+    const noResultsHtml = noResults.length
+      ? noResults.map(([term, count]) => '<div class="no-result">"' + term + '" &mdash; ' + count + ' time' + (count > 1 ? 's' : '') + '</div>').join('')
+      : '<div class="tbl-empty">No searches without results yet</div>';
 
-    document.getElementById('content').innerHTML = `
-      <div class="grid">
-        <div class="stat-card"><div class="stat-label">Page Loads</div><div class="stat-value">${pageLoads}</div></div>
-        <div class="stat-card"><div class="stat-label">Searches</div><div class="stat-value">${searches}</div></div>
-        <div class="stat-card"><div class="stat-label">Confluence Opens</div><div class="stat-value">${cfOpens}</div></div>
-      </div>
+    const gsFilterKeys = [
+      { key: 'venture', label: 'Venture' },
+      { key: 'provider', label: 'Provider' },
+      { key: 'feature', label: 'Feature' },
+      { key: 'gametype', label: 'Game Type' },
+      { key: 'aggregator', label: 'Aggregator' },
+      { key: 'winlinetype', label: 'Win Line Type' },
+      { key: 'platform', label: 'Platform' },
+      { key: 'theme', label: 'Theme' },
+    ];
 
-      <div class="section">
-        <div class="section-title">Verticals</div>
-        ${makeBars(verticals, maxV)}
-      </div>
+    const gsFilterHtml = gsFilterKeys.map(({ key, label }) => {
+      const items = gsFilters[key] || [];
+      return '<div><div class="gs-filter-title">' + label + '</div>' + makeTable(items) + '</div>';
+    }).join('');
 
-      <div class="section">
-        <div class="section-title">Quick Links</div>
-        ${makeBars(quicklinks, maxQ)}
-      </div>
+    document.getElementById('content').innerHTML =
+      '<div class="stat-grid">' +
+        '<div class="stat-card"><div class="stat-label">Page Loads</div><div class="stat-value">' + pageLoads + '</div></div>' +
+        '<div class="stat-card"><div class="stat-label">Searches</div><div class="stat-value">' + searches + '</div></div>' +
+        '<div class="stat-card"><div class="stat-label">Confluence Opens</div><div class="stat-value">' + cfOpens + '</div></div>' +
+        '<div class="stat-card"><div class="stat-label">Contentful Opens</div><div class="stat-value">' + ctOpens + '</div></div>' +
+      '</div>' +
 
-      <div class="section">
-        <div class="section-title">Top Search Terms</div>
-        ${makeBars(searches_used, maxS)}
-      </div>
+      '<div class="section-pair">' +
+        '<div class="section"><div class="section-title">Verticals</div>' + makeTable(verticals) + '</div>' +
+        '<div class="section"><div class="section-title">Tools</div>' + makeTable(tools) + '</div>' +
+      '</div>' +
 
-      ${noResults.length ? `<div class="section">
-        <div class="section-title">Searches with No Results</div>
-        ${noResults.map(([term, count]) => `<div class="no-search">"${term}" &mdash; ${count} time${count > 1 ? 's' : ''}</div>`).join('')}
-      </div>` : ''}
+      '<div class="section-pair">' +
+        '<div class="section"><div class="section-title">Top Search Terms</div>' + makeTable(searchTerms) + '</div>' +
+        '<div class="section"><div class="section-title">Searches with No Results</div>' + noResultsHtml + '</div>' +
+      '</div>' +
 
-      <div class="section">
-        <div class="section-title">Feedback (${feedbackItems.length})</div>
-        ${feedbackItems.length ? feedbackItems.map(e => `
-          <div class="feedback-item">
-            <div class="feedback-text">${e.value}</div>
-            <div class="feedback-ts">${fmtTime(e.ts)}</div>
-          </div>`).join('') : '<div style="color:#555;font-size:12px">No feedback yet</div>'}
-      </div>
+      '<div class="section-full"><div class="section-title">Game Sheets Filter Usage</div>' +
+        '<div class="gs-filter-grid">' + gsFilterHtml + '</div>' +
+      '</div>' +
 
-      `;
+      '<div class="section-full">' +
+        '<div class="section-title">Daily Page Loads</div>' +
+        '<div class="chart-wrap"><canvas id="dailyChart"></canvas></div>' +
+        '<div class="chart-labels" id="chartLabels"></div>' +
+      '</div>' +
+
+      '<div class="section-full"><div class="section-title">Feedback (' + feedbackItems.length + ')</div>' +
+        (feedbackItems.length
+          ? feedbackItems.map(e => '<div class="feedback-item"><div class="feedback-text">' + e.value + '</div><div class="feedback-ts">' + fmtTime(e.ts) + '</div></div>').join('')
+          : '<div class="tbl-empty">No feedback yet</div>') +
+      '</div>';
+
+    requestAnimationFrame(() => drawChart('dailyChart', 'chartLabels', dailyLoads));
+
   } catch(e) {
     document.getElementById('content').innerHTML = '<div class="loading">Failed to load analytics.</div>';
   }
