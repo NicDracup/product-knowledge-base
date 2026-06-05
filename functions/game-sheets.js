@@ -5,8 +5,12 @@ export async function onRequest(context) {
   const provider = url.searchParams.get('provider') || '';
   const gameType = url.searchParams.get('gameType') || '';
   const platform = url.searchParams.get('platform') || '';
+  const aggregator = url.searchParams.get('aggregator') || '';
+  const winLineType = url.searchParams.get('winLineType') || '';
+  const feature = url.searchParams.get('feature') || '';
+  const theme = url.searchParams.get('theme') || '';
 
-  if (!query && !venture && !provider && !gameType && !platform) {
+  if (!query && !venture && !provider && !gameType && !platform && !aggregator && !winLineType && !feature && !theme) {
     return new Response(JSON.stringify({ results: [], error: 'No filters provided' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
@@ -115,6 +119,27 @@ export async function onRequest(context) {
         // Filter by provider variants
         if (providerVariants) {
           if (!providerVariants.includes(studio)) continue;
+        }
+
+        // Filter by aggregator
+        if (aggregator) {
+          const aggVariants = PROVIDER_VARIANTS[aggregator] || [aggregator];
+          if (!aggVariants.includes(config.gameAggregator || '')) continue;
+        }
+
+        // Filter by win line type
+        if (winLineType) {
+          if ((gameTypeObj.winLineType || '') !== winLineType) continue;
+        }
+
+        // Filter by feature
+        if (feature) {
+          if (!(gameTypeObj.features || []).includes(feature)) continue;
+        }
+
+        // Filter by theme
+        if (theme) {
+          if (!(gameTypeObj.themes || []).includes(theme)) continue;
         }
 
         // Only include if matched in cashier live list
