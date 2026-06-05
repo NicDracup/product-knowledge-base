@@ -878,6 +878,14 @@ async function runGameSheets() {
   if (country === '') return;
   gsLoading = true;
   track('gamesheets_search', [venture, provider, gameType, platform, aggregator, winLineType, feature, theme, query].filter(Boolean).join(','));
+  if (venture) track('gs_filter:venture', venture);
+  if (provider) track('gs_filter:provider', provider);
+  if (gameType) track('gs_filter:gametype', gameType);
+  if (platform) track('gs_filter:platform', platform);
+  if (aggregator) track('gs_filter:aggregator', aggregator);
+  if (winLineType) track('gs_filter:winlinetype', winLineType);
+  if (feature) track('gs_filter:feature', feature);
+  if (theme) track('gs_filter:theme', theme);
   const list = document.getElementById('gs-results-list');
   const header = document.getElementById('gs-results-header');
   list.innerHTML = '<div class="content-loading"><div class="spinner"></div>Searching...</div>';
@@ -1020,8 +1028,8 @@ function loadContentfulPage(game) {
   var gameV2Link = game.entryId ? CONTENTFUL_BASE + '/' + game.entryId : null;
   var cashierLink = cc && cc.entryId ? CONTENTFUL_BASE + '/' + cc.entryId : null;
   var cfLinkParts = [];
-  if (gameV2Link) cfLinkParts.push('<button class="cf-open-btn" style="margin-left:0" onclick="window.open(\'' + gameV2Link + '\',\'_blank\')">Game Model V2 &#8599;</button>');
-  if (cashierLink) cfLinkParts.push('<button class="cf-open-btn" onclick="window.open(\'' + cashierLink + '\',\'_blank\')">Cashier Config &#8599;</button>');
+  if (gameV2Link) cfLinkParts.push('<button class="cf-open-btn" style="margin-left:0" onclick="window.open(\'' + gameV2Link + '\',\'_blank\');track(\'contentful_open\',\'Game Model V2\')">Game Model V2 &#8599;</button>');
+  if (cashierLink) cfLinkParts.push('<button class="cf-open-btn" onclick="window.open(\'' + cashierLink + '\',\'_blank\');track(\'contentful_open\',\'Cashier Config\')">Cashier Config &#8599;</button>');
   var cfLinks = cfLinkParts.join('');
 
   pv.innerHTML =
