@@ -303,57 +303,19 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
     <div class="content-area" id="contentArea">
 
       <div id="homeView">
-        <div class="breadcrumb">
-          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          Home
-        </div>
         <div class="page-title">Welcome to the Product Knowledge Base</div>
-
-        <p class="home-intro">The PKB is a single place for everyone and anyone looking to find game and product information without jumping between Confluence, Contentful, and a dozen other tabs. It pulls live data from multiple sources so what you see is always up to date.</p>
-
-        <div class="home-section-heading">Finding your way around</div>
-
-        <div class="home-section">
-          <div class="home-section-title">Product</div>
-          <div class="home-section-body">Everything in the Product section comes live from Confluence. Use it to browse verticals, find process docs, and anything else the product team maintains. Content is always in sync. If it's been updated in Confluence, it's updated here.</div>
+        <div class="page-meta">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Live from Confluence
         </div>
-
-        <div class="home-section">
-          <div class="home-section-title">Tools</div>
-          <div class="home-section-body">Purpose-built tools for day to day use.</div>
-          <div class="home-section-body" style="margin-top:8px">The Bingo Schedule gives you a full 8 day view of UK and Spain streams with ticket prices, prize structures, and special features.</div>
-          <div class="home-section-body" style="margin-top:8px">Game Sheets lets you search and filter the full live game catalogue from Contentful, find games by venture, provider, game type, platform, and more, then pull up a full game sheet with all available metadata from active games for UK and Spain.</div>
+        <div class="cf-banner">
+          <div class="cf-banner-left">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Live from Confluence, always up to date
+          </div>
+          <button class="cf-open-btn" onclick="window.open('https://confluence.cloud.ballys.com/wiki/spaces/IE/pages/144670902/PKB+Home')">Open in Confluence &#8599;</button>
         </div>
-
-        <div class="home-section">
-          <div class="home-section-title">Links</div>
-          <div class="home-section-body">Quick access to external systems like Confluence and Contentful, one click away.</div>
-        </div>
-
-        <div class="home-section">
-          <div class="home-section-title">Feedback</div>
-          <div class="home-section-body">Use the Share Feedback button in the top right corner at any time. It's anonymous and open to anything: corrections, missing content, suggestions, whatever's on your mind. Everything submitted is reviewed and helps shape what gets built next.</div>
-        </div>
-
-        <div class="home-section">
-          <div class="home-section-title">Search</div>
-          <div class="home-section-body">The search bar at the top searches across both Confluence and Contentful at the same time. Results are returned as cards and mixed by default. Use the filter buttons at the top of the results to narrow down by source: All, Confluence, or Contentful. Clicking a result opens it directly in the app, with a link available if you want to view it in the original source. This is a single page app so there is no browser back button. To return to your results, press Enter in the search bar again.</div>
-        </div>
-
-        <div class="home-divider"></div>
-
-        <div class="home-section-heading">A few things to know</div>
-
-        <div class="home-notice-block">RTP data is incomplete across most games. This is a known data quality issue in Contentful. The data exists but has not been consistently populated. We are working on finding the right source to connect it properly.</div>
-        <div class="home-notice-block">Game features shown on game sheets reflect what the game is capable of, not necessarily what is active on site. Some features may be disabled per market, for example Bonus Buy.</div>
-
-        <div class="home-divider"></div>
-
-        <div class="home-section-heading">What's coming</div>
-
-        <div class="home-coming-block">An AI assistant is in development that will let you chat directly with the knowledge base. Ask questions and get answers pulled from across Confluence, Contentful, and more, without having to search manually.</div>
-        <div class="home-coming-block">Game Sheets will get additional filters including Win Line Type and Features, making it easier to find games by mechanic.</div>
-        <div class="home-coming-block">RTP data will be connected once the right source is identified and accessible.</div>
+        <div id="homeContent"><div class="content-loading"><div class="spinner"></div>Loading...</div></div>
       </div>
 
       <div id="overviewView" style="display:none">
@@ -703,6 +665,7 @@ async function submitFeedback() {
   setTimeout(() => closeFeedback(), 1500);
 }
 
+const HOME_PAGE_ID = '144670902';
 const OVERVIEW_PAGE_ID = '129630288';
 const SUPPLIERS_PAGE_ID = '132186474';
 const SUPPLIERS_PASSWORD = 'Restricted';
@@ -781,10 +744,17 @@ function clearNavActive() {
 }
 
 // HOME
-function showHome() {
+async function showHome() {
   clearNavActive(); document.getElementById('homeBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('homeView').style.display = 'block';
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
+  const hc = document.getElementById('homeContent');
+  if (hc.dataset.loaded) return;
+  try {
+    const html = await fetchCF(HOME_PAGE_ID);
+    hc.innerHTML = html && html.trim().length > 10 ? '<div class="cf-content">' + html + '</div>' : '<div class="content-error">No content found on the home Confluence page.</div>';
+  } catch(e) { hc.innerHTML = '<div class="content-error">Could not load home page from Confluence.</div>'; }
+  hc.dataset.loaded = '1';
 }
 
 // SCHEDULE
