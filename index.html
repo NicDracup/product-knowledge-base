@@ -842,7 +842,9 @@ async function runGameSheets() {
   if (country === '') return;
   gsLoading = true;
   track('gamesheets_search', [venture, provider, gameType, platform, aggregator, winLineType, feature, theme, query].filter(Boolean).join(','));
+  track('gs_filter:country', country);
   if (venture) track('gs_filter:venture', venture);
+  else track('gs_filter:venture', country === 'uk' ? 'All UK' : 'All Spain');
   if (provider) track('gs_filter:provider', provider);
   if (gameType) track('gs_filter:gametype', gameType);
   if (platform) track('gs_filter:platform', platform);
