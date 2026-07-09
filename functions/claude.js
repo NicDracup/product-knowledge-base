@@ -6,7 +6,7 @@ export async function onRequest(context) {
     const body = await context.request.json();
     const gatewayKey = context.env.AI_GATEWAY_KEY;
     const gatewayBody = {
-      model: 'claude-sonnet-4-6',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: body.max_tokens || 600,
       messages: [
         { role: 'system', content: body.system || '' },
