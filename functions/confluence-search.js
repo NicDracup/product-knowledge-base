@@ -15,7 +15,7 @@ export async function onRequest(context) {
       .then(r => r.ok ? r.json() : { results: [] })
       .then(d => d.results || [])
       .catch(() => []);
-    const clean = (s) => (s || '').replace(/@@@hl@@@/g, '').replace(/@@@endhl@@@/g, '');
+    const clean = (s) => (s || '').replace(/@@@\w*@@@/g, '');
     const merged = res.slice(0, 15).map(r => ({
       title: clean(r.title),
       excerpt: clean(r.excerpt),
