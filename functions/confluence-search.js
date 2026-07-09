@@ -11,18 +11,32 @@ export async function onRequest(context) {
     const headers = { 'Authorization': `Basic ${auth}`, 'Accept': 'application/json' };
     const base = 'https://ballysgroup.atlassian.net/wiki/rest/api/search';
     const cql = `siteSearch ~ "${query}" AND type = page`;
-    const res = await fetch(`${base}?cql=${encodeURIComponent(cql)}&limit=15`, { headers })
+    const res = await fetch(`${base}?cql=${encodeURIComponent(cql)}&limit=15&expand=content.body.view`, { headers })
       .then(r => r.ok ? r.json() : { results: [] })
       .then(d => d.results || [])
       .catch(() => []);
-    const clean = (s) => (s || '').replace(/@@@\w*@@@/g, '');
-    const merged = res.slice(0, 15).map(r => ({
-      title: clean(r.title),
-      excerpt: clean(r.excerpt),
-      url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
-      space: r.resultGlobalContainer?.title || '',
-      spaceKey: r.content?.space?.key || r.content?._expandable?.space?.replace('/rest/api/space/', '') || ''
-    }));
+    const stripHl = (s) => (s || '').replace(/@@@\w*@@@/g, '');
+    const cleanBody = (html) => (html || '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&#39;/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const merged = res.slice(0, 15).map(r => {
+      const body = cleanBody(r.content?.body?.view?.value);
+      const excerpt = body ? body.slice(0, 200) : stripHl(r.excerpt);
+      return {
+        title: stripHl(r.title),
+        excerpt,
+        url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
+        space: r.resultGlobalContainer?.title || '',
+        spaceKey: r.content?.space?.key || r.content?._expandable?.space?.replace('/rest/api/space/', '') || ''
+      };
+    });
     return new Response(JSON.stringify({ results: merged }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
