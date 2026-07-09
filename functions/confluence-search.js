@@ -15,9 +15,10 @@ export async function onRequest(context) {
       .then(r => r.ok ? r.json() : { results: [] })
       .then(d => d.results || [])
       .catch(() => []);
+    const clean = (s) => (s || '').replace(/@@@hl@@@/g, '').replace(/@@@endhl@@@/g, '');
     const merged = res.slice(0, 15).map(r => ({
-      title: r.title,
-      excerpt: r.excerpt || '',
+      title: clean(r.title),
+      excerpt: clean(r.excerpt),
       url: `https://confluence.cloud.ballys.com/wiki${r.url}`,
       space: r.resultGlobalContainer?.title || '',
       spaceKey: r.content?.space?.key || r.content?._expandable?.space?.replace('/rest/api/space/', '') || ''
