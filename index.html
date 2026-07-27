@@ -1080,7 +1080,7 @@ async function fetchCF(pageId) {
   html = html.replace(/<span[^>]*confluence-embedded-file-wrapper[^>]*>\s*<a\s+href="([^"]+\.(?:mp4|webm|mov|m4v)[^"]*)"[^>]*>[^<]*<\/a>\s*<\/span>/gi, function(match, href) {
     const src = href.replace(/&amp;/g, '&');
     const fullSrc = src.indexOf('http') === 0 ? src : ('https://confluence.cloud.ballys.com' + src);
-    return '<video controls preload="metadata" style="max-width:100%;border-radius:8px;margin:8px 0" src="' + fullSrc + '">' +
+    return '<video controls preload="metadata" style="display:block;width:100%;max-width:640px;margin:12px auto;border-radius:8px" src="' + fullSrc + '">' +
       'Your browser cannot play this video. <a href="' + fullSrc + '" target="_blank">Open it in a new tab</a>.' +
       '</video>';
   });
