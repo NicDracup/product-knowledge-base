@@ -1074,13 +1074,14 @@ async function fetchCF(pageId) {
   if (!res.ok) throw new Error('Fetch failed ' + res.status);
   const data = await res.json();
   let html = data.body && (data.body.view && data.body.view.value || data.body.storage && data.body.storage.value) || '';
-  // Convert video media attachments into playable <video> players before cleaning strips them.
-  // Matches Confluence media blocks and swaps in a player pointing at the auth proxy, with an open-in-new-tab fallback.
-  html = html.replace(/<div[^>]*data-media-type="file"[^>]*>([^<]*\.(?:mp4|webm|mov|m4v))<\/div>/gi, function(match, fname) {
-    const file = fname.trim();
-    const src = '/confluence-media?pageId=' + pageId + '&filename=' + encodeURIComponent(file);
-    return '<video controls preload="metadata" style="max-width:100%;border-radius:8px;margin:8px 0" src="' + src + '">' +
-      'Your browser cannot play this video. <a href="' + src + '" target="_blank">Open it in a new tab</a>.' +
+  // Convert embedded video attachments into playable <video> players before cleaning strips them.
+  // Confluence renders these as: <span class="confluence-embedded-file-wrapper..."><a href="/wiki/download/attachments/...mp4?...">name.mp4</a></span>
+  // The browser's existing Confluence session handles auth, so we point the video straight at the full download URL.
+  html = html.replace(/<span[^>]*confluence-embedded-file-wrapper[^>]*>\s*<a\s+href="([^"]+\.(?:mp4|webm|mov|m4v)[^"]*)"[^>]*>[^<]*<\/a>\s*<\/span>/gi, function(match, href) {
+    const src = href.replace(/&amp;/g, '&');
+    const fullSrc = src.indexOf('http') === 0 ? src : ('https://confluence.cloud.ballys.com' + src);
+    return '<video controls preload="metadata" style="max-width:100%;border-radius:8px;margin:8px 0" src="' + fullSrc + '">' +
+      'Your browser cannot play this video. <a href="' + fullSrc + '" target="_blank">Open it in a new tab</a>.' +
       '</video>';
   });
   const cleaned = html
