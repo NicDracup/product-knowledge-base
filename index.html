@@ -94,6 +94,7 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 .cf-content li { margin-bottom: 4px; }
 .cf-content a { color: #5b8dee; text-decoration: none; }
 .cf-content a:hover { text-decoration: underline; }
+.cf-content video { display: block; width: 100%; max-width: 640px; margin: 12px auto; border-radius: 8px; }
 .cf-content strong { font-weight: 600; }
 .cf-content table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px; overflow-x: auto; display: block; }
 .cf-content th { background: var(--surface2); padding: 8px 12px; border: 1px solid var(--border); text-align: left; font-weight: 600; font-size: 12px; color: var(--text2); }
@@ -1080,7 +1081,7 @@ async function fetchCF(pageId) {
   html = html.replace(/<span[^>]*confluence-embedded-file-wrapper[^>]*>\s*<a\s+href="([^"]+\.(?:mp4|webm|mov|m4v)[^"]*)"[^>]*>[^<]*<\/a>\s*<\/span>/gi, function(match, href) {
     const src = href.replace(/&amp;/g, '&');
     const fullSrc = src.indexOf('http') === 0 ? src : ('https://confluence.cloud.ballys.com' + src);
-    return '<video controls preload="metadata" style="display:block;width:100%;max-width:640px;margin:12px auto;border-radius:8px" src="' + fullSrc + '">' +
+    return '<video controls preload="metadata" src="' + fullSrc + '">' +
       'Your browser cannot play this video. <a href="' + fullSrc + '" target="_blank">Open it in a new tab</a>.' +
       '</video>';
   });
