@@ -745,6 +745,7 @@ function clearNavActive() {
 
 // HOME
 async function showHome() {
+  try { if (location.hash) history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
   clearNavActive(); document.getElementById('homeBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('homeView').style.display = 'block';
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
@@ -759,6 +760,7 @@ async function showHome() {
 
 // SCHEDULE
 function showSchedule() {
+  try { location.hash = '#/schedule'; } catch(e) {}
   clearNavActive(); document.getElementById('scheduleBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('scheduleView').style.display = 'block';
   document.getElementById('scheduleFrameWrap').style.display = 'none'; document.getElementById('scheduleFrame').src = '';
@@ -772,6 +774,7 @@ function loadScheduleFrame(url) {
 
 // GAME SHEETS
 function showGameSheets() {
+  try { location.hash = '#/gamesheets'; } catch(e) {}
   clearNavActive(); document.getElementById('gameSheetsBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('gameSheetsView').style.display = 'block';
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
@@ -1097,6 +1100,7 @@ async function fetchCF(pageId) {
 }
 
 async function showOverview() {
+  try { location.hash = '#/overview'; } catch(e) {}
   clearNavActive(); document.getElementById('overviewBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('overviewView').style.display = 'block';
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
@@ -1143,6 +1147,7 @@ function checkPassword() {
 
 async function loadPage(page) {
   if (isRestrictedPage(page.id) && !suppliersUnlocked) { showPasswordGate(page); return; }
+  if (page.id) { try { location.hash = '#/page/' + page.id; } catch(e) {} }
   setActiveNode(page.id); hideAllViews();
   document.getElementById('pageView').style.display = 'block';
   document.getElementById('contentArea').scrollTop = 0;
@@ -1260,10 +1265,58 @@ async function runSearch() {
   searchLoading = false;
 }
 
+// DEEP LINKING
+// Loads a KB page from just its ID (used when opening a shared /#/page/<id> link cold).
+async function loadPageById(pageId) {
+  clearNavActive(); hideTilesBar(); hideAllViews();
+  document.getElementById('pageView').style.display = 'block';
+  document.getElementById('contentArea').scrollTop = 0;
+  document.getElementById('pageView').innerHTML =
+    '<div class="breadcrumb"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Confluence</div>' +
+    '<div id="pagecontent"><div class="content-loading"><div class="spinner"></div>Loading from Confluence...</div></div>';
+  try {
+    // Fetch page metadata (title + url) so we can hand a full object to loadPage
+    const res = await fetch('/confluence?id=' + pageId);
+    if (res.ok) {
+      const data = await res.json();
+      const webui = data._links && (data._links.webui || '');
+      const base = (data._links && data._links.base) || 'https://confluence.cloud.ballys.com/wiki';
+      const url = webui ? (base + webui) : '';
+      loadPage({ id: pageId, title: data.title || 'Page', url: url });
+    } else {
+      // Fall back to loading just the content by ID
+      loadPage({ id: pageId, title: 'Page', url: '' });
+    }
+  } catch(e) {
+    loadPage({ id: pageId, title: 'Page', url: '' });
+  }
+}
+
+// Reads the URL hash and opens the matching view. Runs on load and whenever the hash changes.
+function routeFromHash() {
+  const h = location.hash || '';
+  const pageMatch = h.match(/^#\/page\/(\d+)/);
+  if (pageMatch) { loadPageById(pageMatch[1]); return true; }
+  if (h === '#/overview') { showOverview(); return true; }
+  if (h === '#/gamesheets') { showGameSheets(); return true; }
+  if (h === '#/schedule') { showSchedule(); return true; }
+  if (h === '#/home' || h === '' || h === '#') { return false; }
+  return false;
+}
+
+// React to back/forward and pasted hash changes. Ignore changes that already match the open page (avoids double loads on normal clicks).
+window.addEventListener('hashchange', function() {
+  const h = location.hash || '';
+  const pageMatch = h.match(/^#\/page\/(\d+)/);
+  if (pageMatch && pageMatch[1] === activeNodeId) return;
+  routeFromHash();
+});
+
 // INIT
 track('pageload', '');
 buildTree();
-showHome();
+// If the URL points at a specific page/view, open it; otherwise show home.
+if (!routeFromHash()) { showHome(); }
 </script>
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c7103ccdc19d4f39bca354af05253f51"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
