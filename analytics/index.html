@@ -10,7 +10,7 @@
 :root {
   --red: #C8102E; --bg: #0F0F0F; --surface: #1A1A1A; --surface2: #222222; --surface3: #2A2A2A;
   --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.14);
-  --text: #F0F0F0; --text2: #A0A0A0; --text3: #555555;
+  --text: #F0F0F0; --text2: #C8C8C8; --text3: #9A9A9A;
   --font: 'DM Sans', system-ui, sans-serif;
 }
 body { font-family: var(--font); background: var(--bg); color: var(--text); padding: 32px; }
@@ -18,35 +18,35 @@ header { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
 .logo-mark { width: 26px; height: 26px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 11px; color: white; }
 h1 { font-size: 18px; font-weight: 600; }
 .badge { padding: 2px 9px; background: rgba(200,16,46,0.12); border: 1px solid rgba(200,16,46,0.25); border-radius: 20px; font-size: 10px; color: #e05070; font-weight: 500; }
-.refresh-btn { margin-left: auto; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 12px; cursor: pointer; }
+.refresh-btn { margin-left: auto; padding: 6px 16px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--font); font-size: 12px; cursor: pointer; }
 .refresh-btn:hover { background: var(--surface3); color: var(--text); }
 .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
 .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
-.stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.stat-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 8px; }
 .stat-value { font-size: 32px; font-weight: 600; color: var(--text); }
-.stat-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.stat-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
 .section-pair { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
 .section { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
 .section-full { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-.section-title { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 14px; }
+.section-title { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 14px; }
 .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
 .section-head .section-title { margin-bottom: 0; }
-.range-select { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-family: var(--font); font-size: 11px; padding: 4px 10px; cursor: pointer; }
+.range-select { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: var(--font); font-size: 11px; padding: 4px 10px; cursor: pointer; }
 .tbl { width: 100%; border-collapse: collapse; }
 .tbl tr { border-bottom: 1px solid var(--border); }
 .tbl tr:last-child { border-bottom: none; }
 .tbl td { padding: 7px 0; font-size: 12px; }
 .tbl td:first-child { color: var(--text2); }
 .tbl td:last-child { color: var(--text); font-weight: 500; text-align: right; }
-.tbl-empty { font-size: 12px; color: var(--text3); font-style: italic; }
+.tbl-empty { font-size: 12px; color: var(--text2); font-style: italic; }
 .gs-filter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.gs-filter-title { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+.gs-filter-title { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 10px; }
 .no-result { background: rgba(200,16,46,0.07); border: 1px solid rgba(200,16,46,0.15); border-radius: 6px; padding: 7px 10px; margin-bottom: 6px; font-size: 12px; color: #e05070; }
 .feedback-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
 .feedback-item:last-child { border-bottom: none; }
 .feedback-text { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.5; }
-.feedback-ts { font-size: 11px; color: var(--text3); }
-.loading { color: var(--text3); font-size: 14px; padding: 40px 0; text-align: center; }
+.feedback-ts { font-size: 11px; color: var(--text2); }
+.loading { color: var(--text2); font-size: 14px; padding: 40px 0; text-align: center; }
 .daily-bar-cell { display: flex; align-items: center; gap: 8px; }
 .daily-bar { height: 6px; background: var(--red); border-radius: 3px; min-width: 2px; }
 </style>
@@ -71,7 +71,6 @@ function fmtTime(ts) {
 // Returns an ISO date key (YYYY-MM-DD) so sorting is chronological, not alphabetical
 function dayKey(ts) {
   const d = new Date(ts);
-  // Use en-CA to get YYYY-MM-DD format in the London timezone
   return d.toLocaleDateString('en-CA', { timeZone: 'Europe/London' });
 }
 function dayLabel(isoKey) {
@@ -92,7 +91,6 @@ function makeTable(items, emptyMsg) {
 // Renders the daily loads table, newest date first, limited by the selected range
 function renderDailyTable() {
   const range = parseInt(document.getElementById('dailyRange').value);
-  // Sort ISO keys descending (newest first)
   const days = Object.keys(dailyLoadsData).sort().reverse();
   const limited = range === 0 ? days : days.slice(0, range);
   const target = document.getElementById('dailyTableWrap');
@@ -114,7 +112,6 @@ async function loadData() {
     const res = await fetch('/track?action=read');
     const data = await res.json();
     const counts = data.counts || {};
-    const sums = data.sums || {};
     const recent = data.recent || [];
 
     // Stat cards
@@ -122,11 +119,6 @@ async function loadData() {
     const searches = Object.entries(counts).filter(([k]) => k.startsWith('search:') && !k.startsWith('search:noresults:')).reduce((s, [,v]) => s + v, 0);
     const cfOpens = Object.entries(counts).filter(([k]) => k.startsWith('confluence_open:')).reduce((s, [,v]) => s + v, 0);
     const ctOpens = Object.entries(counts).filter(([k]) => k.startsWith('contentful_open:')).reduce((s, [,v]) => s + v, 0);
-
-    // AI usage
-    const aiQueries = counts['ai_query'] || 0;
-    const aiTokens = sums['ai_query'] || 0;
-    const aiAvg = aiQueries ? Math.round(aiTokens / aiQueries) : 0;
 
     // Verticals
     const verticals = Object.entries(counts).filter(([k]) => k.startsWith('vertical:')).map(([k,v]) => [k.replace('vertical:',''), v]).sort((a,b) => b[1]-a[1]);
@@ -191,13 +183,6 @@ async function loadData() {
         '<div class="stat-card"><div class="stat-label">Searches</div><div class="stat-value">' + searches + '</div></div>' +
         '<div class="stat-card"><div class="stat-label">Confluence Opens</div><div class="stat-value">' + cfOpens + '</div></div>' +
         '<div class="stat-card"><div class="stat-label">Contentful Opens</div><div class="stat-value">' + ctOpens + '</div></div>' +
-      '</div>' +
-
-      '<div class="stat-grid">' +
-        '<div class="stat-card"><div class="stat-label">AI Queries</div><div class="stat-value">' + aiQueries + '</div></div>' +
-        '<div class="stat-card"><div class="stat-label">AI Tokens Used</div><div class="stat-value">' + fmtNum(aiTokens) + '</div></div>' +
-        '<div class="stat-card"><div class="stat-label">Avg Tokens / Query</div><div class="stat-value">' + fmtNum(aiAvg) + '</div></div>' +
-        '<div class="stat-card"><div class="stat-label">Est. Cost (Haiku)</div><div class="stat-value">$' + (aiTokens / 1000000 * 3).toFixed(2) + '</div><div class="stat-sub">rough, blended rate</div></div>' +
       '</div>' +
 
       '<div class="section-pair">' +
