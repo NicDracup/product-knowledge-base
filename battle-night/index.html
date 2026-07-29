@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battle Night - Mirror</title>
+<style>
+:root{
+  --bg:#101418; --panel:#171d24; --panel2:#1d242d; --line:#2a333e;
+  --text:#f4f8fc; --dim:#d5dee7; --accent:#ffb454; --good:#5ad48a; --bad:#ff6b6b;
+  --mono:'Consolas','Menlo',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:16px/1.5 'Segoe UI',system-ui,sans-serif;padding:16px 20px 40px}
+h1{font-size:21px;font-weight:600;letter-spacing:.3px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.top .status{color:var(--dim);font-size:14px}
+.top .status b{color:var(--text);font-weight:600}
+button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:8px 15px;font-size:14.5px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);color:#1a1207;border-color:var(--accent);font-weight:600}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tabs button{border:none;background:none;color:var(--dim);padding:8px 16px;border-radius:0;border-bottom:2px solid transparent}
+.tabs button.active{color:var(--text);border-bottom-color:var(--accent)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;text-align:center}
+.card .v{font:600 28px/1.1 var(--mono);margin-top:4px}
+.card .l{color:var(--dim);font-size:13px;text-transform:uppercase;letter-spacing:.6px}
+.card .v.pos{color:var(--good)} .card .v.neg{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:14px}
+.panel h2{font-size:14px;color:var(--dim);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+tr.tot td{border-top:2px solid var(--line);color:var(--accent);font-weight:bold}
+th{color:var(--dim);font-weight:600;text-align:right;padding:7px 9px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none}
+th:first-child,td:first-child{text-align:left}
+td{padding:7px 9px;border-bottom:1px solid #202832;text-align:right;font-family:var(--mono);font-size:14.5px}
+td:first-child{font-family:'Segoe UI',system-ui,sans-serif}
+tr:hover td{background:#1b232c}
+.neg{color:var(--bad)} .pos{color:var(--good)}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-size:13px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
+select,input[type=time]{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 9px;font-size:13px;min-width:120px}
+select[multiple]{min-height:70px}
+#chart{width:100%;height:180px;display:block}
+.builder-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.checks{display:flex;gap:12px;flex-wrap:wrap;padding-top:4px}
+.checks label{font-size:14.5px;display:flex;gap:5px;align-items:center;cursor:pointer}
+.empty{color:var(--dim);text-align:center;padding:60px 20px;font-size:16px}
+.warn{background:#3a2a12;border:1px solid #6b4a1a;color:#ffce8a;border-radius:6px;padding:9px 13px;font-size:14px;margin-bottom:12px}
+.footnote{color:var(--dim);font-size:13px;margin-top:8px}
+#drop{border:2px dashed var(--line);border-radius:10px;padding:50px 20px;text-align:center;color:var(--dim);margin-top:20px}
+#drop.over{border-color:var(--accent);color:var(--text)}
+.small{font-size:14px;color:var(--dim)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>Battle Night - Mirror</h1>
+  <button id="refreshBtn">Refresh now</button> <label style="font-size:12px;color:#8b98a5;margin-left:10px;cursor:pointer"><input type="checkbox" id="testToggle" style="vertical-align:middle"> Include test accounts</label>
+  <span class="status" id="status">Connecting to feed...</span>
+  <span id="fresh" style="margin-left:auto;font:bold 15px Consolas;padding:6px 14px;border-radius:6px;display:none"></span>
+</div>
+
+<div class="tabs" id="tabs" style="display:none">
+  <button class="active" data-tab="basics">Overview</button>
+  <button data-tab="builder">Custom view</button><button data-tab="optins">Opt-ins</button>
+</div>
+
+<!-- ============ OVERVIEW ============ -->
+<div id="basics" style="display:none">
+  <div class="filters">
+    <div class="f"><label>Venture</label><select id="fVenture"><option value="">All</option></select></div>
+    <div class="f"><label>Game</label><select id="fGame"><option value="">All</option></select></div>
+    <div class="f"><label>Stake</label><select id="fStake"><option value="">All</option></select></div>
+    <div class="f"><label>From</label><input type="datetime-local" id="fFrom" value="2026-07-30T18:30"></div>
+    <div class="f"><label>To</label><input type="datetime-local" id="fTo" value="2026-07-30T22:30"></div>
+    <div class="f"><label>&nbsp;</label><div style="display:flex;gap:8px"><button id="fClear">Clear</button><button id="fDefault">Default</button></div></div>
+  </div>
+
+  <div class="cards" id="cards"></div>
+  <div class="cards" id="cardsGame"></div>
+
+  <div class="panel">
+    <h2>Spins per 5 minutes</h2>
+    <canvas id="chart"></canvas>
+  </div>
+
+  <div class="grid2">
+    <div class="panel"><h2>By venture</h2><div id="tblVenture"></div></div>
+    <div class="panel"><h2>By game</h2><div id="tblGame"></div></div>
+    <div class="panel"><h2>By stake</h2><div id="tblStake"></div></div>
+    <div class="panel"><h2>Top members by wager</h2><div id="tblMembers"></div></div>
+  </div>
+</div>
+
+<!-- ============ BUILDER ============ -->
+<div id="builder" style="display:none">
+  <div class="panel">
+    <div class="builder-row">
+      <div class="f"><label>Group by</label><select id="bGroup1"></select></div>
+      <div class="f"><label>Then by (optional)</label><select id="bGroup2"><option value="">None</option></select></div>
+      <div class="f"><label>Venture filter</label><select id="bVenture"><option value="">All</option></select></div>
+      <div class="f"><label>Game filter</label><select id="bGame"><option value="">All</option></select></div>
+      <div class="f"><label>Time range</label><select id="bTime">
+        <option value="inherit">Inherit overview</option>
+        <option value="3600000">1 hour bucket</option>
+        <option value="1800000">30 mins bucket</option>
+        <option value="900000">15 mins bucket</option>
+        <option value="600000">10 mins bucket</option>
+        <option value="300000">5 mins bucket</option>
+      </select></div>
+    </div>
+    <div class="builder-row">
+      <div class="f"><label>Metrics</label>
+        <div class="checks">
+          <label><input type="checkbox" data-m="spins" checked>Spins</label>
+          <label><input type="checkbox" data-m="members" checked>Uniq members</label>
+          <label><input type="checkbox" data-m="wager" checked>Wager</label>
+          <label><input type="checkbox" data-m="win" checked>Win</label>
+          <label><input type="checkbox" data-m="net" checked>NET</label>
+          <label><input type="checkbox" data-m="avgstake">Avg stake</label>
+        </div>
+      </div>
+    </div>
+    <div class="builder-row">
+      <div class="f"><label>Output</label><select id="bOut"><option value="table">Table</option><option value="bar">Bar chart</option><option value="line">Line chart</option><option value="both">Table + chart</option></select></div>
+      <div class="f"><label>Chart metric</label><select id="bChartM"><option value="spins">Spins</option><option value="members">Uniq members</option><option value="wager">Wager</option><option value="win">Win</option><option value="net">NET</option><option value="avgstake">Avg stake</option></select></div>
+      <div class="f"><label>&nbsp;</label><button class="primary" id="bApply">Apply</button></div>
+      <div class="f"><label>&nbsp;</label><button id="bExport">Download view as CSV</button></div>
+    </div>
+  </div>
+  <div class="panel" id="bChartPanel" style="display:none"><canvas id="bChart" style="width:100%;height:260px;display:block"></canvas></div>
+  <div class="panel"><div id="bResult" class="empty">Choose grouping and hit Apply.</div></div>
+</div>
+
+
+<div id="tab-optins" style="display:none">
+  <div class="cards" id="oiCards"></div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap">
+    <div class="panel" style="flex:1;min-width:340px"><h2>Per venture</h2><div id="oiV"></div></div>
+    <div class="panel" style="flex:1;min-width:340px"><h2>Per day</h2><div id="oiD"></div></div>
+  </div>
+  <div class="panel"><h2>Per venture per day</h2><div id="oiVD"></div></div>
+  <div class="foot" id="oiFoot"></div>
+</div>
+<div class="footnote" id="foot"></div>
+
+<script>
+'use strict';
+/* ================= state ================= */
+const FEED_URL='https://raw.githubusercontent.com/NicDracup/battle-night-data/main/data.json';
+let BUNDLE=null;
+let rows=[], lastLoad=null;
+const TEST_ACCOUNTS=new Set("30212416,22781638,22464356,30174767,27562041,18515403,30212845,18515387,27185728,18103395,26210192,15525138,15430602,26628921,17035629,18288215,30771799,25209044,15928234,27564507,19324286,13933717,29223383,27318352,30896040,26210213,30579690,26007177,25886115,10655083,22029834,23294872,15517455,19890131,15525687,29744383,29106513,11927201,29106523,27564532,18515373,18051964,30510317,24528293,10491120,29784058,26290536,24627790,22545549,31251764,27672007,30190757,28191087,15825103,15928389,28696812,30771784,30344651,27451934,22545580,19407232,25886120,29300356,18290237,30060782,29106673,32305856,18541724,27345885,17613194,17277183,30649351,32224366,29303144,22101776,18741300,26460143,25962846,31251768,31407212,30601272,19435251,31407186,26007164,24056778,29375391,26361250,20205210,27671971,22179341,25675188,24379931,15489742,25622137,29303125,18916420,15928239,26460159,29106518,30212851,30331536,18786663,21211040,28790646,31339161,23754499,28114441,30562784,14387560,32357646,28697109,19407087,15928395,29171188,29560853,31169930,21730161,24010045,29461094,25172833,27300862,28114497,29813819,25205507,27564517,30838075,26290554,31612618,15519049,22464340,28579979,22030339,29813814,14522143,25172655,21853083,29512378,18654343,18515398,22179260,28321413,18515397,29303135,30193351,29879664,31826778,27535868,30771783,30338365,19551664,22413609,29106530,25886127,31028254,30338378,26210186,18515399,13365004,22267783,28767176,26290517,15928233,27672033,30348612,23654746,31251750,31339155,18144940,30344623,32224370,27694451,27564511,22545565,31401279,25948287,22371783,30699531,30348619,18143734,14260687,29783139,22464363,18958121,29992204,25756149,22395808,26018143,22029856,30344679,26210203,18290255,30582307,27301125,28114489,30344676,25521310,31310202,30771792,20697333,28767160,32224350,19547884,29560864,23424784,28114390,31339081,27300869,22029863,30212431,15872571,15443724,27564527,28411289,18139070,19617020,29303172,29926596,29813837,28765454,26210198,29508368,285833,28416700,22497225,29560861,21730125,28114476,30923128,27502667,29222027,19375419,29040474,28574218,30190720,30667877,30244521,30771796,29106539,22464360,30485158,25849386,28370348,27672017,29641803,18798602,29300455,28402439,29560842,27300853,30771790,32080267,15928313,27516918,23364725,30667890,23320204,30649632,30344668,23307393,30367839,31826819,30821070,29303183,29485569,25174106,15928297,30057148,27004702,15565637,30348620,27672103,28977936,16861169,23354048,22849055,29106543,23483757,15566065,29106548,29106544,23300899,30344616,26210208,30344620,28378429,27453948,25097215,28574253".split(','));
+let includeTest=false;
+const KEY=r=>r.GameRef+'|'+r.MemberId;
+const VENT_NAME={'jackpotjoy':'JackpotJoy','virgingames':'Virgin Games','monopolycasino':'Monopoly Casino','rainbowriches':'Rainbow Riches Casino','heart':'Double Bubble Bingo','starspins':'Bally Casino UK'};
+const VENT_COL={'JackpotJoy':'#0060C7','Virgin Games':'#D6003C','Monopoly Casino':'#142E6C','Rainbow Riches Casino':'#36AE3C','Double Bubble Bingo':'#FC66AB','Bally Casino UK':'#EC0000'};
+const ventDot=v=>{const c=VENT_COL[v];return c?'<span style="display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:middle;border:1.5px solid rgba(255,255,255,.55);background:'+c+'"></span>':'';};
+
+
+/* ================= csv parse (schema is simple, no quoted commas) ================= */
+function parseCSV(text, fname){
+  const out=[]; const lines=text.split(/\r?\n/); if(lines.length<2) return out;
+  const hdr=lines[0].split(',').map(h=>h.trim());
+  const idx={}; hdr.forEach((h,i)=>idx[h]=i);
+  const need=['DateTime','Venture','MemberId','GameRef','GameName','WagerAmount','WinAmount','NET'];
+  for(const n of need){ if(!(n in idx)){ console.warn(fname+': missing column '+n); return out; } }
+  for(let i=1;i<lines.length;i++){
+    if(!lines[i]) continue;
+    const c=lines[i].split(',');
+    if(c.length<hdr.length) continue;
+    const dt=c[idx.DateTime].trim();
+    const d=new Date(dt.replace(' ','T'));
+    out.push({
+      DateTime:dt, ts:isNaN(d)?null:d,
+      Venture:(v=>VENT_NAME[v.toLowerCase()]||v)(c[idx.Venture].trim()),
+      MemberId:c[idx.MemberId].trim(),
+      GameRef:c[idx.GameRef].trim(),
+      GameName:c[idx.GameName].trim(),
+      WagerAmount:+c[idx.WagerAmount]||0,
+      WinAmount:+c[idx.WinAmount]||0,
+      NET:+c[idx.NET]||0,
+    });
+  }
+  return out;
+}
+
+/* ================= load from feed ================= */
+async function loadFeed(){
+  const st=document.getElementById('status');
+  try{
+    const res=await fetch(FEED_URL+'?t='+Date.now(),{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    BUNDLE=await res.json();
+    const b64=(BUNDLE.spins||'').trim();
+    let text;
+    if(!b64){ text=''; }
+    else {
+      // payload is base64(gzip(csv)); decode then gunzip
+      const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+      const ds=new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')));
+      text=await ds.text();
+    }
+    const parsed=parseCSV(text,'feed');
+    // collapse exact duplicate lines (15-min email overlap repeats); rows are 1-per-spin, trust the feed
+    const uniq=new Map();
+    for(const r of parsed){
+      const lineKey=[r.DateTime,r.Venture,r.MemberId,r.GameRef,r.GameName,r.WagerAmount,r.WinAmount].join('|');
+      uniq.set(lineKey,r);
+    }
+    rows=[...uniq.values()]; lastLoad=new Date();
+    afterLoad();
+  }catch(e){
+    st.innerHTML='<span style="color:var(--bad)">Feed error: '+e.message+'</span> retrying in 60s. VPN/office network required.';
+  }
+}
+
+function afterLoad(){
+  document.getElementById('status').innerHTML='';
+  updateFresh();
+  document.getElementById('tabs').style.display='flex';
+  document.getElementById('refreshBtn').style.display='';
+  // show whichever tab is active (fixes hidden Overview on first load)
+  const active=document.querySelector('.tabs button.active')?.dataset.tab||'basics';
+  document.getElementById('basics').style.display=active==='basics'?'':'none';
+  document.getElementById('builder').style.display=active==='builder'?'':'none';
+  populateFilters();
+  render();
+}
+
+/* ================= wiring ================= */
+document.getElementById('testToggle').onchange=e=>{includeTest=e.target.checked;populateFilters();render();if(typeof lastView!=='undefined')document.getElementById('bApply')?.click();};
+document.getElementById('refreshBtn').onclick=loadFeed;
+
+function updateFresh(){
+  const el=document.getElementById('fresh');
+  if(!lastLoad){el.style.display='none';return;}
+  // freshness = age of the newest DATA row (catches upstream Splunk/PA failures too)
+  let newest=0; for(const r of rows){ if(r.ts&&+r.ts>newest) newest=+r.ts; }
+  const fetchStale=(Date.now()-+lastLoad)/1000>150;      // app refresh dead >2.5 min
+  // only enforce the data-age check during the launch window; quiet test days stay green
+  const WS=+new Date('2026-07-30T18:30:00'), WE=+new Date('2026-07-30T22:30:00');
+  const inWin=Date.now()>=WS&&Date.now()<WE;
+  const dataStale=inWin ? (newest? (Date.now()-newest)/60000>25 : true) : false;
+  const stale=fetchStale||dataStale;
+  el.style.display='';
+  el.style.background=stale?'#3a1518':'#12301c';
+  el.style.color=stale?'#ff6b6b':'#3ddc84';
+  el.style.border='1px solid '+(stale?'#ff6b6b':'#3ddc84');
+  const dataT=newest?new Date(newest).toLocaleTimeString():'none';
+  el.textContent=stale
+    ? '\u26a0 OUT OF DATE - last data '+dataT+(fetchStale?' (refresh failed)':'')
+    : (inWin ? '\u25cf LIVE - last data '+dataT
+             : '\u25cf FEED OK - last data '+dataT+' (live checks from 30/7 18:30)');
+}
+setInterval(updateFresh,10000);
+
+/* ================= opt-ins tab ================= */
+const OI_URL='https://n8n.ballys.tech/webhook/gg-optins';
+const OI_COL={'Virgin Games':'#D6003C','JackpotJoy':'#0060C7','Monopoly Casino':'#142E6C','Rainbow Riches Casino':'#36AE3C','Double Bubble Bingo':'#FC66AB','Bally Casino UK':'#EC0000'};
+const OI_SHORT={'JackpotJoy':'JPJ','Virgin Games':'VGN','Bally Casino UK':'BUK','Monopoly Casino':'MC','Double Bubble Bingo':'DBB','Rainbow Riches Casino':'RRC'};
+let oiLoaded=0;
+async function loadOptins(force){
+  if(!force && Date.now()-oiLoaded<5*60e3) return; // don't refetch within 5 min on tab flips
+  let snap=null, raw=[];
+  if(BUNDLE&&BUNDLE.optins){ snap=BUNDLE.optins.snap; raw=BUNDLE.optins.rows||[]; }
+  else { document.getElementById('oiFoot').textContent='Opt-ins data not in mirror yet'; return; }
+  oiLoaded=Date.now();
+  const rows=raw.filter(r=>r.day!=='ALL'&&r.venture!=='ALL VENTURES').map(r=>({d:r.day,v:r.venture,n:+r.opt_ins}));
+  const days=[...new Set(rows.map(r=>r.d))].sort();
+  const totByV={},totByD={};let grand=0;
+  for(const r of rows){totByV[r.v]=(totByV[r.v]||0)+r.n;totByD[r.d]=(totByD[r.d]||0)+r.n;grand+=r.n;}
+  const dL=d=>(+d.slice(6))+'/'+(+d.slice(4,6));
+  const dot=v=>'<span style="display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:middle;border:1.5px solid rgba(255,255,255,.55);background:'+OI_COL[v]+'"></span>';
+  const sorted=Object.entries(totByV).sort((a,b)=>b[1]-a[1]);
+  const vo=sorted.map(x=>x[0]);
+  const fN=n=>n.toLocaleString();
+  let ch='<div class="card"><div class="l">Total opt-ins</div><div class="v" style="color:var(--accent)">'+fN(grand)+'</div></div>';
+  for(const [v,n] of sorted) ch+='<div class="card" style="border-top:3px solid '+OI_COL[v]+'"><div class="l">'+v+'</div><div class="v">'+fN(n)+'</div></div>';
+  document.getElementById('oiCards').innerHTML=ch;
+  let h='<table><tr><th>Venture</th><th>Members</th><th>Share</th></tr>';
+  for(const [v,n] of sorted) h+='<tr><td>'+dot(v)+v+'</td><td>'+fN(n)+'</td><td>'+(100*n/grand).toFixed(1)+'%</td></tr>';
+  h+='<tr class="tot"><td>Total</td><td>'+fN(grand)+'</td><td>100%</td></tr></table>';
+  document.getElementById('oiV').innerHTML=h;
+  h='<table><tr><th>Date</th><th>Opt-ins</th></tr>';
+  for(const d of days) h+='<tr><td>'+dL(d)+'</td><td>'+fN(totByD[d])+'</td></tr>';
+  h+='<tr class="tot"><td>Total</td><td>'+fN(grand)+'</td></tr></table>';
+  document.getElementById('oiD').innerHTML=h;
+  h='<table><tr><th>Date</th>'+vo.map(v=>'<th>'+dot(v)+OI_SHORT[v]+'</th>').join('')+'<th>Total</th></tr>';
+  for(const d of days){
+    h+='<tr><td>'+dL(d)+'</td>'+vo.map(v=>{const r=rows.find(x=>x.d===d&&x.v===v);return '<td>'+(r?fN(r.n):'-')+'</td>';}).join('')+'<td>'+fN(totByD[d])+'</td></tr>';
+  }
+  h+='<tr class="tot"><td>Total</td>'+vo.map(v=>'<td>'+fN(totByV[v]||0)+'</td>').join('')+'<td>'+fN(grand)+'</td></tr></table>';
+  document.getElementById('oiVD').innerHTML=h;
+  document.getElementById('oiFoot').textContent='Promos 18638-18643 (24-31 Jul, real players only) - refreshed hourly - data as of '+(snap?new Date(snap).toLocaleString():'unknown');
+}
+setInterval(()=>{ if(document.getElementById('tab-optins').style.display!=='none') loadOptins(true); },3600e3);
+loadFeed();
+setInterval(loadFeed,120000);
+
+/* ================= helpers ================= */
+const fmtC=n=>'£'+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtN=n=>n.toLocaleString();
+function uniq(arr,f){return [...new Set(arr.map(f))].sort();}
+function populateFilters(){
+  fill('fVenture',uniq(rows,r=>r.Venture)); fill('fGame',uniq(rows,r=>r.GameName));
+  fill('fStake',uniq(rows,r=>r.WagerAmount.toFixed(2)));
+  fill('bVenture',uniq(rows,r=>r.Venture)); fill('bGame',uniq(rows,r=>r.GameName));
+  const dims=['Venture','GameName','WagerAmount','MemberId','Time'];
+  const g1=document.getElementById('bGroup1'), g2=document.getElementById('bGroup2');
+  if(g1.options.length===0){ dims.forEach(d=>g1.add(new Option(d,d))); dims.forEach(d=>g2.add(new Option(d,d))); }
+}
+function fill(id,vals){
+  const s=document.getElementById(id); const cur=s.value;
+  while(s.options.length>1) s.remove(1);
+  vals.forEach(v=>s.add(new Option(v,v)));
+  s.value=cur;
+}
+function filtered(){
+  const base=includeTest?rows:rows.filter(r=>!TEST_ACCOUNTS.has(r.MemberId));
+
+  const v=val('fVenture'),g=val('fGame'),st=val('fStake'),from=val('fFrom'),to=val('fTo');
+  return base.filter(r=>{
+    if(v&&r.Venture!==v) return false;
+    if(g&&r.GameName!==g) return false;
+    if(st&&r.WagerAmount.toFixed(2)!==st) return false;
+    if((from||to)&&r.ts){
+      const t=+r.ts;
+      if(from&&t<+new Date(from)) return false;
+      if(to&&t>+new Date(to)) return false;
+    }
+    return true;
+  });
+}
+const val=id=>document.getElementById(id).value;
+
+/* ================= overview render ================= */
+function agg(list){
+  let wager=0,win=0,net=0; const mem=new Set();
+  for(const r of list){wager+=r.WagerAmount;win+=r.WinAmount;net+=r.NET;mem.add(r.MemberId);}
+  return {spins:list.length,wager,win,net,members:mem.size};
+}
+function render(){
+  const data=filtered(); const a=agg(data);
+  const cards=[
+    ['Spins',fmtN(a.spins),''],
+    ['Unique members',fmtN(a.members),''],
+    ['Avg spins / player',a.members?fmtN(Math.round(a.spins/a.members)):'0',''],
+    ['Avg wager / player',fmtC(a.members?a.wager/a.members:0),''],
+    ['Wager',fmtC(a.wager),''],
+    ['Win',fmtC(a.win),''],
+    ['NET',fmtC(a.net),a.net>=0?'pos':'neg'],
+  ];
+  document.getElementById('cards').innerHTML=cards.map(c=>`<div class="card"><div class="l">${c[0]}</div><div class="v ${c[2]}">${c[1]}</div></div>`).join('');
+  // per-game avg spins / avg wager per player (4 tiles: 2 per game)
+  const byGame=new Map();
+  for(const r of data){ const g=r.GameName.replace('RELAX_GG_','').replace(/_/g,' '); if(!byGame.has(g))byGame.set(g,[]); byGame.get(g).push(r); }
+  const gCards=[];
+  for(const [g,l] of [...byGame.entries()].sort((x,y)=>x[0]<y[0]?-1:1)){
+    const ga=agg(l);
+    gCards.push([g+' avg spins / player', ga.members?fmtN(Math.round(ga.spins/ga.members)):'0']);
+    gCards.push([g+' avg wager / player', fmtC(ga.members?ga.wager/ga.members:0)]);
+  }
+  document.getElementById('cardsGame').innerHTML=gCards.map(c=>`<div class="card"><div class="l">${c[0]}</div><div class="v">${c[1]}</div></div>`).join('');
+  groupTable('tblVenture',data,r=>r.Venture);
+  groupTable('tblGame',data,r=>r.GameName.replace('RELAX_GG_','').replace(/_/g,' '));
+  groupTable('tblStake',data,r=>fmtC(r.WagerAmount));
+  topMembers(data);
+  chart(data);
+}
+function groupTable(el,data,keyf){
+  const m=new Map();
+  for(const r of data){const k=keyf(r); if(!m.has(k))m.set(k,[]); m.get(k).push(r);}
+  const rowsH=[...m.entries()].map(([k,list])=>[k,agg(list)]).sort((a,b)=>b[1].wager-a[1].wager);
+  let h='<table><tr><th></th><th>Spins</th><th>Members</th><th>Wager</th><th>Win</th><th>NET</th></tr>';
+  for(const [k,a] of rowsH){
+    h+=`<tr><td>${el==='tblVenture'?ventDot(k):''}${k}</td><td>${fmtN(a.spins)}</td><td>${fmtN(a.members)}</td><td>${fmtC(a.wager)}</td><td>${fmtC(a.win)}</td><td class="${a.net>=0?'pos':'neg'}">${fmtC(a.net)}</td></tr>`;
+  }
+  document.getElementById(el).innerHTML=h+'</table>';
+}
+function topMembers(data){
+  const m=new Map();
+  for(const r of data){ if(!m.has(r.MemberId))m.set(r.MemberId,[]); m.get(r.MemberId).push(r); }
+  const top=[...m.entries()].map(([k,l])=>[k,agg(l)]).sort((a,b)=>b[1].wager-a[1].wager).slice(0,15);
+  let h='<table><tr><th>Member</th><th>Spins</th><th>Wager</th><th>Win</th><th>NET</th></tr>';
+  for(const [k,a] of top) h+=`<tr><td>${k}</td><td>${fmtN(a.spins)}</td><td>${fmtC(a.wager)}</td><td>${fmtC(a.win)}</td><td class="${a.net>=0?'pos':'neg'}">${fmtC(a.net)}</td></tr>`;
+  document.getElementById('tblMembers').innerHTML=h+'</table>';
+}
+let lastChartData=null, ovChartState=null;
+function chart(data){
+  lastChartData=data;
+  const cv=document.getElementById('chart'); const ctx=cv.getContext('2d');
+  const w=cv.clientWidth, h=180;
+  if(!w) return; // hidden container, redrawn when visible
+  cv.width=w*devicePixelRatio; cv.height=h*devicePixelRatio; ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,w,h);
+  // LAUNCH WINDOW config: fixed axis for the test night. Adjust here if timings move.
+  const WINDOW_START=new Date('2026-07-30T18:30:00'); // 6:30pm
+  const WINDOW_END  =new Date('2026-07-30T22:30:00'); // 10:30pm
+  const fmt30=k=>new Date(k).toTimeString().slice(0,5);
+  const ts=data.filter(r=>r.ts).map(r=>r.ts);
+  if(!ts.length)return;
+  const inWindow=ts.some(t=>t>=+WINDOW_START&&t<+WINDOW_END);
+  let kMin,kMax,label,bucketMs,fmt;
+  if(inWindow){
+    bucketMs=30*60e3; fmt=fmt30;
+    kMin=+WINDOW_START; kMax=+WINDOW_END-bucketMs; label='30 min (launch window)';
+  } else {
+    // fallback outside the launch window: adaptive bucket size, <= ~90 buckets over the span
+    const span=Math.max(...ts)-Math.min(...ts);
+    const sizes=[[5*60e3,'5 minutes',fmt30],[15*60e3,'15 minutes',fmt30],[30*60e3,'30 min',fmt30],[3600e3,'hour',fmt30],
+      [6*3600e3,'6 hours',k=>{const d=new Date(k);return d.getDate()+'/'+(d.getMonth()+1)+' '+d.getHours()+'h';}],
+      [86400e3,'day',k=>{const d=new Date(k);return d.getDate()+'/'+(d.getMonth()+1);}]];
+    bucketMs=sizes[sizes.length-1][0]; label='day'; fmt=sizes[sizes.length-1][2];
+    for(const [ms,lbl,f] of sizes){ if(span/ms<=90){ bucketMs=ms; label=lbl; fmt=f; break; } }
+    kMin=Math.floor(Math.min(...ts)/bucketMs)*bucketMs;
+    kMax=Math.floor(Math.max(...ts)/bucketMs)*bucketMs;
+  }
+  document.querySelectorAll('h2').forEach(el=>{ if(el.textContent.startsWith('Spins per')) el.textContent='Spins per '+label; });
+  const buckets=new Map();
+  for(let k=kMin;k<=kMax;k+=bucketMs) buckets.set(k,0);
+  for(const r of data){ if(!r.ts)continue; const k=Math.floor(r.ts/bucketMs)*bucketMs; if(buckets.has(k)) buckets.set(k,buckets.get(k)+1); }
+  const keys=[...buckets.keys()].sort((a,b)=>a-b); if(!keys.length)return;
+  const max=Math.max(...buckets.values());
+  const pad=34, step=(w-pad-10)/keys.length, bw=Math.max(2,step-2);
+  ovChartState={keys,buckets,pad,step,fmt};
+  ctx.font='10px Consolas';
+  const lStep=Math.ceil(keys.length/Math.max(1,Math.floor((w-pad)/64)));
+  keys.forEach((k,i)=>{
+    const v=buckets.get(k); const bh=Math.max(1,(h-34)*(v/max));
+    const x=pad+i*step;
+    ctx.fillStyle='#ffb454'; ctx.fillRect(x,h-22-bh,bw,bh);
+    if(i%lStep===0){ ctx.fillStyle='#8b98a5'; ctx.fillText(fmt(k),x,h-8); }
+  });
+  ctx.fillStyle='#8b98a5'; ctx.fillText(fmtN(max),2,14);
+}
+
+/* ================= filters wiring ================= */
+['fVenture','fGame','fStake','fFrom','fTo'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{render();if(typeof lastView!=='undefined'&&lastView)document.getElementById('bApply').click();}));
+document.getElementById('fClear').onclick=()=>{['fVenture','fGame','fStake','fFrom','fTo'].forEach(id=>document.getElementById(id).value='');render();};
+document.getElementById('fDefault').onclick=()=>{
+  ['fVenture','fGame','fStake'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fFrom').value='2026-07-30T18:30';
+  document.getElementById('fTo').value='2026-07-30T22:30';
+  document.getElementById('testToggle').checked=false; includeTest=false;
+  populateFilters(); render();
+  if(typeof lastView!=='undefined'&&lastView)document.getElementById('bApply').click();
+};
+
+/* ================= tabs ================= */
+document.getElementById('tabs').addEventListener('click',e=>{
+  if(e.target.tagName!=='BUTTON')return;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('basics').style.display=e.target.dataset.tab==='basics'?'':'none';
+  document.getElementById('builder').style.display=e.target.dataset.tab==='builder'?'':'none';
+  document.getElementById('tab-optins').style.display=e.target.dataset.tab==='optins'?'':'none';
+  if(e.target.dataset.tab==='basics'&&lastChartData) chart(lastChartData);
+  if(e.target.dataset.tab==='optins') loadOptins();
+});
+let rsT=null;
+window.addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(()=>{if(lastChartData)chart(lastChartData);},200);});
+
+/* ================= builder ================= */
+let lastView=null;
+function builderBucketMs(){
+  const v=val('bTime');
+  if(v!=='inherit') return +v;
+  const src=includeTest?rows:rows.filter(r=>!TEST_ACCOUNTS.has(r.MemberId));
+  const ts=src.filter(r=>r.ts).map(r=>+r.ts);
+  if(!ts.length) return 1800000;
+  const WS=+new Date('2026-07-30T18:30:00'), WE=+new Date('2026-07-30T22:30:00');
+  if(ts.some(t=>t>=WS&&t<WE)) return 1800000;
+  const span=Math.max(...ts)-Math.min(...ts);
+  for(const ms of [300000,900000,1800000,3600000,21600000,86400000]){ if(span/ms<=90) return ms; }
+  return 86400000;
+}
+function dimVal(r,d){
+  if(d==='Time'){ if(!r.ts)return'?'; const ms=builderBucketMs(); const k=Math.floor(+r.ts/ms)*ms; const t=new Date(k);
+    return ms>=86400000 ? (t.getDate()+'/'+(t.getMonth()+1)) : (ms>=21600000 ? (t.getDate()+'/'+(t.getMonth()+1)+' '+t.toTimeString().slice(0,5)) : t.toTimeString().slice(0,5)); }
+  if(d==='WagerAmount') return r.WagerAmount.toFixed(2);
+  return r[d];
+}
+document.getElementById('bTime').addEventListener('change',()=>{if(lastView)document.getElementById('bApply').click();});
+document.getElementById('bApply').onclick=()=>{
+  const g1=val('bGroup1'), g2=val('bGroup2');
+  const fv=val('bVenture'), fg=val('bGame');
+  const mets=[...document.querySelectorAll('.checks input:checked')].map(c=>c.dataset.m);
+  if(!g1){document.getElementById('bResult').innerHTML='<div class="empty">Pick a Group by field.</div>';return;}
+  let data=includeTest?rows:rows.filter(r=>!TEST_ACCOUNTS.has(r.MemberId));
+  if(fv)data=data.filter(r=>r.Venture===fv);
+  if(fg)data=data.filter(r=>r.GameName===fg);
+  // inherit the Overview From/To range
+  const bFrom=val('fFrom'), bTo=val('fTo');
+  if(bFrom||bTo) data=data.filter(r=>{ if(!r.ts) return false; const t=+r.ts;
+    if(bFrom&&t<+new Date(bFrom)) return false;
+    if(bTo&&t>+new Date(bTo)) return false;
+    return true; });
+  const m=new Map();
+  for(const r of data){
+    const k=dimVal(r,g1)+(g2?' / '+dimVal(r,g2):'');
+    if(!m.has(k))m.set(k,[]); m.get(k).push(r);
+  }
+  const defs={spins:['Spins',a=>fmtN(a.spins),a=>a.spins],members:['Uniq members',a=>fmtN(a.members),a=>a.members],wager:['Wager',a=>fmtC(a.wager),a=>a.wager.toFixed(2)],win:['Win',a=>fmtC(a.win),a=>a.win.toFixed(2)],net:['NET',a=>fmtC(a.net),a=>a.net.toFixed(2)],avgstake:['Avg stake',a=>fmtC(a.spins?a.wager/a.spins:0),a=>(a.spins?a.wager/a.spins:0).toFixed(4)]};
+  // time-like dims sort chronologically, others by wager desc
+  const timeDim=g1==='Time'&&!g2;
+  const out=[...m.entries()].map(([k,l])=>[k,agg(l)]).sort((a,b)=> timeDim ? (a[0]<b[0]?-1:1) : b[1].wager-a[1].wager);
+  const mode=val('bOut');
+  const showTable=mode==='table'||mode==='both';
+  const showChart=mode!=='table';
+  if(showTable){
+    let h='<table><tr><th>'+g1+(g2?' / '+g2:'')+'</th>'+mets.map(mm=>'<th>'+defs[mm][0]+'</th>').join('')+'</tr>';
+    for(const [k,a] of out) h+='<tr><td>'+(g1==='Venture'?ventDot(k.split(' / ')[0]):'')+k+'</td>'+mets.map(mm=>'<td>'+defs[mm][1](a)+'</td>').join('')+'</tr>';
+    document.getElementById('bResult').innerHTML=h+'</table>';
+    document.getElementById('bResult').parentElement.style.display='';
+  } else {
+    document.getElementById('bResult').parentElement.style.display='none';
+  }
+  document.getElementById('bChartPanel').style.display=showChart?'':'none';
+  if(showChart){
+    const cm=val('bChartM');
+    const raw=out.map(([k,a])=>[k, +defs[cm][2](a)]);
+    if(!timeDim) raw.sort((a,b)=>b[1]-a[1]);
+    const cols=(g1==='Venture'&&!g2)? raw.map(d=>VENT_COL[d[0]]||'#ffb454') : null;
+    drawBuilderChart(raw, mode==='line'?'line':'bar', defs[cm][0], ['wager','win','net','avgstake'].includes(cm), cols);
+  }
+  lastView={header:[g1+(g2?'/'+g2:''),...mets.map(mm=>defs[mm][0])],rows:out.map(([k,a])=>[k,...mets.map(mm=>defs[mm][2](a))])};
+};
+
+/* builder chart: vanilla canvas bar/line */
+let bChartState=null;
+function drawBuilderChart(data, kind, label, isMoney, barCols){
+  const cv=document.getElementById('bChart'); const ctx=cv.getContext('2d');
+  const w=cv.clientWidth, h=260; if(!w) return;
+  cv.width=w*devicePixelRatio; cv.height=h*devicePixelRatio; ctx.scale(devicePixelRatio,devicePixelRatio);
+  ctx.clearRect(0,0,w,h);
+  bChartState={data,kind,label,isMoney};
+  const padL=54, padB=42, padT=18, padR=10;
+  const iw=w-padL-padR, ih=h-padT-padB;
+  const vals=data.map(d=>d[1]);
+  const max=Math.max(...vals,0), min=Math.min(...vals,0);
+  const range=(max-min)||1;
+  const y=v=>padT+ih*(1-(v-min)/range);
+  // axis + gridlines
+  ctx.strokeStyle='#2a333e'; ctx.fillStyle='#8b98a5'; ctx.font='10px Consolas';
+  for(let i=0;i<=4;i++){
+    const v=min+range*i/4, yy=y(v);
+    ctx.beginPath(); ctx.moveTo(padL,yy); ctx.lineTo(w-padR,yy); ctx.stroke();
+    ctx.fillText(isMoney?('£'+v.toFixed(v<10?2:0)):Math.round(v).toLocaleString(), 4, yy+3);
+  }
+  const n=data.length, step=iw/n;
+  const maxLabels=Math.min(n, Math.floor(iw/55)||1);
+  const lStep=Math.ceil(n/maxLabels);
+  if(kind==='bar'){
+    const bw=Math.max(3, step*0.7);
+    data.forEach((d,i)=>{
+      const x=padL+i*step+(step-bw)/2;
+      ctx.fillStyle=d[1]<0?'#ff6b6b':(barCols?barCols[i]:'#ffb454');
+      const y0=y(Math.max(0,min)), y1=y(d[1]);
+      ctx.fillRect(x, Math.min(y0,y1), bw, Math.abs(y0-y1)||1);
+    });
+  } else {
+    ctx.strokeStyle='#ffb454'; ctx.lineWidth=2; ctx.beginPath();
+    data.forEach((d,i)=>{ const x=padL+i*step+step/2, yy=y(d[1]); i?ctx.lineTo(x,yy):ctx.moveTo(x,yy); });
+    ctx.stroke();
+    ctx.fillStyle='#ffb454';
+    data.forEach((d,i)=>{ const x=padL+i*step+step/2; ctx.beginPath(); ctx.arc(x,y(d[1]),3,0,7); ctx.fill(); });
+  }
+  // value labels above bars/points when they fit
+  const fmtV=v=>isMoney?('\u00a3'+(+v).toFixed(2)):(+v).toLocaleString();
+  if(n<=30){
+    ctx.fillStyle='#e8edf2'; ctx.font='10px Consolas'; ctx.textAlign='center';
+    data.forEach((d,i)=>{ const x=padL+i*step+step/2; ctx.fillText(fmtV(d[1]), x, y(d[1])-5); });
+    ctx.textAlign='left';
+  }
+  // x labels: centred, trimmed to fit column width
+  ctx.fillStyle='#8b98a5'; ctx.textAlign='center';
+  const maxChars=Math.max(3, Math.floor((step*lStep-8)/6));
+  data.forEach((d,i)=>{
+    if(i%lStep) return;
+    const x=padL+i*step+step/2;
+    let t=String(d[0]);
+    if(t.length>maxChars) t=t.slice(0,maxChars-1)+'\u2026';
+    ctx.fillText(t, x, h-14);
+  });
+  ctx.textAlign='left';
+  ctx.fillStyle='#e8edf2'; ctx.font='11px Segoe UI'; ctx.fillText(label, padL, 12);
+  bChartState.geo={padL,step,w,h};
+}
+/* hover tooltip for charts */
+(function(){
+  const cv=document.getElementById('bChart');
+  const tip=document.createElement('div');
+  tip.style.cssText='position:fixed;pointer-events:none;background:#1c2530;border:1px solid #3a4552;color:#e8edf2;padding:4px 8px;border-radius:4px;font:11px Consolas;z-index:99;display:none';
+  document.body.appendChild(tip);
+  cv.addEventListener('mousemove',e=>{
+    if(!bChartState||!bChartState.geo){tip.style.display='none';return;}
+    const r=cv.getBoundingClientRect();
+    const x=e.clientX-r.left;
+    const {padL,step}=bChartState.geo;
+    const i=Math.floor((x-padL)/step);
+    if(i<0||i>=bChartState.data.length){tip.style.display='none';return;}
+    const d=bChartState.data[i];
+    const v=bChartState.isMoney?('\u00a3'+(+d[1]).toFixed(2)):(+d[1]).toLocaleString();
+    tip.textContent=d[0]+': '+v;
+    tip.style.left=(e.clientX+12)+'px'; tip.style.top=(e.clientY-24)+'px'; tip.style.display='block';
+  });
+  cv.addEventListener('mouseleave',()=>tip.style.display='none');
+  const ov=document.getElementById('chart');
+  ov.addEventListener('mousemove',e=>{
+    if(!ovChartState){tip.style.display='none';return;}
+    const r=ov.getBoundingClientRect();
+    const x=e.clientX-r.left;
+    const {keys,buckets,pad,step,fmt}=ovChartState;
+    const i=Math.floor((x-pad)/step);
+    if(i<0||i>=keys.length){tip.style.display='none';return;}
+    const k=keys[i];
+    tip.textContent=fmt(k)+': '+buckets.get(k).toLocaleString()+' spins';
+    tip.style.left=(e.clientX+12)+'px'; tip.style.top=(e.clientY-24)+'px'; tip.style.display='block';
+  });
+  ov.addEventListener('mouseleave',()=>tip.style.display='none');
+})();
+document.getElementById('bExport').onclick=()=>{
+  if(!lastView){alert('Apply a view first.');return;}
+  const csv=[lastView.header.join(','),...lastView.rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='gg_view_'+new Date().toISOString().slice(11,19).replace(/:/g,'')+'.csv';
+  a.click();
+};
+
+document.getElementById('foot').textContent='PUBLIC MIRROR - ~20 min total delay - member IDs anonymised';
+</script>
+</body>
+</html>
