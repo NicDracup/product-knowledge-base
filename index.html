@@ -171,15 +171,12 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
 
 /* SCHEDULE */
 .schedule-intro { font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 10px; }
-.schedule-cards { display: flex; gap: 16px; margin-top: 24px; margin-bottom: 28px; }
-.schedule-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; width: 200px; }
-.schedule-card-title { font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
-.schedule-card-btns { display: flex; flex-direction: column; gap: 8px; }
-.sch-btn-inline { background: var(--red); border: none; border-radius: 6px; color: white; font-size: 12px; padding: 8px 12px; cursor: pointer; font-family: var(--font); text-align: center; transition: background 0.12s; }
-.sch-btn-inline:hover { background: var(--red-dark); }
-.sch-btn-newtab { background: transparent; border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-size: 12px; padding: 8px 12px; cursor: pointer; font-family: var(--font); text-align: center; transition: all 0.12s; }
-.sch-btn-newtab:hover { background: var(--surface2); color: var(--text); }
-.schedule-frame-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; height: calc(100vh - 320px); }
+.schedule-toolbar { display: flex; align-items: center; justify-content: space-between; margin: 16px 0 12px; gap: 12px; }
+.schedule-toolbar-note { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+.schedule-toolbar-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+.sch-newtab-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--border2); border-radius: 6px; color: var(--text2); font-size: 12px; padding: 7px 14px; cursor: pointer; font-family: var(--font); transition: all 0.12s; }
+.sch-newtab-btn:hover { background: var(--surface2); color: var(--text); }
+.schedule-frame-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; height: calc(100vh - 250px); }
 .schedule-frame-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
 
 /* GAME SHEETS */
@@ -351,27 +348,14 @@ header { display: flex; align-items: center; gap: 12px; padding: 0 20px; height:
           <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           UK and Spain bingo stream schedules
         </div>
-        <p class="schedule-intro">A schedule viewer for UK and Spain bingo streams, covering the next 8 days of games across all rooms and link games.</p>
-        <p class="schedule-intro">Use it to check ticket prices, prize structures, and game types. Special features such as Super Jackpots, Progressive Jackpots, Roll Ons, and Lucky Numbers are also shown where applicable.</p>
-        <p class="schedule-intro">Select a market below to open the schedule inline or in a new tab.</p>
-        <div class="schedule-cards">
-          <div class="schedule-card">
-            <div class="schedule-card-title">UK Schedule</div>
-            <div class="schedule-card-btns">
-              <button class="sch-btn-inline" onclick="loadScheduleFrame('/schedule/uk/')">Open in app</button>
-              <button class="sch-btn-newtab" onclick="window.open('/schedule/uk/','_blank')">Open in new tab &#8599;</button>
-            </div>
-          </div>
-          <div class="schedule-card">
-            <div class="schedule-card-title">Spain Schedule</div>
-            <div class="schedule-card-btns">
-              <button class="sch-btn-inline" onclick="loadScheduleFrame('/schedule/es/')">Open in app</button>
-              <button class="sch-btn-newtab" onclick="window.open('/schedule/es/','_blank')">Open in new tab &#8599;</button>
-            </div>
-          </div>
+        <p class="schedule-intro">Live UK and Spain bingo stream schedules, pulled from BAS and rebuilt automatically every hour. Covers every stream plus the linked network games.</p>
+        <p class="schedule-intro">Use it to check ticket prices, prize structures, and game types. Filter by stream, feature or time, and export any day to CSV. Switch between UK and Spain inside the viewer.</p>
+        <div class="schedule-toolbar">
+          <span class="schedule-toolbar-note"><span class="schedule-toolbar-dot"></span>Auto-refreshed hourly</span>
+          <button class="sch-newtab-btn" onclick="window.open('https://bingo-schedules-44a705.pages.gitlab.ballys.tech/','_blank'); track('quicklink','Bingo Schedule new tab')">Open in new tab &#8599;</button>
         </div>
-        <div id="scheduleFrameWrap" style="display:none" class="schedule-frame-wrap">
-          <iframe id="scheduleFrame" src=""></iframe>
+        <div class="schedule-frame-wrap">
+          <iframe id="scheduleFrame" src="" title="Bingo Schedules"></iframe>
         </div>
       </div>
 
@@ -759,17 +743,14 @@ async function showHome() {
 }
 
 // SCHEDULE
+const SCHEDULE_URL = 'https://bingo-schedules-44a705.pages.gitlab.ballys.tech/';
 function showSchedule() {
   try { location.hash = '#/schedule'; } catch(e) {}
   clearNavActive(); document.getElementById('scheduleBtn').classList.add('active'); activeNodeId = null;
   hideAllViews(); document.getElementById('scheduleView').style.display = 'block';
-  document.getElementById('scheduleFrameWrap').style.display = 'none'; document.getElementById('scheduleFrame').src = '';
+  const frame = document.getElementById('scheduleFrame');
+  if (frame.getAttribute('src') !== SCHEDULE_URL) frame.setAttribute('src', SCHEDULE_URL);
   hideTilesBar(); document.getElementById('contentArea').scrollTop = 0;
-}
-function loadScheduleFrame(url) {
-  document.getElementById('scheduleFrame').src = url;
-  document.getElementById('scheduleFrameWrap').style.display = 'block';
-  document.getElementById('contentArea').scrollTop = document.getElementById('contentArea').scrollHeight;
 }
 
 // GAME SHEETS
