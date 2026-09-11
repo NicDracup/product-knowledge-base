@@ -8,10 +8,10 @@ export async function onRequest(context) {
     });
   }
 
-  try {
+    try {
     const token = context.env.CONTENTFUL_TOKEN;
     const spaceId = 'nw2595tc1jdx';
-    const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/release-156/entries`;
+    const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/master/entries`;
     const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' };
 
     const [gameV2Res, cashierRes] = await Promise.all([
