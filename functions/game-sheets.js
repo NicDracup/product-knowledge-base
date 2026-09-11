@@ -45,7 +45,7 @@ export async function onRequest(context) {
 
     const cashierLookup = {};
     let cashierSkip = 0;
-    const cashierLimit = 200;
+    const cashierLimit = 1000;
 
     while (true) {
       const cashierRes = await fetch(`${baseUrl}?${cashierParams}&limit=${cashierLimit}&skip=${cashierSkip}`, { headers });
@@ -109,25 +109,20 @@ export async function onRequest(context) {
     const providerVariants = provider ? (PROVIDER_VARIANTS[provider] || [provider]) : null;
     const nameQuery = norm(query);
 
-    const allGameItems = [];
+    // Step 3: Stream gameV2 pages and filter each page inline. We do NOT hold the whole
+    // catalogue in memory (that exceeds Cloudflare's worker resource limit); we keep only
+    // the rows that match the filters and join the live/pp cashier list.
+    const results = [];
     let gameSkip = 0;
-    const gameLimit = 200;
+    const gameLimit = 500;
 
     while (true) {
       const gameRes = await fetch(`${baseUrl}?${gameParams}&limit=${gameLimit}&skip=${gameSkip}`, { headers });
       const gameData = gameRes.ok ? await gameRes.json() : { items: [], total: 0 };
-      const items = gameData.items || [];
+      const pageItems = gameData.items || [];
       const total = gameData.total || 0;
 
-      allGameItems.push(...items);
-      gameSkip += gameLimit;
-      if (gameSkip >= total) break;
-    }
-
-    // Step 3: Cross reference and build results
-    const results = [];
-
-    for (const item of allGameItems) {
+      for (const item of pageItems) {
       try {
         const f = item.fields || {};
         const config = (f.gamePlatformConfig && (f.gamePlatformConfig['en-GB'] || f.gamePlatformConfig)) || {};
@@ -210,6 +205,10 @@ export async function onRequest(context) {
       } catch(e) {
         continue;
       }
+      } // end page item loop
+
+      gameSkip += gameLimit;
+      if (gameSkip >= total) break;
     }
 
     // Collapse per-venture skins (bingo) into one row per game, keyed by launch name.
