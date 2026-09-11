@@ -22,16 +22,17 @@ export async function onRequest(context) {
   try {
     const token = context.env.CONTENTFUL_TOKEN;
     const spaceId = 'nw2595tc1jdx';
-    const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/release-156/entries`;
+    const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/master/entries`;
     const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' };
 
     const PROVIDER_VARIANTS = {
-      'Light & Wonder': ['Light & Wonder', 'Light And Wonder'],
-      'Pragmatic Play': ['PragmaticPlay', 'Pragmatic Play', 'Pragmatic'],
-      'Games Global': ['Games Global', 'Games Global (GGL)'],
       'Area Vegas': ['Area Vegas', 'AreaVegas Games'],
-      'Push Gaming': ['Push Gaming', 'Push Actions', 'Push Originals'],
-      'YGG Drasil': ['YGG Drasil', 'Yggdrasil'],
+      'Aristocrat Interactive': ['Aristocrat', 'Aristocrat Interactive'],
+      'Barstruck': ['Bar-Xstruck', 'Barstruck'],
+      'Games Global': ['Games Global', 'Games Global (GGL)', 'Games Global Portfolio'],
+      'Just for The Win Studios': ['Just For The Win Studios', 'Just for The Win Studios'],
+      'Pragmatic Play': ['Pragmatic Play', 'PragmaticPlay'],
+      'Yggdrasil': ['YGG Drasil', 'Yggdrasil'],
     };
 
     // Step 1: Fetch ALL matching cashier entries (paginated)
@@ -127,6 +128,7 @@ export async function onRequest(context) {
         const entryTitle = (f.entryTitle && (f.entryTitle['en-GB'] || f.entryTitle)) || '';
         const title = (f.title && (f.title['en-GB'] || f.title)) || '';
         const studio = config.gameStudio || config.gameProvider || '';
+        const launchName = config.name || config.n || (config.realUrl || '').split('/play/')[1] || entryTitle;
 
         // Filter by provider variants
         if (providerVariants) {
@@ -190,6 +192,7 @@ export async function onRequest(context) {
           realUrl: config.realUrl || '',
           infoDetails: (f.infoDetails && (f.infoDetails['en-GB'] || f.infoDetails)) || '',
           entryId: item.sys?.id || '',
+          launchName,
           cashierConfig: cashier
         });
       } catch(e) {
@@ -197,9 +200,26 @@ export async function onRequest(context) {
       }
     }
 
-    results.sort((a, b) => a.title.localeCompare(b.title));
+    // Collapse per-venture skins (bingo) into one row per game, keyed by launch name.
+    // Slots have a unique launch name each, so they pass through unchanged.
+    const byLaunch = new Map();
+    for (const r of results) {
+      const key = r.launchName || r.entryTitle;
+      if (!byLaunch.has(key)) byLaunch.set(key, Object.assign({}, r, { ventures: [] }));
+      const g = byLaunch.get(key);
+      const vs = (r.cashierConfig && r.cashierConfig.ventures) || [];
+      for (const v of vs) if (!g.ventures.includes(v)) g.ventures.push(v);
+      // Keep the plainest (shortest) display title, e.g. "Superlinks" over "Superlinks Rainbow Riches".
+      if ((r.title || '').length && (!g.title || (r.title || '').length < g.title.length)) g.title = r.title;
+    }
+    const deduped = Array.from(byLaunch.values());
+    // Reflect the merged venture list back into cashierConfig so the detail panel lists them all.
+    for (const g of deduped) {
+      if (g.cashierConfig) g.cashierConfig = Object.assign({}, g.cashierConfig, { ventures: g.ventures });
+    }
+    deduped.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
 
-    return new Response(JSON.stringify({ results, total: results.length }), {
+    return new Response(JSON.stringify({ results: deduped, total: deduped.length }), {
       headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
     });
 
