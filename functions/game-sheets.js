@@ -12,6 +12,9 @@ export async function onRequest(context) {
   const theme = url.searchParams.get('theme') || '';
   const ventureList = venture ? [venture] : ventures ? ventures.split(',') : [];
 
+  // Case-insensitive compare helper: lowercase + trim both sides.
+  const norm = s => (s || '').toLowerCase().trim();
+
   if (!query && !ventureList.length && !provider && !gameType && !platform && !aggregator && !winLineType && !feature && !theme) {
     return new Response(JSON.stringify({ results: [], error: 'No filters provided' }), {
       status: 400,
@@ -97,12 +100,14 @@ export async function onRequest(context) {
       });
     }
 
-    // Step 2: Fetch ALL matching gameV2 entries (paginated)
+    // Step 2: Fetch ALL matching gameV2 entries (paginated).
+    // NOTE: the Game Name query is NOT sent to Contentful full-text (that matches descriptions too,
+    // e.g. games that merely mention "superlinks"). It is matched against title/entryTitle below.
     let gameParams = `content_type=gameV2`;
-    if (query) gameParams += `&query=${encodeURIComponent(query)}`;
     if (platform) gameParams += `&fields.platformVisibility=${encodeURIComponent(platform)}`;
 
     const providerVariants = provider ? (PROVIDER_VARIANTS[provider] || [provider]) : null;
+    const nameQuery = norm(query);
 
     const allGameItems = [];
     let gameSkip = 0;
@@ -132,6 +137,11 @@ export async function onRequest(context) {
         const studio = config.gameStudio || config.gameProvider || '';
         const launchName = config.name || config.n || (config.realUrl || '').split('/play/')[1] || entryTitle;
 
+        // Filter by game name: match title or entryTitle only (not description)
+        if (nameQuery) {
+          if (!norm(title).includes(nameQuery) && !norm(entryTitle).includes(nameQuery)) continue;
+        }
+
         // Filter by provider variants
         if (providerVariants) {
           if (!providerVariants.includes(studio)) continue;
@@ -143,19 +153,19 @@ export async function onRequest(context) {
           if (!aggVariants.includes(config.gameAggregator || '')) continue;
         }
 
-        // Filter by win line type
+        // Filter by win line type (case-insensitive)
         if (winLineType) {
-          if ((gameTypeObj.winLineType || '') !== winLineType) continue;
+          if (norm(gameTypeObj.winLineType) !== norm(winLineType)) continue;
         }
 
-        // Filter by feature
+        // Filter by feature (case-insensitive)
         if (feature) {
-          if (!(gameTypeObj.features || []).includes(feature)) continue;
+          if (!(gameTypeObj.features || []).some(x => norm(x) === norm(feature))) continue;
         }
 
-        // Filter by theme
+        // Filter by theme (case-insensitive)
         if (theme) {
-          if (!(gameTypeObj.themes || []).includes(theme)) continue;
+          if (!(gameTypeObj.themes || []).some(x => norm(x) === norm(theme))) continue;
         }
 
         // Only include if matched in cashier live list
