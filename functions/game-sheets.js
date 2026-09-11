@@ -35,8 +35,8 @@ export async function onRequest(context) {
       'Yggdrasil': ['YGG Drasil', 'Yggdrasil'],
     };
 
-    // Step 1: Fetch ALL matching cashier entries (paginated)
-    let cashierParams = `content_type=cashierGameConfig&fields.live=yes`;
+    // Step 1: Fetch ALL cashier entries (paginated). A game counts if it is live OR pp (staging).
+    let cashierParams = `content_type=cashierGameConfig`;
     if (ventureList.length === 1) cashierParams += `&fields.ventures=${encodeURIComponent(ventureList[0])}`;
     if (gameType) cashierParams += `&fields.gameType=${encodeURIComponent(gameType)}`;
 
@@ -54,7 +54,9 @@ export async function onRequest(context) {
         const f = item.fields || {};
         const g = k => f[k] && (f[k]['en-GB'] !== undefined ? f[k]['en-GB'] : f[k]);
         const name = g('gameName');
-        if (name) {
+        const ppYes = Array.isArray(g('pp')) ? g('pp').includes('yes') : false;
+        const liveYes = Array.isArray(g('live')) ? g('live').includes('yes') : false;
+        if (name && (liveYes || ppYes)) {
           cashierLookup[name.toUpperCase()] = {
             gameId: g('gameId') || '',
             gameName: name,
@@ -66,8 +68,8 @@ export async function onRequest(context) {
             miniGame: g('miniGame') ?? false,
             progressive: g('progressive') ?? false,
             integration: Array.isArray(g('integration')) ? g('integration').includes('yes') : false,
-            pp: Array.isArray(g('pp')) ? g('pp').includes('yes') : false,
-            live: Array.isArray(g('live')) ? g('live').includes('yes') : false,
+            pp: ppYes,
+            live: liveYes,
             entryId: item.sys?.id || ''
           };
         }
