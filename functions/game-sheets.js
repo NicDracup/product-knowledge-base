@@ -21,8 +21,8 @@ export async function onRequest(context) {
 
   try {
     const token = context.env.CONTENTFUL_TOKEN;
-    const spaceId = '08wz2hjuit8t';
-    const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/master/entries`;
+    const spaceId = 'nw2595tc1jdx';
+    const baseUrl = `https://api.contentful.com/spaces/${spaceId}/environments/release-156/entries`;
     const headers = { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' };
 
     const PROVIDER_VARIANTS = {
